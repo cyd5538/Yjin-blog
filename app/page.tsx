@@ -1,9 +1,25 @@
-import Image from 'next/image'
+import PostCard from "@/components/Home/PostCard";
+import PostPlus from "@/components/Home/PostPlus";
+import HomeTitle from "@/components/Home/PostTitle";
+import { allPosts } from "contentlayer/generated";
+import { compareDesc } from "date-fns";
 
-export default function Home() {
+function page() {
+  const posts = allPosts.sort((a, b) =>
+    compareDesc(new Date(a.date), new Date(b.date))
+  );
+
   return (
-    <main>
-
-    </main>
-  )
+    <div className="w-full p-2 pt-10 pb-10">
+      <HomeTitle />
+      <div className="grid gap-4 justify-center md:grid-cols-2">
+        {posts.slice(0, 6).map((post, idx) => (
+          <PostCard key={idx} {...post} />
+        ))}
+      </div>
+      <PostPlus />
+    </div>
+  );
 }
+
+export default page;
