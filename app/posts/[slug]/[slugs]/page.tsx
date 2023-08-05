@@ -29,16 +29,16 @@ const PostLayout = ({ params }: Props) => {
   }
 
   return (
-    <div className="max-w-[100vw] flex justify-center">
-      <div className="sm:w-[70%] w-full h-fit flex flex-col pb-32 ">
-        <div className="xl:px-32 px-10 flex flex-col items-center">
+    <div className="flex justify-center">
+      <div className=" w-full h-fit flex flex-col pb-32 ">
+        <div className="flex flex-col items-center p-2">
           <p className="text-slate-500  dark:text-white mb-4 mt-24">
             {format(parseISO(post.date), "LLLL d, yyyy")}
           </p>
           <h1 className="text-slate-900 dark:text-white text-center md:text-5xl/snug text-4xl/snug font-bold">
             {post.title}
           </h1>
-          <article className="prose lg:prose-xl dark:prose-invert">
+          <article className="w-[350px] min-[500px]:w-full max-w-none prose dark:prose-invert">
             <MDXContent components={{ ...MDXComponents }} />
           </article>
         </div>
