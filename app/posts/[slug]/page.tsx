@@ -1,7 +1,7 @@
 import { compareDesc } from 'date-fns'
 import { allPosts } from 'contentlayer/generated'
 import Link from 'next/link'
-import PostCard from '@/components/Posts/PostsCard'
+import PostsCard from '@/components/Posts/PostsCard'
 
 const PostLayout = ({ params }: { params: { slug: string } }) => {
   const post = allPosts.sort((a, b) => compareDesc(new Date(a.date), new Date(b.date)))
@@ -37,7 +37,7 @@ const PostLayout = ({ params }: { params: { slug: string } }) => {
       </ul>
       <div className='grid mt-10 gap-4 justify-center sm:grid-cols-1 md:grid-cols-3'>
         {posts.map((post, idx) => (
-          <PostCard key={idx} {...post} />
+          <PostsCard key={idx} {...post} />
         ))}
       </div>
     </div>

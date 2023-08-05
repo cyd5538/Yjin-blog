@@ -3,7 +3,7 @@ import { format, parseISO } from "date-fns";
 import { Post } from "contentlayer/generated";
 import Image from 'next/image';
 
-function PostCard(post: Post) {
+function PostsCard(post: Post) {
   const thumbnail = post.image ? '/default.jpg' : '';  
 
   return (
@@ -39,4 +39,4 @@ function PostCard(post: Post) {
   );
 }
 
-export default PostCard;
+export default PostsCard;
