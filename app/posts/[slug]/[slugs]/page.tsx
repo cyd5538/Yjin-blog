@@ -23,22 +23,22 @@ const PostLayout = ({ params }: Props) => {
   let MDXContent;
 
   if (!post) {
-    return 
+    return
   } else {
     MDXContent = getMDXComponent(post!.body.code);
   }
 
   return (
-    <div className="max-w-[100vw] h-screen flex justify-center">
+    <div className="max-w-[100vw] flex justify-center">
       <div className="sm:w-[70%] w-full h-fit flex flex-col pb-32 ">
         <div className="xl:px-32 px-10 flex flex-col items-center">
-          <p className="text-slate-500 mb-4 mt-24">
+          <p className="text-slate-500  dark:text-white mb-4 mt-24">
             {format(parseISO(post.date), "LLLL d, yyyy")}
           </p>
-          <h1 className="text-slate-900 text-center md:text-5xl/snug text-4xl/snug font-bold">
+          <h1 className="text-slate-900 dark:text-white text-center md:text-5xl/snug text-4xl/snug font-bold">
             {post.title}
           </h1>
-          <article>
+          <article className="prose lg:prose-xl dark:prose-invert">
             <MDXContent components={{ ...MDXComponents }} />
           </article>
         </div>
