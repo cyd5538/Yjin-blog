@@ -1,26 +1,27 @@
 "use client"
 
 import * as React from "react"
-import { Moon, MoonStar, Sun } from "lucide-react"
+import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
+import { Button } from "@/components/ui/button"
+
+
 export function ModeToggle() {
-  const { setTheme, theme } = useTheme()
+  const { theme, setTheme } = useTheme()
+
+  const handleToggle = () => {
+    if (theme === "light") {
+      setTheme("dark");
+    } else if (theme === "dark") {
+      setTheme("light");
+    }
+  };
 
   return (
-    <div 
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="flex gap-2 border-[1px] p-1 rounded-xl border-black dark:border-white cursor-pointer"
-    >
-      <div
-      >
-        {theme === "dark" ? (
-          <MoonStar className="text-yellow-500 font-bold h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:rotate-0 dark:scale-100" />
-        ) : (
-          <Sun className="text-purple-900 font-bold h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-        )}
-      </div>
-    </div>
+    <Button onClick={handleToggle} variant="outline" size="icon">
+      <Moon color="yellow" className="h-[1.2rem]w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+      <Sun color="black" className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+    </Button>
   )
 }
-
