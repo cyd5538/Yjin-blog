@@ -21,7 +21,7 @@ const Nav = () => {
   ];
 
   return (
-    <div className='fixed z-20 top-0 border-b-[1px] dark:bg-zinc-900 dark:text-white border-black bg-white w-full h-20'>
+    <div className='z-20 top-0 border-b-[1px] dark:bg-zinc-900 dark:text-white border-black bg-white w-full h-20'>
       <div className='m-auto flex justify-between items-center max-w-[1000px] h-20 pl-2 pr-2'>
         <h1 className='text-2xl font-bold cursor-pointer '>
           <Link href="/"><HomeIcon size={24} /></Link>
