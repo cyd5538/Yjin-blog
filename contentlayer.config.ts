@@ -41,6 +41,10 @@ export const Post = defineDocumentType(() => ({
   },
 }))
 
+const options = {
+  theme: 'github-dark'
+};
+
 export default makeSource({
   contentDirPath: "posts",
   documentTypes: [Post],
@@ -48,7 +52,7 @@ export default makeSource({
     remarkPlugins: [remarkGfm],
     rehypePlugins: [
       rehypeSlug,
-      rehypePrettyCode, 
+      [rehypePrettyCode, options], 
     ],
   },
 });
