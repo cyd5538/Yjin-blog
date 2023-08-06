@@ -3,6 +3,7 @@ import { format, parseISO } from "date-fns";
 import { Metadata } from "next";
 import { getMDXComponent } from "next-contentlayer/hooks";
 import MDXComponents from "@/utils/mdxcomponents";
+import PostToc from "@/components/Post/PostToc";
 
 type Props = {
   params: { slug: string, slugs: string };
@@ -29,8 +30,8 @@ const PostLayout = ({ params }: Props) => {
   }
 
   return (
-    <div className="flex justify-center">
-      <div className=" w-full h-fit flex flex-col pb-32">
+    <div className="flex w-full justify-center gap-4 ">
+      <div className="w-[1100px] h-fit flex flex-col pb-32">
         <div className="flex flex-col items-center p-2">
           <p className="text-slate-500  dark:text-white mb-4">
             {format(parseISO(post.date), "LLLL d, yyyy")}
@@ -43,20 +44,8 @@ const PostLayout = ({ params }: Props) => {
           </article>
         </div>
       </div>
-      <div className="w-48">
-        <div className="fixed top-60 right-60 round-md p-4 bg-slate-100 shadow-sm">
-        <h3>TOC</h3>
-        {post.headings.map(heading => {
-            const link = params.slugs + "#" + heading.slug
-            return (
-              <div key={`#${heading.slug}`}>
-                <a className="data-[level=two]:pl-2 data-[level=three]:pl-4" data-level={heading.level} href={link}>
-                  {heading.text}
-                </a>
-              </div>
-            )
-          })}
-        </div>
+      <div className="md:block w-[200px] relative">
+        <PostToc toc={post.headings} slugs={params.slugs}/>
       </div>
     </div>
   )
