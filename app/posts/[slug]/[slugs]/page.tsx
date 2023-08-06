@@ -30,21 +30,21 @@ const PostLayout = ({ params }: Props) => {
   }
 
   return (
-    <div className="flex w-full justify-center gap-4 ">
-      <div className="w-[1100px] h-fit flex flex-col pb-32">
-        <div className="flex flex-col items-center p-2">
+    <div className="flex w-full justify-center gap-2 ">
+      <div className="w-[950px] h-fit flex flex-col pb-32">
+        <div className="flex flex-col items-center p-2 ">
           <p className="text-slate-500  dark:text-white mb-4">
             {format(parseISO(post.date), "LLLL d, yyyy")}
           </p>
           <h1 className="text-slate-900 dark:text-white text-center md:text-5xl/snug text-4xl/snug font-bold">
             {post.title}
           </h1>
-          <article className="w-[350px] min-[500px]:w-full  max-w-none prose dark:prose-invert">
-          <MDXContent components={{ ...MDXComponents }} />
+          <article className="max-w-none w-[400px] min-[500px]:w-[470px] min-[700px]:w-[700px] min-[900px]:w-[880px]  prose dark:prose-invert">
+            <MDXContent components={{ ...MDXComponents }} />
           </article>
         </div>
       </div>
-      <div className="md:block w-[200px] relative">
+      <div className="hidden lg:block w-[200px] relative">
         <PostToc toc={post.headings} slugs={params.slugs}/>
       </div>
     </div>

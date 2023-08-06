@@ -10,7 +10,7 @@ type PostTocType = {
 const PostToc = ({toc,slugs}:PostTocType) => {
 
   return (
-    <div className="fixed top-72 w-[250px] rounded-md p-4 bg-slate-300 shadow-sm">
+    <div className="fixed top-48 w-[250px] rounded-2xl p-4 bg-zinc-300 drop-shadow-md dark:bg-slate-800 dark:text-white border-gray-200">
       <h3 className="font-bold pb-4">TOC</h3>
       <ul className="flex flex-end w-full flex-col">
         {toc.map(heading => {
