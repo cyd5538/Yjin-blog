@@ -17,8 +17,8 @@ function PostCard(post: Post) {
             {post.description}
           </h3>
           <ul className='flex mt-2 gap-2 pl-1 flex-wrap'>
-            {post.tags?.map((tag) => {
-              return <li key={tag} className='rounded-md bg-slate-100 dark:bg-zinc-700 pl-1 pr-1'>{tag}</li>
+            {post.tags?.map((tag,index) => {
+              return <li key={index} className='rounded-md bg-slate-100 dark:bg-zinc-700 pl-1 pr-1'>{tag}</li>
             })}
           </ul>
           <div className='mb-1 mt-4 pl-2'>
