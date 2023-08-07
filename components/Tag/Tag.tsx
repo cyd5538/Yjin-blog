@@ -6,6 +6,7 @@ import TagTitle from './TagTitle';
 import { useEffect, useState } from 'react';
 import PostCard from '../Home/PostCard';
 import TagCount from './TagCount';
+import usePagination from '@/hooks/Pagenation';
 
 const Tag = () => {
   const [tagCounts, setTagCounts] = useState<{ tag: string; count: number }[]>([]);
@@ -13,6 +14,8 @@ const Tag = () => {
 
   const tagParams = useSearchParams();
   const search = tagParams.get('tag');
+
+  const { currentPage, currentData, totalPages, handlePageChange } = usePagination(filteredPosts);
 
   useEffect(() => {
     const filtered = allPosts
@@ -51,8 +54,21 @@ const Tag = () => {
       </div>
       <TagTitle title={search as string} length={filteredPosts.length as number}/>
       <div className='mt-10 grid gap-4 justify-center md:grid-cols-2 grid-cols-1'>
-        {filteredPosts.map((post: Post) => (
+        {currentData.map((post: Post) => (
           <PostCard key={post.title} {...post} />
+        ))}
+      </div>
+      <div className='flex justify-center pt-8 pb-32'>
+      {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index + 1}
+            onClick={() => handlePageChange(index + 1)}
+            className={`mx-2 p-1 pl-2 pr-2 rounded-full  ${
+              currentPage === index + 1 ? 'bg-blue-700  text-white dark:bg-zinc-900' : 'bg-white text-blue-700 dark:text-zinc-800 dark:bg-zinc-500'
+            }`}
+          >
+            {index + 1}
+          </button>
         ))}
       </div>
     </div>

@@ -12,6 +12,8 @@ const TagCount:React.FC<TagCountProps> = ({tagCounts, search}) => {
   return (
     <Link 
       className={`
+        pb-1
+        pt-1
         flex 
         gap-2 
         rounded-md 
