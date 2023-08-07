@@ -13,7 +13,7 @@ function page() {
     <div className="w-full p-2 pt-10 pb-10">
       <HomeTitle />
       <div className="grid gap-4 justify-center md:grid-cols-2">
-        {posts.slice(0, 6).map((post, idx) => (
+        {posts.slice(0, 4).map((post, idx) => (
           <PostCard key={idx} {...post} />
         ))}
       </div>

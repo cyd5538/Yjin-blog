@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { compareDesc } from 'date-fns'
 import { allPosts } from 'contentlayer/generated'
 import type { Metadata } from 'next'
-import PostsCard from '@/components/Posts/PostsCard'
+import PostCard from '@/components/Home/PostCard'
 
 export const metadata: Metadata = {
   description: 'Javascript, react, typescript, nextjs 등을 기록합니다.',
@@ -39,9 +39,9 @@ export default function Home() {
           </li>
         ))}
       </ul>
-      <div className='grid mt-10 gap-4 justify-center sm:grid-cols-1 md:grid-cols-3'>
+      <div className='mt-10 grid gap-4 justify-center md:grid-cols-2'>
         {posts.map((post, idx) => (
-          <PostsCard key={idx} {...post} />
+          <PostCard key={idx} {...post} />
         ))}
       </div>
     </div>
