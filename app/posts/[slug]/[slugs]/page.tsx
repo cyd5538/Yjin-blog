@@ -32,13 +32,21 @@ const PostLayout = ({ params }: Props) => {
   return (
     <div className="flex w-full justify-center gap-2">
       <div className="w-[750px] h-fit flex flex-col pb-32">
-        <div className="flex flex-col items-center p-2 ">
-          <p className="text-slate-500  dark:text-white mb-4">
-            {format(parseISO(post.date), "LLLL d, yyyy")}
+        <div className="flex flex-col  p-2 ">
+          <p className="mb-4 text-left text-black dark:text-white">
+            {format(parseISO(post.date), "yy-MM-dd")}
           </p>
-          <h1 className="text-slate-900 dark:text-white text-center md:text-5xl/snug text-4xl/snug font-bold">
+          <h1 className="underline underline-offset-8 md:text-5xl/snug text-4xl/snug font-bold pb-4 text-left text-black dark:text-white">
             {post.title}
           </h1>
+          <h2 className=" md:text-2xl/snug text-xl/snug font-bold pb-4 text-left text-gray-600 dark:text-gray-200">
+            {post.description}
+          </h2>
+          <ul className="pb-24 flex flex-wrap gap-2">
+            {post.tags?.map((tag,index) => {
+                return <li key={index} className='rounded-xl bg-slate-500 text-white cursor-pointer p-2 pl-3 pr-3 dark:bg-zinc-700 '>{tag}</li>
+            })}
+          </ul>
           <article className="max-w-none w-[350px] min-[400px]:w-[330px] min-[500px]:w-[460px] min-[600px]:w-[560px] min-[700px]:w-[660px] min-[900px]:w-[730px]  prose dark:prose-invert">
             <MDXContent components={{ ...MDXComponents }} />
           </article>
