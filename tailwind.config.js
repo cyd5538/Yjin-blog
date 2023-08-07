@@ -16,6 +16,38 @@ module.exports = {
       },
     },
     extend: {
+      typography: {
+        DEFAULT: {
+          css: {
+            color: '#333',
+            h1: {
+              color: 'white',
+            },
+            h2: {
+              color: 'white',
+            },
+            h3: {
+              color: 'white',
+            },
+            h4: {
+              color: 'white',
+            },
+            p: {
+              color: 'white',
+            },
+            a: {
+              color: 'white'
+            },
+            span : {
+              color: 'white'
+            },
+            strong : {
+              color: 'white',
+              font : "bold"
+            }
+          },
+        },
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
