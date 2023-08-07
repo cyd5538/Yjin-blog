@@ -24,15 +24,15 @@ export default function Home() {
   }));
 
   return (
-    <div>
+    <div className='pb-32'>
       <ul className='flex gap-2 text-xl pt-10'>
-        <li className='underline font-bold'>
+        <li className='underline text-white font-bold'>
           <Link href="/posts">
             All post({posts.length})
           </Link>
         </li>
         {categoryArray.map((categoryItem, idx) => (
-          <li key={idx}>
+          <li className="text-white" key={idx}>
             <Link href={`/posts/${categoryItem.name}`}>
               {categoryItem.name}({categoryItem.count})
             </Link>

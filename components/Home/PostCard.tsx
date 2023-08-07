@@ -34,7 +34,7 @@ function PostCard(post: Post) {
             alt={post.title} 
             width={100}
             height={100}
-            className="w-full h-28 object-cover rounded"
+            className="w-full h-28 object-cover rounded-2xl"
           />
         </div>
       </div>

@@ -26,11 +26,11 @@ const Nav = () => {
         <h1 className='text-2xl font-bold cursor-pointer '>
           <Link href="/"><HomeIcon size={24} /></Link>
         </h1>
-        <div className='hidden gap-4 sm:flex items-center'>
-          <ul className="flex gap-6">
+        <div className='hidden gap-8 sm:flex items-center'>
+          <ul className="flex gap-6 mr-10 ">
             {Links.map((link) => {
-              return <li key={link.title} className='cursor-pointer'>
-                <Link href={link.link}>{link.title}</Link>
+              return <li key={link.title} className='font-sans cursor-pointer text-xl'>
+                  <Link href={link.link}>{link.title}</Link>
               </li>
             })}
           </ul>
