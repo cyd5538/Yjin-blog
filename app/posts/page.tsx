@@ -1,15 +1,13 @@
 import Link from 'next/link'
-import { compareDesc } from 'date-fns'
 import { allPosts } from 'contentlayer/generated'
 import type { Metadata } from 'next'
-import PostCard from '@/components/Home/PostCard'
+import Allposts from '@/components/Posts/Allposts'
 
 export const metadata: Metadata = {
   description: 'Javascript, react, typescript, nextjs 등을 기록합니다.',
 }
 
 export default function Home() {
-  const posts = allPosts.sort((a, b) => compareDesc(new Date(a.date), new Date(b.date)))
   const Path: any[] = allPosts.map((flattend) => flattend._raw.flattenedPath)
 
   const categories = Path.reduce((acc, path) => {
@@ -28,7 +26,7 @@ export default function Home() {
       <ul className='flex gap-2 text-xl pt-10'>
         <li className='underline text-white font-bold'>
           <Link href="/posts">
-            All post({posts.length})
+            All post({allPosts.length})
           </Link>
         </li>
         {categoryArray.map((categoryItem, idx) => (
@@ -39,11 +37,7 @@ export default function Home() {
           </li>
         ))}
       </ul>
-      <div className='mt-10 grid gap-4 justify-center md:grid-cols-2'>
-        {posts.map((post, idx) => (
-          <PostCard key={idx} {...post} />
-        ))}
-      </div>
+      <Allposts />
     </div>
   )
 }

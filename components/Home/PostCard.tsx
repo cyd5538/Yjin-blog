@@ -4,8 +4,7 @@ import { Post } from "contentlayer/generated";
 import Image from 'next/image';
 
 function PostCard(post: Post) {
-  const thumbnail = post.image ? post.image.replace('\r', '') : '/default.jpg'; 
-  
+
   return (
     <div className="mb-4 rounded-xl shadow-md p-2 cursor-pointer hover:-translate-y-1 ease-in duration-100 bg-white dark:bg-zinc-900">
     <Link href={post.url}>
@@ -30,7 +29,7 @@ function PostCard(post: Post) {
         </div>
         <div className='w-1/4 flex justify-center items-center'>
           <Image 
-            src={thumbnail} 
+            src={post.image} 
             alt={post.title} 
             width={100}
             height={100}
