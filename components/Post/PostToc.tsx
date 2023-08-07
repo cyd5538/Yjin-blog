@@ -60,8 +60,6 @@ const PostToc = ({ toc, slugs, height }: PostTocType) => {
     };
   }, [height]);
 
-  console.log(height)
-
   return (
     <div ref={tocRef} className="fixed top-48 w-[230px] rounded-2xl p-4 bg-purple-400 drop-shadow-md dark:bg-zinc-900 dark:text-white border-gray-200">
       <h3 className="font-bold pb-4 text-white">목차</h3>

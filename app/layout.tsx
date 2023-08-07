@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang="ko">
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className='bg-purple-500 text-black dark:bg-zinc-800 dark:text-white'>
+          <div className='bg-violet-500 text-black dark:bg-zinc-800 dark:text-white'>
             <Nav />
             <Container>
               {children}

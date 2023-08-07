@@ -45,16 +45,16 @@ const SinglePost:React.FC<SinglePostProps> = ({ params }) => {
 
   return (
     <div className="flex w-full flex-col gap-2 pb-32 p-2">
-      <div  className="flex w-ful justify-center gap-2">
+      <div  className="flex w-ful justify-center gap-2 border-b-[1px] border-white dark:border-violet-700">
         <div ref={heightRef} className="w-[750px] h-fit flex flex-col pb-32">
           <div className="flex flex-col p-2 ">
-            <p className="mb-4 text-left text-black dark:text-white">
+            <p className="mb-4 text-left text-white">
               {format(parseISO(post.date), "yy-MM-dd")}
             </p>
-            <h1 className="underline underline-offset-8 md:text-5xl/snug text-4xl/snug font-bold pb-4 text-left text-black dark:text-white">
+            <h1 className="underline underline-offset-8 md:text-5xl/snug text-4xl/snug font-bold pb-4 text-left text-white">
               {post.title}
             </h1>
-            <h2 className=" md:text-2xl/snug text-xl/snug font-bold pb-4 text-left text-gray-600 dark:text-gray-200">
+            <h2 className=" md:text-2xl/snug text-xl/snug font-bold pb-4 text-left text-gray-400 dark:text-gray-200">
               {post.description}
             </h2>
             <ul className="pb-24 flex flex-wrap gap-2">
