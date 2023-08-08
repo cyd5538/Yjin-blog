@@ -8,6 +8,9 @@ module.exports = {
     './src/**/*.{ts,tsx}',
 	],
   theme: {
+    fontFamily: {
+      HakgyoansimWoojuR: ["HakgyoansimWoojuR"],
+    },
     container: {
       center: true,
       padding: "2rem",
