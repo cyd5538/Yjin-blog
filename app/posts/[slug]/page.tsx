@@ -21,14 +21,14 @@ const PostLayout = ({ params }: { params: { slug: string } }) => {
 
   return (
     <div className='pb-32'>
-      <ul className='flex gap-2 text-xl pt-10'>
-        <li className='text-white'>
+      <ul className='flex gap-2 pt-10 text-2xl'>
+        <li className='text-white '>
           <Link href="/posts">
             All post({post.length})
           </Link>
         </li>
         {categoryArray.map((categoryItem, idx) => (
-          <li className={`${params.slug === categoryItem.name ? 'underline font-bold text-white' : " text-white"}`} key={idx}>
+          <li className={`${params.slug === categoryItem.name ? 'underline underline-offset-8 font-bold text-white' : " text-white"}`} key={idx}>
             <Link href={`/posts/${categoryItem.name}`}>
               {categoryItem.name}({categoryItem.count})
             </Link>

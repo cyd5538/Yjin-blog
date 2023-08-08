@@ -8,29 +8,31 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { HomeIcon, Menu } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { ModeToggle } from './themeToggle';
 import Link from 'next/link';
 
 const Nav = () => {
 
   const Links = [
-    { title: 'post', link: '/posts' },
-    { title: 'tag', link: '/tag' },
-    { title: 'about', link: '/about' }
+    { title: '블로그', link: '/posts' },
+    { title: '메모', link: '/memo' },
+    { title: '태그', link: '/tag' },
   ];
 
   return (
     <div className='z-20 top-0 border-b-[1px] dark:bg-zinc-900 dark:text-white border-black bg-white w-full h-20'>
-      <div className='m-auto flex justify-between items-center max-w-[1000px] h-20 pl-2 pr-2'>
-        <h1 className='text-2xl font-bold cursor-pointer '>
-          <Link href="/"><HomeIcon size={24} /></Link>
+      <div className='m-auto flex justify-between items-center max-w-[1200px] h-20 pl-4 pr-4 sm:pl-2 sm:pr-2 '>
+        <h1 className='text-3xl font-bold cursor-pointer'>
+          <Link href="/">Home</Link>
         </h1>
         <div className='hidden gap-8 sm:flex items-center'>
-          <ul className="flex gap-6 mr-10 ">
+          <ul className="flex gap-10 mr-10">
             {Links.map((link) => {
-              return <li key={link.title} className='font-sans cursor-pointer text-xl'>
-                  <Link href={link.link}>{link.title}</Link>
+              return <li key={link.title} className='cursor-pointer text-2xl'>
+                <Link href={link.link}>
+                  {link.title}
+                </Link>
               </li>
             })}
           </ul>
