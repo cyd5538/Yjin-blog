@@ -10,7 +10,7 @@ function PostCard(post: Post) {
       <div className='flex gap-2 h-40'>
         <div className='mb-4 w-3/4 flex flex-col'>
           <Link href={post.url}>
-            <h2 className="mb-1 mt-3 text-3xl pl-1 font-bold cursor-pointer hover:underline">
+            <h2 className="mb-1 mt-3 text-3xl pl-1 font-bold cursor-pointer hover:underline underline-offset-8">
               {post.title}
             </h2>
           </Link>
