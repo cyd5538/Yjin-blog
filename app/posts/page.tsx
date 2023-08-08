@@ -23,7 +23,7 @@ export default function Home() {
 
   return (
     <div className='pb-32'>
-      <ul className='flex gap-2 text-xl pt-10'>
+      <ul className='flex gap-2 text-xl'>
         <li className='underline underline-offset-8 text-white text-2xl font-bold'>
           <Link href="/posts">
             All post({allPosts.length})
