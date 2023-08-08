@@ -19,7 +19,7 @@ const Tag = () => {
 
   useEffect(() => {
     const filtered = allPosts
-      .filter((post) => post.tags.includes(search as string))
+      .filter((post) => post.tags?.includes(search as string))
       .sort((a,b) => compareDesc(new Date(a.date), new Date(b.date)))
     
     setFilteredPosts(filtered);
@@ -30,10 +30,10 @@ const Tag = () => {
     const tagCount: { [tag: string]: number } = {};
 
     allTags.forEach(tag => {
-      if (tagCount[tag]) {
-        tagCount[tag]++;
-      } else {
-        tagCount[tag] = 1;
+      if (tagCount[tag as string]) {
+        tagCount[tag as string]++;
+      } else { 
+        tagCount[tag as string] = 1;
       }
     });
 

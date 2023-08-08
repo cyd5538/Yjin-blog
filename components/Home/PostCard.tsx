@@ -38,7 +38,7 @@ function PostCard(post: Post) {
         </div>
         <div className='w-1/4 flex justify-center items-center'>
           <Image 
-            src={post.image} 
+            src={post.image ? post.image : ""} 
             alt={post.title} 
             width={100}
             height={100}
