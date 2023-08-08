@@ -62,7 +62,7 @@ const SinglePost:React.FC<SinglePostProps> = ({ params }) => {
                   return <li key={index} className='rounded-xl bg-slate-500 text-white cursor-pointer p-2 pl-3 pr-3 dark:bg-zinc-700 '>{tag}</li>
               })}
             </ul>
-            <article className="max-w-none w-[350px] min-[400px]:w-[330px] min-[500px]:w-[460px] min-[600px]:w-[560px] min-[700px]:w-[660px] min-[900px]:w-[730px]  prose dark:prose-invert">
+            <article className="max-w-none w-[350px] min-[400px]:w-[390px] min-[500px]:w-[490px] min-[600px]:w-[560px] min-[700px]:w-[660px] min-[760px]:w-[750px]  prose dark:prose-invert">
               <MDXContent components={{ ...MDXComponents }} />
             </article>
           </div>

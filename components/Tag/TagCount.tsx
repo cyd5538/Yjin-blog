@@ -24,7 +24,7 @@ const TagCount:React.FC<TagCountProps> = ({tagCounts, search}) => {
         justify-center 
         items-center 
         hover:bg-indigo-900
-        ${tagCounts.tag === search ? "bg-indigo-900 dark:bg-black" : ""}
+        ${tagCounts.tag === search ? "bg-indigo-900 dark:bg-zinc-900": ""}
       `}
       href={{
         pathname: `/tag`,
