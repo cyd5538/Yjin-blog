@@ -5,8 +5,10 @@ import FolderPosts from '@/components/Posts/FolderPosts'
 
 const PostLayout = ({ params }: { params: { slug: string } }) => {
   const post = allPosts.sort((a, b) => compareDesc(new Date(a.date), new Date(b.date)))
-  const posts = allPosts.filter((post) => post._raw.flattenedPath.startsWith(params.slug + '/'));
-  const Path:any[] = allPosts.map((flattend) => flattend._raw.flattenedPath)
+ 
+  const Path:any[] = allPosts
+  .filter(post => !post._id.startsWith('memo'))
+  .map((flattend) => flattend._raw.flattenedPath)
 
   const categories = Path.reduce((acc, path) => {
     const category = path.split('/')[0];

@@ -5,7 +5,8 @@ import { allPosts } from "contentlayer/generated";
 import { compareDesc } from "date-fns";
 
 function page() {
-  const posts = allPosts.sort((a, b) =>
+  const filteredPosts = allPosts.filter(post => !post._id.startsWith('memo'));
+  const posts = filteredPosts.sort((a, b) =>
     compareDesc(new Date(a.date), new Date(b.date))
   );
 

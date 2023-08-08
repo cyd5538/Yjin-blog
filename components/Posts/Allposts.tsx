@@ -5,9 +5,9 @@ import { allPosts } from 'contentlayer/generated';
 import { compareDesc } from 'date-fns';
 import usePagination from '@/hooks/Pagenation';
 
-
 const Allposts = () => {
-  const sortedPosts = allPosts.sort((a, b) => compareDesc(new Date(a.date), new Date(b.date)));
+  const filteredPosts = allPosts.filter(post => !post._id.startsWith('memo'));
+  const sortedPosts = filteredPosts.sort((a, b) => compareDesc(new Date(a.date), new Date(b.date)));
   const { currentPage, currentData, totalPages, handlePageChange } = usePagination(sortedPosts);
 
   return (
