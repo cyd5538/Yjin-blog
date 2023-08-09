@@ -1,9 +1,11 @@
-import React from 'react'
+interface HomeTitleProps {
+  title : string
+}
 
-const HomeTitle = () => {
+const HomeTitle:React.FC<HomeTitleProps> = ({title}) => {
   return (
     <h2 className='mb-4 text-white font-bold text-3xl'>
-      Recent Post
+      {title}
     </h2>
   )
 }
