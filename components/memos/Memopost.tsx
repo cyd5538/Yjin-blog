@@ -8,10 +8,10 @@ function Memopost(post: Post) {
 
   return (
     <div className="mb-4 rounded-xl shadow-md p-2 bg-white dark:bg-zinc-900">
-      <div className='flex gap-2 h-28 sm:h-40'>
+      <div className='flex gap-2 h-auto'>
         <div className='mb-4 w-3/4 flex flex-col'>
           <Link href={url}>
-            <h2 className="mb-1 mt-3 text-3xl pl-1 font-bold cursor-pointer hover:underline underline-offset-8">
+            <h2 className="mb-1 mt-3 text-2xl pl-1 font-bold cursor-pointer hover:underline underline-offset-8">
               {post.title}
             </h2>
           </Link>

@@ -28,16 +28,16 @@ export default function Home() {
 
   return (
     <div className='pb-32'>
-      <ul className='flex gap-2 text-xl'>
-        <li className='underline underline-offset-8 text-white text-2xl font-bold'>
+      <ul className='flex gap-4 text-xl'>
+        <li className='underline underline-offset-8 text-white text-3xl font-bold'>
           <Link href="/posts">
             All post({allPosts.length})
           </Link>
         </li>
         {categoryArray.map((categoryItem, idx) => (
-          <li className="text-white text-2xl" key={idx}>
+          <li className="text-white text-3xl" key={idx}>
             <Link href={`/posts/${categoryItem.name}`}>
-              {categoryItem.name}({categoryItem.count})
+              {categoryItem.name} ({categoryItem.count})
             </Link>
           </li>
         ))}
