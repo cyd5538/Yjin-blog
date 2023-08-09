@@ -23,7 +23,7 @@ const PostLayout = ({ params }: { params: { slug: string } }) => {
 
   return (
     <div className='pb-32'>
-      <ul className='flex gap-2 pt-10 text-2xl'>
+      <ul className='flex gap-2 text-2xl'>
         <li className='text-white '>
           <Link href="/posts">
             All post({post.length})

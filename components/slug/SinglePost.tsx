@@ -1,20 +1,24 @@
 "use client";
 
 import { useRef, useState, useEffect } from 'react';
-import { compareDesc, format, parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { getMDXComponent } from "next-contentlayer/hooks";
 import MDXComponents from "@/utils/mdxcomponents";
-import PostToc from "@/components/Post/PostToc";
-import NextPrev from "@/components/Post/PrevNext";
-import { allPosts } from "contentlayer/generated";
+import PostToc from "@/components/slug/PostToc";
+import NextPrev from "@/components/slug/PrevNext";
+import { Post  } from "contentlayer/generated";
 
 interface SinglePostProps {
+  postmemo : boolean
+  post : Post
+  postSort : Post[]
   params : {
     slugs : string
+    slug : string
   }
 }
 
-const SinglePost:React.FC<SinglePostProps> = ({ params }) => {
+const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo }) => {
   const heightRef = useRef<HTMLDivElement>(null);
   const [divHeight, setDivHeight] = useState<number | undefined>(undefined);
 
@@ -24,12 +28,7 @@ const SinglePost:React.FC<SinglePostProps> = ({ params }) => {
     }
   }, []);
 
-  const post = allPosts.filter((post) => post._raw.flattenedPath.endsWith(params.slugs))[0];
-  const postSort = allPosts.sort((a, b) =>
-    compareDesc(new Date(a.date), new Date(b.date))
-  );
-
-  const postIndex = postSort.findIndex(post => post._raw.flattenedPath.endsWith(params.slugs));
+  const postIndex = postSort.findIndex(post => post._raw.flattenedPath.endsWith(params.slug));
 
   const prevPost = postIndex > 0 ? postSort[postIndex - 1] : null;
   const nextPost = postIndex < postSort.length - 1 ? postSort[postIndex + 1] : null;
@@ -41,7 +40,6 @@ const SinglePost:React.FC<SinglePostProps> = ({ params }) => {
   } else {
     MDXContent = getMDXComponent(post!.body.code);
   }
-
 
   return (
     <div className="flex w-full flex-col gap-2 pb-32 p-2">
@@ -71,7 +69,7 @@ const SinglePost:React.FC<SinglePostProps> = ({ params }) => {
           <PostToc height={divHeight} toc={post.headings} slugs={params.slugs}/>
         </div>
       </div>
-      <NextPrev next={nextPost} prev={prevPost}/> 
+      <NextPrev postmemo={postmemo} next={nextPost} prev={prevPost}/> 
     </div>
   )
 }

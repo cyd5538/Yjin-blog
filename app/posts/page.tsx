@@ -2,13 +2,18 @@ import Link from 'next/link'
 import { allPosts } from 'contentlayer/generated'
 import type { Metadata } from 'next'
 import Allposts from '@/components/Posts/Allposts'
+import { compareDesc } from 'date-fns'
 
 export const metadata: Metadata = {
   description: 'Javascript, react, typescript, nextjs 등을 기록합니다.',
 }
 
 export default function Home() {
-  const Path: any[] = allPosts.map((flattend) => flattend._raw.flattenedPath)
+  const post = allPosts.sort((a, b) => compareDesc(new Date(a.date), new Date(b.date)))
+ 
+  const Path:any[] = allPosts
+  .filter(post => !post._id.startsWith('memo'))
+  .map((flattend) => flattend._raw.flattenedPath)
 
   const categories = Path.reduce((acc, path) => {
     const category = path.split('/')[0];

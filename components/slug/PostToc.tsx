@@ -65,7 +65,7 @@ const PostToc = ({ toc, slugs, height }: PostTocType) => {
       <h3 className="font-bold pb-4 text-white">목차</h3>
       <ul className="flex flex-end w-full flex-col gap-[1px]">
         {toc.map((heading) => {
-          const link = slugs + "#" + heading.slug;
+          const link = slugs? slugs + "#" + heading.slug : "#" + heading.slug
           return (
             <li key={`#${heading.slug}`}>
               <a

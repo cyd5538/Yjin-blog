@@ -30,10 +30,12 @@ const Tag = () => {
     const tagCount: { [tag: string]: number } = {};
 
     allTags.forEach(tag => {
-      if (tagCount[tag as string]) {
-        tagCount[tag as string]++;
-      } else { 
-        tagCount[tag as string] = 1;
+      if (tag !== undefined) {
+        if (tagCount[tag as string]) {
+          tagCount[tag as string]++;
+        } else { 
+          tagCount[tag as string] = 1;
+        }
       }
     });
 
@@ -44,6 +46,8 @@ const Tag = () => {
 
     setTagCounts(tagCountArray);
   }, []);
+
+  console.log(filteredPosts, tagCounts)
 
   return (
     <div>

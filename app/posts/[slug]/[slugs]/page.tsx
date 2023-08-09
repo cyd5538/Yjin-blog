@@ -1,6 +1,7 @@
 import { Post, allPosts } from "contentlayer/generated";
 import { Metadata } from "next";
-import SinglePost from "@/components/Post/SinglePost";
+import { compareDesc } from "date-fns";
+import SinglePost from "@/components/slug/SinglePost";
 
 type Props = {
   params: { slug: string, slugs: string };
@@ -16,10 +17,15 @@ export const generateMetadata = ({ params }: Props): Metadata => {
 };
 
 const PostLayout = ({ params }: Props) => {
-  
+  const post = allPosts.filter((post) => post._raw.flattenedPath.endsWith(params.slugs))[0];
+  const postSort = allPosts
+  .filter(post => !post._id.startsWith('memo'))
+  .sort((a, b) =>
+    compareDesc(new Date(a.date), new Date(b.date))
+  );
   return (
     <div>
-      <SinglePost params={params} />
+      <SinglePost postmemo={true} post={post} postSort={postSort} params={params} />
     </div>
   )
 }
