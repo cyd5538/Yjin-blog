@@ -47,8 +47,6 @@ const Tag = () => {
     setTagCounts(tagCountArray);
   }, []);
 
-  console.log(filteredPosts, tagCounts)
-
   return (
     <div>
       <div className='flex gap-2 flex-wrap text-xl text-white pb-4 font-bold'>
