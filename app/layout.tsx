@@ -1,6 +1,6 @@
-import { ThemeProvider } from "@/components/theme-provider"
-import Container from '@/components/Container'
-import Nav from '@/components/Nav'
+import { ThemeProvider } from "@/components/ui/theme-provider"
+import Container from '@/components/ui/Container'
+import Nav from '@/components/ui/Nav'
 import './globals.css'
 import type { Metadata } from 'next'
 
