@@ -9,8 +9,6 @@ export const metadata: Metadata = {
 }
 
 export default function Home() {
-  const post = allPosts.sort((a, b) => compareDesc(new Date(a.date), new Date(b.date)))
- 
   const Path:any[] = allPosts
   .filter(post => !post._id.startsWith('memo'))
   .map((flattend) => flattend._raw.flattenedPath)
@@ -31,7 +29,7 @@ export default function Home() {
       <ul className='flex gap-4 text-xl'>
         <li className='underline underline-offset-8 text-white text-3xl font-bold'>
           <Link href="/posts">
-            All post({allPosts.length})
+            All post({Path.length})
           </Link>
         </li>
         {categoryArray.map((categoryItem, idx) => (

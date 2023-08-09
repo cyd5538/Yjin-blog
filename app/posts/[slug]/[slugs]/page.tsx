@@ -23,6 +23,7 @@ const PostLayout = ({ params }: Props) => {
   .sort((a, b) =>
     compareDesc(new Date(a.date), new Date(b.date))
   );
+
   return (
     <div>
       <SinglePost postmemo={true} post={post} postSort={postSort} params={params} />

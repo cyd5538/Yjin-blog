@@ -19,16 +19,23 @@ interface SinglePostProps {
 }
 
 const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo }) => {
-  const heightRef = useRef<HTMLDivElement>(null);
+  const [slug, setSlug] = useState<string | undefined>(undefined)
   const [divHeight, setDivHeight] = useState<number | undefined>(undefined);
-
+  const heightRef = useRef<HTMLDivElement>(null);
+  
   useEffect(() => {
+    if(postmemo){
+      setSlug(params.slugs)
+    }else{
+      setSlug(params.slug)
+    }
+
     if (heightRef.current) {
       setDivHeight(heightRef.current.clientHeight);
     }
-  }, []);
+  }, [params, postmemo]);
 
-  const postIndex = postSort.findIndex(post => post._raw.flattenedPath.endsWith(params.slug));
+  const postIndex = postSort.findIndex(post => post._raw.flattenedPath.endsWith(slug as string));
 
   const prevPost = postIndex > 0 ? postSort[postIndex - 1] : null;
   const nextPost = postIndex < postSort.length - 1 ? postSort[postIndex + 1] : null;
@@ -40,6 +47,8 @@ const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo
   } else {
     MDXContent = getMDXComponent(post!.body.code);
   }
+
+  console.log(postIndex, prevPost, nextPost)
 
   return (
     <div className="flex w-full flex-col gap-2 pb-32 p-2">

@@ -26,7 +26,7 @@ const PostLayout = ({ params }: { params: { slug: string } }) => {
       <ul className='flex gap-4 text-3xl'>
         <li className='text-white '>
           <Link href="/posts">
-            All post({post.length})
+            All post({Path.length})
           </Link>
         </li>
         {categoryArray.map((categoryItem, idx) => (
