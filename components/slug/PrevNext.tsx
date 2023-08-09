@@ -33,7 +33,7 @@ const PrevNext: React.FC<PrevNextProps> = ({ next, prev, postmemo }) => {
     <div className='pb-24 flex justify-between w-full mt-8'>
       {/* next */}
       {next && nextUrl ? 
-        <Link href={nextUrl} className="rounded-md w-36 md:w-80 justify-center items-center bg-indigo-400 hover:bg-purple-900 shadow-lg text-white cursor-pointer p-2 flex gap-4">
+        <Link href={nextUrl} className="rounded-md w-36 md:w-80 justify-center items-center bg-indigo-500 hover:bg-indigo-600 dark:bg-zinc-800 dark:hover:bg-zinc-900 shadow-lg text-white cursor-pointer p-2 flex gap-4">
           <div><ChevronLeft /></div>
           <div className='font-bold text-xl'>{next?.title}</div>
         </Link>
@@ -41,7 +41,7 @@ const PrevNext: React.FC<PrevNextProps> = ({ next, prev, postmemo }) => {
       }
       {/* prev */}
       {prev && prevUrl ?
-        <Link href={prevUrl} className="rounded-md w-36 md:w-80 justify-center items-center bg-indigo-400 hover:bg-purple-900 shadow-lg text-white cursor-pointer p-2 flex gap-4">
+        <Link href={prevUrl} className="rounded-md w-36 md:w-80 justify-center items-center bg-indigo-500 hover:bg-indigo-600 dark:bg-zinc-800 dark:hover:bg-zinc-900 shadow-lg text-white cursor-pointer p-2 flex gap-4">
           <div><ChevronRight /></div>
           <div className='font-bold text-xl'>{prev?.title}</div>
         </Link>
