@@ -1,6 +1,10 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from 'next/navigation'
+import { ClipboardCopy } from "lucide-react";
+import useCopyClipBoard from "@/hooks/useCopy";
+import { useToast } from "@/components/ui/use-toast"
 
 type PostTocType = {
   height : number | undefined
@@ -15,6 +19,16 @@ type PostTocType = {
 const PostToc = ({ toc, slugs, height }: PostTocType) => {
   const [currentHeading, setCurrentHeading] = useState<string>(""); 
   const tocRef = useRef<HTMLDivElement>(null);
+
+  const pathname = usePathname()
+
+  const [isCopy, onCopy] = useCopyClipBoard();
+
+  const handleCopyClipBoard = (text: string) => {
+    onCopy(text);
+  };
+
+  const { toast } = useToast()
 
   useEffect(() => {
     const headingsRef = toc.map((heading) => heading.slug);
@@ -81,6 +95,22 @@ const PostToc = ({ toc, slugs, height }: PostTocType) => {
           );
         })}
       </ul>
+      <button 
+      className="pt-6 flex justify-end w-full"
+      onClick={() => {
+        handleCopyClipBoard(`http://localhost:3000/${pathname}`)  
+        if(!isCopy){
+          toast({
+            title: "링크를 복사했습니다.",
+          })
+        }else{
+          toast({
+            title: "이미 복사했습니다.",
+          })
+        }
+      }}>
+        {isCopy ? <span>복사 완료</span> : <p className="flex gap-2 hover:text-gray-300 ">링크 복사<ClipboardCopy size={20}/></p>}
+      </button>
     </div>
   );
 };
