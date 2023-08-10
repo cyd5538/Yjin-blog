@@ -37,16 +37,18 @@ const Allposts = ({ params }: { params: { slug: string } }) => {
     <div className='pb-32'>
       <Title title="Blog"/>
       <SubTitle subtitle="공부한 것을 기록하는 블로그 페이지입니다."/>
-      <ul className='flex gap-4 text-3xl'>
-        <li className={`${categoery === "" ? "underline underline-offset-8 font-bold " : ""} text-white`}>
-          <Link href="/posts">
-            All post({Path.length})
+      <ul className='flex gap-4 text-2xl'>
+        <li className={`text-white flex gap-2 items-center`}>
+          <Link className='flex items-center gap-2' href="/posts">
+            <p className={`${categoery === "" ? "underline underline-offset-8 font-bold " : ""}`}>All post</p>
+            <p className='ml-1 bg-violet-300 rounded-md w-6 h-6 flex items-center justify-center'>{Path.length}</p>
           </Link>
         </li>
         {categoryArray.map((categoryItem, idx) => (
-          <li className={`${categoery === categoryItem.name ? "underline underline-offset-8 font-bold " : ""} text-white`} key={idx}>
-            <Link href={`/posts?category=${categoryItem.name}`}>
-              {categoryItem.name} ({categoryItem.count})
+          <li className="text-white" key={idx}>
+            <Link className='flex items-center' href={`/posts?category=${categoryItem.name}`}>
+              <p className={`${categoery === categoryItem.name ? "underline underline-offset-8 font-bold " : ""}`} >{categoryItem.name}</p>
+              <p className='ml-1 bg-violet-300 rounded-md w-6 h-6 flex items-center justify-center'>{categoryItem.count}</p>
             </Link>
           </li>
         ))}
