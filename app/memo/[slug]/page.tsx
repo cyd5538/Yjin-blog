@@ -13,7 +13,31 @@ export const generateStaticParams = async () =>
 export const generateMetadata = ({ params }: Props): Metadata => {
   const post =  allPosts.filter((post : Post) => post._raw.flattenedPath.split("/")[1] === params.slug)[0]
 
-  return { title: post?.title, description: post?.description };
+  return { 
+    title: post?.title, 
+    description: post?.description,
+    openGraph: {
+      title: post?.title,
+      description: post?.description,
+      url: '',
+      siteName: 'Yjin Blog' + post?.title,
+      images: [
+        {
+          url: `${post?.image}`,
+          width: 800,
+          height: 600,
+        },
+        {
+          url: `${post?.image}`,
+          width: 1800,
+          height: 1600,
+          alt: post?.title,
+        },
+      ],
+      locale: 'ko-KR',
+      type: 'website',
+    }, 
+  };
 };
 
 export default function Home({ params }: Props) {
