@@ -49,7 +49,7 @@ const Tag = () => {
 
   return (
     <div>
-      <div className='flex gap-2 flex-wrap text-xl text-white pb-4 font-bold'>
+      <div className='flex gap-2   flex-wrap text-xl text-white pb-4 font-bold'>
         {tagCounts.map((tagcount) => (
           <TagCount key={tagcount.tag} tagCounts={tagcount} search={search as string}/>
         ))}
