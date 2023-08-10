@@ -4,6 +4,7 @@ import { Post, allPosts } from 'contentlayer/generated'
 import React from 'react'
 import SinglePost from '../slug/SinglePost'
 import { compareDesc } from 'date-fns'
+import NotFound from '@/app/[...not_found]/page';
 
 interface MemoProps {
   params : {
@@ -19,6 +20,10 @@ const Memo:React.FC<MemoProps> = ({params}) => {
   .sort((a, b) =>
     compareDesc(new Date(a.date), new Date(b.date))
   );
+
+  if(!post){
+    return <NotFound />
+  }
 
   return (
     <div>

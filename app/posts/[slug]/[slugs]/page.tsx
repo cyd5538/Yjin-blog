@@ -2,6 +2,7 @@ import { Post, allPosts } from "contentlayer/generated";
 import { Metadata } from "next";
 import { compareDesc } from "date-fns";
 import SinglePost from "@/components/slug/SinglePost";
+import NotFound from "../page";
 
 type Props = {
   params: { slug: string, slugs: string };
@@ -23,6 +24,10 @@ const PostLayout = ({ params }: Props) => {
   .sort((a, b) =>
     compareDesc(new Date(a.date), new Date(b.date))
   );
+
+  if(!post){
+    return <NotFound />
+  }
 
   return (
     <div>

@@ -10,7 +10,7 @@ export default function NotFound() {
             className='text-white hover:text-gray-300'
             href='/'
           >
-            뒤로 돌아가기
+            홈으로 돌아가기
         </Link>
       </div>
     </>
