@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react';
 import PostCard from '../Home/PostCard';
 import TagCount from './TagCount';
 import usePagination from '@/hooks/usePagination';
+import Title from '../etc/Title';
+import SubTitle from '../etc/SubTitle';
 
 const Tag = () => {
   const [tagCounts, setTagCounts] = useState<{ tag: string; count: number }[]>([]);
@@ -49,6 +51,8 @@ const Tag = () => {
 
   return (
     <div>
+      <Title title="Tag"/>
+      <SubTitle subtitle='태그 별로 볼 수 있는 페이지입니다'/>
       <div className='flex gap-2   flex-wrap text-xl text-white pb-4 font-bold'>
         {tagCounts.map((tagcount) => (
           <TagCount key={tagcount.tag} tagCounts={tagcount} search={search as string}/>

@@ -5,6 +5,8 @@ import { allPosts } from 'contentlayer/generated'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation';
 import Allpost from './Allpost';
+import Title from '../etc/Title';
+import SubTitle from '../etc/SubTitle';
 
 const Allposts = ({ params }: { params: { slug: string } }) => {
   const [categoery, setCategory] = useState<string>('');
@@ -33,15 +35,14 @@ const Allposts = ({ params }: { params: { slug: string } }) => {
 
   return (
     <div className='pb-32'>
+      <Title title="Blog"/>
+      <SubTitle subtitle="공부한 것을 기록하는 블로그 페이지입니다."/>
       <ul className='flex gap-4 text-3xl'>
         <li className={`${categoery === "" ? "underline underline-offset-8 font-bold " : ""} text-white`}>
           <Link href="/posts">
             All post({Path.length})
           </Link>
         </li>
-        {/* {`mx-2 p-1 pl-2 pr-2 rounded-full  ${
-              currentPage === index + 1 ? 'bg-blue-700  text-white dark:bg-zinc-900' : 'bg-white text-blue-700 dark:text-zinc-800 dark:bg-zinc-500'
-        }`} */}
         {categoryArray.map((categoryItem, idx) => (
           <li className={`${categoery === categoryItem.name ? "underline underline-offset-8 font-bold " : ""} text-white`} key={idx}>
             <Link href={`/posts?category=${categoryItem.name}`}>

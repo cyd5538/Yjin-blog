@@ -5,6 +5,9 @@ import Memopost from "@/components/memos/Memopost";
 import { Post, allPosts } from "contentlayer/generated";
 import { compareDesc } from "date-fns";
 
+import SubTitle from "@/components/etc/SubTitle";
+import Title from "@/components/etc/Title";
+
 function page() {
   const filteredPosts = allPosts.filter(post => !post._id.startsWith('memo'));
   const posts = filteredPosts.sort((a, b) =>
@@ -18,6 +21,8 @@ function page() {
 
   return (
     <div className="pb-32">
+      <Title title="YJIN 🖐"/>
+      <SubTitle subtitle="프론트엔드 취준생의 블로그입니다."/>
       <HomeTitle title="Recent Post"/>
       <div className="mt-10 grid gap-4 justify-center md:grid-cols-2 grid-cols-1">
         {posts.slice(0, 4).map((post, idx) => (
