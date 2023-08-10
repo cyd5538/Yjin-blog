@@ -6,7 +6,7 @@ import TagTitle from './TagTitle';
 import { useEffect, useState } from 'react';
 import PostCard from '../Home/PostCard';
 import TagCount from './TagCount';
-import usePagination from '@/hooks/Pagenation';
+import usePagination from '@/hooks/usePagination';
 
 const Tag = () => {
   const [tagCounts, setTagCounts] = useState<{ tag: string; count: number }[]>([]);
