@@ -2,16 +2,17 @@
 import PostCard from '../Home/PostCard';
 import { Post } from 'contentlayer/generated';
 import { allPosts } from 'contentlayer/generated';
-import usePagination from '@/hooks/Pagenation';
+import { compareDesc } from 'date-fns';
+import usePagination from '@/hooks/usePagination';
 
-interface FolderPosts {
-  params : {
-    slug : string
-  }
+interface AllpostProps {
+  categoery : string
 }
-const FolderPosts:React.FC<FolderPosts> = ({params}) => {
-  const posts = allPosts.filter((post) => post._raw.flattenedPath.startsWith(params.slug + '/'));
-  const { currentPage, currentData, totalPages, handlePageChange } = usePagination(posts);
+
+const Allpost:React.FC<AllpostProps> = ({categoery}) => {
+  const filteredPosts = allPosts.filter(post => !post._id.startsWith('memo') && post._id.startsWith(categoery));
+  const sortedPosts = filteredPosts.sort((a, b) => compareDesc(new Date(a.date), new Date(b.date)));
+  const { currentPage, currentData, totalPages, handlePageChange } = usePagination(sortedPosts);
 
   return (
     <div>
@@ -37,4 +38,4 @@ const FolderPosts:React.FC<FolderPosts> = ({params}) => {
   );
 };
 
-export default FolderPosts;
+export default Allpost;

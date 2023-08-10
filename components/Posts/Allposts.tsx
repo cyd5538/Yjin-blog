@@ -1,37 +1,58 @@
-"use client"
-import PostCard from '../Home/PostCard';
-import { Post } from 'contentlayer/generated';
-import { allPosts } from 'contentlayer/generated';
-import { compareDesc } from 'date-fns';
-import usePagination from '@/hooks/Pagenation';
+"use client";
 
-const Allposts = () => {
-  const filteredPosts = allPosts.filter(post => !post._id.startsWith('memo'));
-  const sortedPosts = filteredPosts.sort((a, b) => compareDesc(new Date(a.date), new Date(b.date)));
-  const { currentPage, currentData, totalPages, handlePageChange } = usePagination(sortedPosts);
+import { useEffect, useState } from 'react'
+import { allPosts } from 'contentlayer/generated'
+import Link from 'next/link'
+import { useSearchParams } from 'next/navigation';
+import Allpost from './Allpost';
+
+const Allposts = ({ params }: { params: { slug: string } }) => {
+  const [categoery, setCategory] = useState<string>('');
+
+  const searchparams = useSearchParams()
+  const categoryParams = searchparams.get('category')
+  
+  useEffect(() => {
+    setCategory(categoryParams ? categoryParams : "")
+  },[categoryParams])
+
+  const Path:any[] = allPosts
+  .filter(post => !post._id.startsWith('memo'))
+  .map((flattend) => flattend._raw.flattenedPath)
+
+  const categories = Path.reduce((acc, path) => {
+    const category = path.split('/')[0];
+    acc[category] = (acc[category] || 0) + 1;
+    return acc;
+  }, {});
+
+  const categoryArray = Object.keys(categories).map((category) => ({
+    name: category,
+    count: categories[category],
+  }));
 
   return (
-    <div>
-      <div className='mt-10 grid gap-4 justify-center md:grid-cols-2 grid-cols-1'>
-        {currentData.map((post: Post) => (
-          <PostCard key={post.title} {...post} />
-        ))}
-      </div>
-      <div className='mt-4 flex justify-center'>
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index + 1}
-            onClick={() => handlePageChange(index + 1)}
-            className={`mx-2 p-1 pl-2 pr-2 rounded-full  ${
+    <div className='pb-32'>
+      <ul className='flex gap-4 text-3xl'>
+        <li className={`${categoery === "" ? "underline underline-offset-8 font-bold " : ""} text-white`}>
+          <Link href="/posts">
+            All post({Path.length})
+          </Link>
+        </li>
+        {/* {`mx-2 p-1 pl-2 pr-2 rounded-full  ${
               currentPage === index + 1 ? 'bg-blue-700  text-white dark:bg-zinc-900' : 'bg-white text-blue-700 dark:text-zinc-800 dark:bg-zinc-500'
-            }`}
-          >
-            {index + 1}
-          </button>
+        }`} */}
+        {categoryArray.map((categoryItem, idx) => (
+          <li className={`${categoery === categoryItem.name ? "underline underline-offset-8 font-bold " : ""} text-white`} key={idx}>
+            <Link href={`/posts?category=${categoryItem.name}`}>
+              {categoryItem.name} ({categoryItem.count})
+            </Link>
+          </li>
         ))}
-      </div>
+      </ul>
+      <Allpost categoery={categoery}/>
     </div>
-  );
-};
+  )
+}
 
-export default Allposts;
+export default Allposts
