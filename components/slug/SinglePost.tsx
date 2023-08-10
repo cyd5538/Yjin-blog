@@ -8,6 +8,7 @@ import PostToc from "@/components/slug/PostToc";
 import NextPrev from "@/components/slug/PrevNext";
 import { Post  } from "contentlayer/generated";
 import useProgress from '@/hooks/useProgress';
+import Link from 'next/link';
 
 interface SinglePostProps {
   postmemo : boolean
@@ -72,9 +73,17 @@ const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo
               {post.description}
             </h2>
             <ul className="pb-24 flex flex-wrap gap-2">
-              {post.tags?.map((tag,index) => {
-                  return <li key={index} className='rounded-xl bg-slate-500 text-white cursor-pointer p-2 pl-3 pr-3 dark:bg-zinc-700 '>{tag}</li>
-              })}
+              {post.tags?.map((tag,index) => 
+                <Link 
+                  key={index}                       
+                  href={{
+                    pathname: `/tag`,
+                    query: { tag: `${tag}` }
+                  }}
+                >
+                  <li className='rounded-md bg-violet-300 dark:bg-zinc-700 pl-2 pr-2 hover:bg-violet-400 dark:hover:bg-zinc-800'>{tag}</li>
+                </Link>
+              )}
             </ul>
             <article className="max-w-none w-[350px] min-[400px]:w-[390px] min-[500px]:w-[490px] min-[600px]:w-[560px] min-[700px]:w-[660px] min-[760px]:w-[750px]  prose dark:prose-invert">
               <MDXContent components={{ ...MDXComponents }} />

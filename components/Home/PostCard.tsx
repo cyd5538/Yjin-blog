@@ -18,15 +18,15 @@ function PostCard(post: Post) {
             {post.description}
           </h3>
           <ul className='flex mt-2 gap-2 pl-1 flex-wrap'>
-            {post.tags?.map((tag,index) => 
-              <Link 
-                key={index}                       
+            {post.tags?.map((tag, index) =>
+              <Link
+                key={index}
                 href={{
                   pathname: `/tag`,
                   query: { tag: `${tag}` }
                 }}
               >
-                <li className='rounded-md bg-slate-100 dark:bg-zinc-700 pl-1 pr-1 hover:bg-slate-300 dark:hover:bg-zinc-800'>{tag}</li>
+                <li className='rounded-md bg-violet-300 dark:bg-zinc-700 pl-2 pr-2 hover:bg-violet-400 dark:hover:bg-zinc-800'>{tag}</li>
               </Link>
             )}
           </ul>
@@ -37,16 +37,16 @@ function PostCard(post: Post) {
           </div>
         </div>
         <div className='w-1/4 flex justify-center items-center'>
-          <Image 
-            src={post.image ? post.image : ""} 
-            alt={post.title} 
+          <Image
+            src={post.image ? post.image : ""}
+            alt={post.title}
             width={100}
             height={100}
             className="w-full h-28 object-cover rounded-2xl"
           />
         </div>
       </div>
-  </div>
+    </div>
   );
 }
 
