@@ -41,14 +41,14 @@ const Allposts = ({ params }: { params: { slug: string } }) => {
         <li className={`text-white flex gap-2 items-center`}>
           <Link className='flex items-center gap-2' href="/posts">
             <p className={`${categoery === "" ? "underline underline-offset-8 font-bold " : ""}`}>All post</p>
-            <p className='ml-1 bg-violet-300 rounded-md w-6 h-6 flex items-center justify-center'>{Path.length}</p>
+            <p className={`${categoery === "" ? "bg-violet-600 dark:bg-zinc-900" : "bg-violet-300 dark:bg-zinc-600"} ml-1 rounded-md w-6 h-6 flex items-center justify-center`}>{Path.length}</p>
           </Link>
         </li>
         {categoryArray.map((categoryItem, idx) => (
           <li className="text-white" key={idx}>
             <Link className='flex items-center' href={`/posts?category=${categoryItem.name}`}>
               <p className={`${categoery === categoryItem.name ? "underline underline-offset-8 font-bold " : ""}`} >{categoryItem.name}</p>
-              <p className='ml-1 bg-violet-300 rounded-md w-6 h-6 flex items-center justify-center'>{categoryItem.count}</p>
+              <p className={`${categoery === categoryItem.name ? "bg-violet-600 dark:bg-zinc-900" : "bg-violet-300 dark:bg-zinc-600"} ml-1 rounded-md w-6 h-6 flex items-center justify-center`}>{categoryItem.count}</p>
             </Link>
           </li>
         ))}

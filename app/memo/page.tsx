@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import MemoTitle from '@/components/memos/MemoTitle';
 import Memoposts from '@/components/memos/Memoposts';
 import Title from '@/components/etc/Title';
 import SubTitle from '@/components/etc/SubTitle';
