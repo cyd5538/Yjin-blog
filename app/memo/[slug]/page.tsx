@@ -40,7 +40,7 @@ type Props = {
 //   };
 // };
 
-export default function Page({ params }: { params: { slug: string } }) {
+export default async function Page({ params }: { params: { slug: string } }) {
   console.log(params);
   return <h1>My Page {params.slug}</h1>
 }
