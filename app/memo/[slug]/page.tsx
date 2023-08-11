@@ -10,7 +10,7 @@ type Props = {
 export const generateStaticParams = async () =>
   allPosts.map((post: Post) => ({ slug: post._raw.flattenedPath }));
 
-export const generateMetadata = ({ params }: Props): Metadata => {
+  export const generateMetadata = ({ params }: Props): Metadata => {
   const post =  allPosts.filter((post : Post) => post._raw.flattenedPath.split("/")[1] === params.slug)[0]
 
   return { 
