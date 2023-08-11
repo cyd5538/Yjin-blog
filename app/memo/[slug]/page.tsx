@@ -40,12 +40,7 @@ type Props = {
 //   };
 // };
 
-export default function Home({ params }: Props) {
-  console.log(params)
-  return (
-    <div className='pb-32'>
-      gdgdgd
-      {/* <Memo params={params}/> */}
-    </div>
-  )
+export default function Page({ params }: { params: { slug: string } }) {
+  console.log(params);
+  return <h1>My Page {params.slug}</h1>
 }
