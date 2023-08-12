@@ -9,8 +9,10 @@ type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
-export const generateStaticParams = async () =>
-  allPosts.map((post: Post) => ({ slug: post._raw.flattenedPath }));
+export const generateStaticParams = async () => {
+  const staticParams = allPosts.map((post) => ({ slug: post._raw.flattenedPath.split('/').slice(1).join('/') }));
+  return staticParams;
+}
 
 export const generateMetadata = ({ params }: Props): Metadata => {
   const post =  allPosts.filter((post : Post) => post._raw.flattenedPath.endsWith(params.slugs))[0];
