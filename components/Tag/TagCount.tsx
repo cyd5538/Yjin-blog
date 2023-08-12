@@ -6,9 +6,10 @@ interface TagCountProps {
     count : number
   }
   search : string
+  onClick : (tag:string) => void;
 }
 
-const TagCount:React.FC<TagCountProps> = ({tagCounts, search}) => {
+const TagCount:React.FC<TagCountProps> = ({tagCounts, search, onClick}) => {
   return (
     <Link 
       className={`
@@ -30,6 +31,7 @@ const TagCount:React.FC<TagCountProps> = ({tagCounts, search}) => {
         pathname: `/tag`,
         query: { tag: `${tagCounts.tag}` }
       }}
+      onClick={() => onClick(tagCounts.tag)}
     >
       <div>
         {tagCounts.tag}

@@ -19,23 +19,25 @@ const Tag = () => {
   const tagParams = useSearchParams();
   const search = tagParams.get('tag');
 
+  const [searchs, setSearchs] = useState<string | null>(search)
+
   const { currentPage, currentData, totalPages, handlePageChange } = usePagination(filteredPosts);
 
   useEffect(() => {
     const filteredPost = allPosts
       .filter(post => !post._id.startsWith('memo'))
-      .filter((post) => post.tags?.includes(search as string))
+      .filter((post) => post.tags?.includes(searchs as string))
       .sort((a, b) => compareDesc(new Date(a.date), new Date(b.date)))
 
     setFilteredPosts(filteredPost);
 
     const filteredMemo = allPosts
       .filter(post => post._id.startsWith('memo'))
-      .filter((post) => post.tags?.includes(search as string))
+      .filter((post) => post.tags?.includes(searchs as string))
       .sort((a, b) => compareDesc(new Date(a.date), new Date(b.date)))
 
     setFilteredMemo(filteredMemo);
-  }, [search]);
+  }, [searchs]);
 
   useEffect(() => {
     const allTags = allPosts.flatMap(post => post.tags);
@@ -59,13 +61,20 @@ const Tag = () => {
     setTagCounts(tagCountArray);
   }, []);
 
+
+  const onTagClick = (tag : string) => {
+    setSearchs(tag)
+  }
+
+  console.log(searchs)
+
   return (
     <div className='mb-16'>
       <Title title="Tag" />
       <SubTitle subtitle='태그 별로 볼 수 있는 페이지입니다' />
       <div className='flex gap-2   flex-wrap text-xl text-white pb-4 font-bold'>
         {tagCounts.map((tagcount) => (
-          <TagCount key={tagcount.tag} tagCounts={tagcount} search={search as string} />
+          <TagCount key={tagcount.tag} onClick={onTagClick} tagCounts={tagcount} search={search as string} />
         ))}
       </div>
       <TagTitle title={`${search as string} 태그에 대한 블로그`} length={filteredPosts.length as number} />
