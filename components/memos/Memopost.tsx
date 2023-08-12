@@ -1,14 +1,19 @@
+"use client";
 import Link from 'next/link';
 import { format, parseISO } from "date-fns";
 import { Post } from "contentlayer/generated";
+import { usePathname } from 'next/navigation'
 
 function Memopost(post: Post) {
+  const pathname = usePathname()
+  const url = pathname === "/" ? `memo/${post.url}` : `/${post.url}`
+  console.log(url)
   return (
     <div className="mb-4 rounded-xl shadow-md p-2 bg-white dark:bg-zinc-900">
       <div className='flex gap-2 h-auto'>
         <div className='mb-4 w-3/4 flex flex-col'>
           <Link href={{
-            pathname : `memo/${post.url}`
+            pathname : `${url}`
           }}>
             <h2 className="mb-1 mt-3 text-2xl pl-1 font-bold cursor-pointer hover:underline underline-offset-8">
               {post.title}
