@@ -2,7 +2,7 @@ const { withContentlayer } = require('next-contentlayer')
 
 /** @type {import('next').NextConfig} */
 const nextConfig = { 
-  basePath: '/',
+  basePath: '/cyd5538.github.io',
   reactStrictMode: true, 
   swcMinify: true, 
   output: 'export',
