@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { format, parseISO } from "date-fns";
 import { getMDXComponent } from "next-contentlayer/hooks";
+import { useTheme } from 'next-themes';
 import MDXComponents from "@/utils/mdxcomponents";
 import PostToc from "@/components/slug/PostToc";
 import NextPrev from "@/components/slug/PrevNext";
@@ -23,8 +24,11 @@ interface SinglePostProps {
 const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo }) => {
   const [divHeight, setDivHeight] = useState<number | undefined>(undefined);
   const heightRef = useRef<HTMLDivElement>(null);
-  
+  const ref = useRef<HTMLDivElement>(null);
   const { progress } = useProgress();
+
+  const { resolvedTheme } = useTheme() 
+  const theme = resolvedTheme === 'dark' ? 'dark' : 'light';
 
   useEffect(() => {
 
@@ -38,6 +42,36 @@ const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo
   const prevPost = postIndex > 0 ? postSort[postIndex - 1] : null;
   const nextPost = postIndex < postSort.length - 1 ? postSort[postIndex + 1] : null;
 
+  useEffect(() => {
+    if (!ref.current || ref.current.hasChildNodes()) return;
+
+    const scriptElem = document.createElement('script');
+    scriptElem.src = 'https://giscus.app/client.js';
+    scriptElem.async = true;
+    scriptElem.crossOrigin = 'anonymous';
+
+    scriptElem.setAttribute('data-repo', 'cyd5538/Yjin-blog');
+    scriptElem.setAttribute('data-repo-id', 'R_kgDOKGXk4Q');
+    scriptElem.setAttribute('data-category', 'Announcements');
+    scriptElem.setAttribute('data-category-id', 'DIC_kwDOKGXk4c4CYkG_');
+    scriptElem.setAttribute('data-mapping', 'pathname');
+    scriptElem.setAttribute('data-strict', '1');
+    scriptElem.setAttribute('data-reactions-enabled', '1');
+    scriptElem.setAttribute('data-emit-metadata', '0');
+    scriptElem.setAttribute('data-input-position', 'bottom');
+    scriptElem.setAttribute('data-theme', theme);
+    scriptElem.setAttribute('data-lang', 'ko');
+    scriptElem.setAttribute('crossorigin', 'anonymous');
+
+    ref.current.appendChild(scriptElem);
+  }, []);
+
+  useEffect(() => {
+    const iframe = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
+    iframe?.contentWindow?.postMessage({ giscus: { setConfig: { theme } } }, 'https://giscus.app');
+  }, [theme]);
+  
+
   let MDXContent;
 
   if (!post) {
@@ -46,6 +80,7 @@ const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo
     MDXContent = getMDXComponent(post!.body.code);
   }
 
+  
   return (
     <div className="flex w-full flex-col gap-2 pb-32 p-2">
       <div className='fixed top-0 left-0 w-full h-1 bg-white dark:bg-zinc-300'>
@@ -89,6 +124,7 @@ const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo
         </div>
       </div>
       <NextPrev postmemo={postmemo} next={nextPost} prev={prevPost}/> 
+      <section ref={ref} />
     </div>
   )
 }
