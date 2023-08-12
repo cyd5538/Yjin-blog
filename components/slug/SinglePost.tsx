@@ -21,25 +21,19 @@ interface SinglePostProps {
 }
 
 const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo }) => {
-  const [slug, setSlug] = useState<string | undefined>(undefined)
   const [divHeight, setDivHeight] = useState<number | undefined>(undefined);
   const heightRef = useRef<HTMLDivElement>(null);
   
   const { progress } = useProgress();
 
   useEffect(() => {
-    if(postmemo){
-      setSlug(params.slugs)
-    }else{
-      setSlug(params.slug)
-    }
 
     if (heightRef.current) {
       setDivHeight(heightRef.current.clientHeight);
     }
-  }, [params, postmemo]);
+  }, []);
 
-  const postIndex = postSort.findIndex(post => post._raw.flattenedPath.endsWith(slug as string));
+  const postIndex = postSort.findIndex(post => post._raw.flattenedPath.endsWith(params.slug ? params.slug : params.slugs));
 
   const prevPost = postIndex > 0 ? postSort[postIndex - 1] : null;
   const nextPost = postIndex < postSort.length - 1 ? postSort[postIndex + 1] : null;
