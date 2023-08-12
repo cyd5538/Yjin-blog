@@ -8,20 +8,12 @@ import { Button } from "@/components/ui/button"
 
 
 export function ModeToggle() {
-  const { theme, setTheme } = useTheme()
-
-  const handleToggle = () => {
-    if (theme === "light") {
-      setTheme("dark");
-    } else if (theme === "dark") {
-      setTheme("light");
-    }
-  };
+  const { setTheme } = useTheme()
 
   return (
-    <Button onClick={handleToggle} variant="outline" size="icon">
-      <Moon color="yellow" className="h-[1.2rem]w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-      <Sun color="black" className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-    </Button>
+    <div className="cursor-pointer">
+      <Moon onClick={() => setTheme("dark")} className="rounded-full bg-zinc-900 text-yellow-400 w-10 h-10 p-2 dark:hidden rotate-0 hover:rotate-12  scale-100 transition-all" />
+      <Sun onClick={() => setTheme("light")} className="rounded-full bg-yellow-400 text-zinc-900 w-10 h-10 p-2 hidden dark:block hover:rotate-12 rotate-0 transition-all" />
+    </div>
   )
 }
