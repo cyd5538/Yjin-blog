@@ -7,6 +7,7 @@ const nextConfig = {
   output: 'export',
   images: { unoptimized: true },
   skipTrailingSlashRedirect: true,
+  trailingSlash: true
 }
 
 module.exports = withContentlayer(nextConfig)
