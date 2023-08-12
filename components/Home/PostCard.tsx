@@ -4,7 +4,6 @@ import { Post } from "contentlayer/generated";
 import Image from 'next/image';
 
 function PostCard(post: Post) {
-
   return (
     <div className="mb-4 rounded-xl shadow-md p-2 bg-white dark:bg-zinc-900">
       <div className='flex gap-2 h-auto'>
@@ -38,7 +37,7 @@ function PostCard(post: Post) {
         </div>
         <div className='w-1/4 flex justify-center items-center'>
           <Image
-            src={post.image ? post.image : ""}
+            src={post?.image as string}
             alt={post.title}
             width={100}
             height={100}
