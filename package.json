@@ -1,7 +1,8 @@
 {
-  "name": "blog",
+  "name": "yjin",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://cyd5538.github.io/",
   "scripts": {
     "dev": "next dev",
     "build": "next build && next export",
