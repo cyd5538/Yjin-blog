@@ -16,7 +16,10 @@ export const Post = defineDocumentType(() => ({
     tags : {type : "list", of: { type: 'string' }}
   },
   computedFields: {
-    url: { type: 'string', resolve: (post) => `/posts/${post._raw.flattenedPath}` },
+    url: { 
+      type: 'string', 
+      resolve: (post) => post._raw.flattenedPath.split('/').slice(1).join('/') 
+    },
     headings: {
       type: "json",
       resolve: async (doc) => {
