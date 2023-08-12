@@ -3,9 +3,6 @@ import { format, parseISO } from "date-fns";
 import { Post } from "contentlayer/generated";
 
 function Memopost(post: Post) {
-  const regex = /^\/posts(.*)$/;
-  const url = post.url.replace(regex, '$1');
-
   return (
     <div className="mb-4 rounded-xl shadow-md p-2 bg-white dark:bg-zinc-900">
       <div className='flex gap-2 h-auto'>
