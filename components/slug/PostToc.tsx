@@ -40,7 +40,7 @@ const PostToc = ({ toc, slugs, height }: PostTocType) => {
         const headingSlug = headingsRef[i];
         const headingElement = document.getElementById(headingSlug);
 
-        if (headingElement && headingElement.offsetTop <= scrollY) {
+        if (headingElement && headingElement.offsetTop <= scrollY + 70) {
           setCurrentHeading(headingSlug);
           break;
         }
@@ -77,7 +77,7 @@ const PostToc = ({ toc, slugs, height }: PostTocType) => {
   return (
     <div ref={tocRef} className="fixed top-48 w-[230px] rounded-2xl p-4 bg-purple-400 drop-shadow-md dark:bg-zinc-900 dark:text-white border-gray-200">
       <h3 className="font-bold pb-4 text-white">목차</h3>
-      <ul className="flex flex-end w-full flex-col gap-[1px]">
+      <ul className="flex flex-end w-full flex-col gap-[1px] border-l-[1px] pl-2 border-white">
         {toc.map((heading) => {
           const link = slugs? slugs + "#" + heading.slug : "#" + heading.slug
           return (
