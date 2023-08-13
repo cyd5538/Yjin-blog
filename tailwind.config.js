@@ -22,31 +22,8 @@ module.exports = {
       typography: {
         DEFAULT: {
           css: {
-            color: '#333',
-            h1: {
-              color: 'white',
-            },
-            h2: {
-              color: 'white',
-            },
-            h3: {
-              color: 'white',
-            },
-            h4: {
-              color: 'white',
-            },
-            p: {
-              color: 'white',
-            },
-            a: {
-              color: 'white'
-            },
-            span : {
-              color: 'white'
-            },
-            strong : {
-              color: 'white',
-              font : "bold"
+            'h1,h2,h3,h4,p,li,span,td,tr': {
+              'color': 'white',
             }
           },
         },
