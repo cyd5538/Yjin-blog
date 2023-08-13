@@ -29,7 +29,7 @@ const Nav = () => {
         <div className='hidden gap-8 sm:flex items-center'>
           <ul className="flex gap-10 mr-10">
             {Links.map((link) => {
-              return <li key={link.title} className='cursor-pointer text-2xl'>
+              return <li key={link.title} className='cursor-pointer text-2xl hover:text-violet-500 font-bold'>
                 <Link href={link.link}>
                   {link.title}
                 </Link>
@@ -42,18 +42,21 @@ const Nav = () => {
             <SheetTrigger className="block sm:hidden">
               <Menu />
             </SheetTrigger>
-            <SheetContent>
+            <SheetContent className='dark:bg-zinc-900'>
               <SheetHeader>
-                <SheetTitle>OOO BLOG입니다.</SheetTitle>
-                <SheetDescription className='pt-4 cursor-pointer'>
+                <SheetTitle className='text-2xl pt-8 font-bold'>YJIN의 블로그입니다.</SheetTitle>
+                <SheetDescription className='pt-10 pb-2 cursor-pointer text-xl text-black hover:underline dark:text-white dark:hover:underline underline-offset-8 dark:hover:text-gray-300 hover:text-gray-500'>
                   Home
                 </SheetDescription>
                 {Links.map((link) => {
-                  return <SheetDescription key={link.title} className='cursor-pointer'>
+                  return <SheetDescription key={link.title} className='cursor-pointer text-xl text-black hover:underline dark:text-white dark:hover:underline underline-offset-8 dark:hover:text-gray-300 hover:text-gray-500 pb-2'>
                     <Link href={link.link}>{link.title}</Link>
                   </SheetDescription>
                 })}
               </SheetHeader>
+              <SheetDescription className='fixed bottom-4 right-4'>
+                <ModeToggle />
+              </SheetDescription>
             </SheetContent>
           </Sheet>
         </div>
