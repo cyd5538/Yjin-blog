@@ -22,7 +22,7 @@ module.exports = {
       typography: {
         DEFAULT: {
           css: {
-            'h1,h2,h3,h4,p,li,span,td,tr': {
+            'h1,h2,h3,h4,p,li,span,td,tr,strong,u,a': {
               'color': 'white',
             }
           },
