@@ -119,7 +119,7 @@ const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo
             </article>
           </div>
         </div>
-        <div className="hidden min-[1120px]:block w-[200px] relative">
+        <div className="hidden min-[1120px]:block w-[200px] ml-4 relative">
           <PostToc height={divHeight} toc={post.headings} slugs={params.slugs}/>
         </div>
       </div>
