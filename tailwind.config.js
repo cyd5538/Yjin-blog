@@ -24,6 +24,11 @@ module.exports = {
           css: {
             'h1,h2,h3,h4,p,li,span,td,tr,strong,u,a': {
               'color': 'white',
+            },
+            u : {
+              'text-decoration-style': 'wavy',
+              'text-underline-offset' : "0.3em",
+              "text-decoration-color" : 'rgb(192,192,192)'
             }
           },
         },
