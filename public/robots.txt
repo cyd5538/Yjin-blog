@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://yjin.vercel.app/
+
+# Sitemaps
+Sitemap: https://yjin.vercel.app/sitemap.xml
