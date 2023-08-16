@@ -13,7 +13,7 @@ function PostCard(post: Post) {
               {post.title}
             </h2>
           </Link>
-          <h3 className="mb-2 text-sm  text-gray-400 pl-1">
+          <h3 className="mb-2 text-sm dark:text-white text-gray-700 pl-1">
             {post.description}
           </h3>
           <ul className='flex mt-2 gap-2 pl-1 flex-wrap'>
@@ -25,12 +25,12 @@ function PostCard(post: Post) {
                   query: { tag: `${tag}` }
                 }}
               >
-                <li className='rounded-md bg-violet-300 dark:bg-zinc-700 pl-2 pr-2 hover:bg-violet-400 dark:hover:bg-zinc-800'>{tag}</li>
+                <li className='rounded-md bg-violet-100 dark:bg-zinc-700 pl-2 pr-2 hover:bg-violet-300 dark:hover:bg-zinc-800'>{tag}</li>
               </Link>
             )}
           </ul>
           <div className='mb-1 mt-4 pl-2'>
-            <time dateTime={post.date} className="block text-xs text-gray-600 datk:text-gray-200">
+            <time dateTime={post.date} className="block text-xs text-gray-600 dark:text-white">
               {format(parseISO(post.date), 'yy-MM-dd')}
             </time>
           </div>

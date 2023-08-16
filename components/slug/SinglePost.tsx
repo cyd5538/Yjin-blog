@@ -95,10 +95,10 @@ const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo
             <p className="mb-4 text-left text-white">
               {format(parseISO(post.date), "yy-MM-dd")}
             </p>
-            <h1 className="underline underline-offset-8 md:text-5xl/snug text-4xl/snug font-bold pb-4 text-left text-white">
+            <h1 className="md:text-5xl/snug text-4xl/snug font-bold pb-4 text-left ">
               {post.title}
             </h1>
-            <h2 className=" md:text-2xl/snug text-xl/snug font-bold pb-4 text-left text-gray-400 dark:text-gray-200">
+            <h2 className=" md:text-2xl/snug text-xl/snug font-bold pb-4 text-left  dark:text-gray-200">
               {post.description}
             </h2>
             <ul className="pb-24 flex flex-wrap gap-2">

@@ -18,14 +18,16 @@ const TagCount:React.FC<TagCountProps> = ({tagCounts, search, onClick}) => {
         flex 
         gap-2 
         rounded-md 
-        bg-indigo-600 
+        bg-indigo-400
+        text-white
         dark:bg-zinc-700 
         dark:hover:bg-zinc-900 
         pl-2 pr-2 
         justify-center 
         items-center 
-        hover:bg-indigo-900
-        ${tagCounts.tag === search ? "bg-indigo-900 dark:bg-zinc-900": ""}
+        hover:bg-indigo-600
+        text:black
+        ${tagCounts.tag === search ? "bg-indigo-700 dark:bg-zinc-900": ""}
       `}
       href={{
         pathname: `/tag`,
@@ -36,7 +38,7 @@ const TagCount:React.FC<TagCountProps> = ({tagCounts, search, onClick}) => {
       <div>
         {tagCounts.tag}
       </div>
-      <div className="rounded-full bg-indigo-300  dark:bg-zinc-500 w-6 h-6 flex justify-center items-center">
+      <div className="rounded-full bg-indigo-500 text-white  dark:bg-zinc-500 w-6 h-6 flex justify-center items-center">
         {tagCounts.count}
       </div>
     </Link>

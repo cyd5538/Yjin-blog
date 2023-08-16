@@ -72,7 +72,7 @@ const Tag = () => {
     <div className='mb-16'>
       <Title title="Tag" />
       <SubTitle subtitle='태그 별로 볼 수 있는 페이지입니다' />
-      <div className='flex gap-2   flex-wrap text-xl text-white pb-4 font-bold'>
+      <div className='flex gap-2 flex-wrap text-xl pb-4 font-bold'>
         {tagCounts.map((tagcount) => (
           <TagCount key={tagcount.tag} onClick={onTagClick} tagCounts={tagcount} search={search as string} />
         ))}

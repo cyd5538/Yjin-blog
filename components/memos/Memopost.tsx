@@ -15,11 +15,24 @@ function Memopost(post: Post) {
               {post.title}
             </h2>
           </Link>
-          <h3 className="mb-2 text-sm text-gray-400 pl-1">
+          <h3 className="mb-2 text-sm text-gray-700 dark:text-white pl-1">
             {post.description}
           </h3>
+          <ul className='flex mt-2 gap-2 pl-1 flex-wrap pb-2'>
+            {post.tags?.map((tag, index) =>
+              <Link
+                key={index}
+                href={{
+                  pathname: `/tag`,
+                  query: { tag: `${tag}` }
+                }}
+              >
+                <li className='rounded-md bg-violet-100 dark:bg-zinc-700 pl-2 pr-2 hover:bg-violet-300 dark:hover:bg-zinc-800'>{tag}</li>
+              </Link>
+            )}
+          </ul>
           <div className='mb-1 pl-2'>
-            <time dateTime={post.date} className="block text-xs text-gray-600 datk:text-gray-200">
+            <time dateTime={post.date} className="block text-xs text-gray-600 dark:text-white">
               {format(parseISO(post.date), 'yy-MM-dd')}
             </time>
           </div>

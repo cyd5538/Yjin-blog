@@ -44,7 +44,7 @@ export default function RootLayout({
     <html lang="ko">
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className='font-HakgyoansimWoojuR bg-violet-500 text-black dark:bg-zinc-800 dark:text-white'>
+          <div className='font-HakgyoansimWoojuR text-black dark:bg-zinc-800 dark:text-white'>
             <Toaster />
             <Nav />
             <Container>

@@ -21,8 +21,8 @@ function page() {
 
   return (
     <div className="pb-32">
-      <Title title="YJIN 🖐"/>
-      <SubTitle subtitle="프론트엔드 취준생의 블로그입니다."/>
+      <Title title="🖐"/>
+      <SubTitle subtitle="프론트엔드 취준생 YJIN의 블로그입니다."/>
       <HomeTitle title="Recent Post"/>
       <div className="mt-10 grid gap-4 justify-center md:grid-cols-2 grid-cols-1">
         {posts.slice(0, 4).map((post, idx) => (
