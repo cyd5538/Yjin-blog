@@ -75,22 +75,22 @@ const PostToc = ({ toc, slugs, height }: PostTocType) => {
   }, [height]);
 
   return (
-    <div ref={tocRef} className="fixed top-28 w-[250px] rounded-2xl p-4 bg-indigo-200 drop-shadow-md dark:bg-zinc-900 dark:text-white border-black dark:border-white">
+    <div ref={tocRef} className="fixed top-28 w-[300px] rounded-2xl p-4 bg-indigo-200 drop-shadow-md dark:bg-zinc-900 dark:text-white border-black dark:border-white">
       <h3 className="font-bold pb-4">목차</h3>
       <ul className="flex flex-end w-full flex-col gap-[1px] border-l-[1px] pl-2 border-white">
         {toc.map((heading) => {
           const link = slugs? slugs + "#" + heading.slug : "#" + heading.slug
           return (
             <li key={`#${heading.slug}`}>
-              <a
-                className={`${
-                  heading.slug === currentHeading ? "font-bold underline" : ""
-                } data-[level=two]:pl-2 data-[level=three]:pl-4 text-sm`}
-                data-level={heading.level}
-                href={link}
-              >
-                {heading.text}
-              </a>
+              <div className={`flex items-start ${heading.slug === currentHeading ? "font-bold underline" : ""}`}>
+                <a
+                  className={`p-[2px] text-base ${heading.level === "three" ? "pl-4" : ""} ${heading.level === "two" ? "pl-2 text-sm" : ""}`}
+                  data-level={heading.level}
+                  href={link}
+                >
+                  {heading.text}
+                </a>
+              </div>
             </li>
           );
         })}
@@ -98,7 +98,7 @@ const PostToc = ({ toc, slugs, height }: PostTocType) => {
       <button 
       className="pt-6 flex justify-end w-full"
       onClick={() => {
-        handleCopyClipBoard(`https://cyd5538.github.io${pathname}`)  
+        handleCopyClipBoard(`https://yjin.vercel.app/${pathname}`)  
         if(!isCopy){
           toast({
             title: "링크를 복사했습니다.",
@@ -109,7 +109,7 @@ const PostToc = ({ toc, slugs, height }: PostTocType) => {
           })
         }
       }}>
-        {isCopy ? <span>복사 완료</span> : <p className="flex gap-2 hover:text-gray-300 ">링크 복사<ClipboardCopy size={20}/></p>}
+        {isCopy ? <span>복사 완료</span> : <p className="flex gap-2 hover:text-zinc-600 ">링크 복사<ClipboardCopy size={20}/></p>}
       </button>
     </div>
   );
