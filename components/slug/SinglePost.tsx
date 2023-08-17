@@ -92,7 +92,7 @@ const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo
       <div  className="flex w-ful justify-center gap-2 border-b-[1px] border-white dark:border-violet-700">
         <div ref={heightRef} className="w-[750px] h-fit flex flex-col pb-32">
           <div className="flex flex-col p-2 ">
-            <p className="mb-4 text-left text-white">
+            <p className="mb-4 text-left">
               {format(parseISO(post.date), "yy-MM-dd")}
             </p>
             <h1 className="md:text-5xl/snug text-4xl/snug font-bold pb-4 text-left ">
