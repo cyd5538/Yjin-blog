@@ -1,0 +1,243 @@
+---
+title: TypeScript 타입 별칭이란 ?
+description: 타입 별칭에 대해 알아 보자
+date: 2023-08-04
+tags:
+  - typescript
+  - 타입 별칭
+image: /img/ts/ts.png
+---
+
+# 타입 별칭이란 ?
+<u>**타입 별칭**</u>은 특정 타입이나 인터페이스 등을 참조할 수 있는 타입 변수를 의미한다.
+```js
+type MyName = string;
+
+var name: Myname = 'Yjin';
+```
+타입 별칭을 썼을 때 가장 큰 장점은 반복되는 타입 코드를 줄여 줄 수 있다는 것이다.
+```js
+function logText(test: string | number) {
+    // ...
+}
+
+var message: string | number = '안녕하세요';
+logText(message);
+```
+위에 코드를 아래와 같이 바꿀 수 있다
+```js
+type MyMessage = string | number
+function logText(text: MyMessage) {
+    // ...
+}
+
+var message: MyMessage = '안녕하세요';
+logText(message);
+
+```
+단순히 반복되는 코드를 줄였을 뿐만 아니라 string | number 타입이 내 메시지에 사용되는 타입이라는 의미도 부여한다. 이렇게 설정을 해놓고 여러 곳에 자새용할 수 있다.
+<br></br>
+<br></br>
+# 타입 별칭과 인터페이스의 차이점 ⭐
+타입 별칭과 인터페이스의 차이점은 뭘까 ?
+
+```js
+type User = {
+    id : string;
+    name : string;
+}
+
+interface User {
+    id : string;
+    name : string;
+}
+```
+## 1. 코드 에디터에서 표기 방식 차이
+<p align="center">
+  <img src="/img/ts/type.jpg" alt="Stormtroopocat" width="300" />
+  <img src="/img/ts/type2.jpg" alt="Stormtroopocat" width="300" />
+</p>
+변수에 연결된 타입이 구체적으로 어떤 모양인지 파악할 때는 타입 별칭이 더 좋아 보인다.
+<u>그럼 무조간 타입 별칭만 쓰는 것이 좋을까?</u>
+## 2. 사용할 수 있는 타입의 차이
+인터페이스는 주로 객체의 타입을 정의하는 데 사용하는 반면, 타입 별칭은 일반 타입에 이름을 짓는 데 사용하거나 유니언 타입, 인터섹션 타입 등에도 사용할 수 있다.
+```js
+type ID = string;
+type Product = Tshirt | Shoes;
+type Teacher = Person & Adult;
+```
+그리고 타입 별칭은 제네릭이나 유틸리티 타입 등에서도 사용이 가능하다
+```js
+type Footbal<T> = {
+    team : T;
+}
+
+type MyBeer = Pick<Beer, 'brand'>;
+```
+또는 인터페이스의 타입 별칭의 정의를 함께 사용할 수도 있다
+```js
+interface Person {
+    name: string;
+    age: number;
+}
+
+type Adult = {
+    old: boolean;
+}
+
+type Teacher = Person & Adult;
+```
+## 3. 타입 확장 관점에서 차이
+<u>**타입 확장**이란 정의되어 있는 타입들을 조합해서 더 큰 의미의 타입을 생성하는 것이다.</u> 타입 별칭과 인터페이스는 확장하는 방식이 다르다.
+<br></br>
+인터페이스의 타입을 확장하는 방법
+```js
+interface Person {
+    name: string;
+    age: number;
+}
+
+interface Developer extends Person {
+    skill: string;
+}
+
+var who: Developer = {
+    name: "Yjin",
+    age : 21,
+    skill : "JS"
+}
+```
+타입 별칭은 인터섹션 타입으로 객체 타입을 2개 합쳐서 사용할 수 있다
+```js
+type Person = {
+    name: string;
+    age: number;
+}
+
+type Developer = {
+    skill: string;
+}
+
+var who: Person & Developer = {
+    name: "Yjin",
+    age : 21,
+    skill : "JS"
+}
+```
+위에 코드를 좀 더 적용해 보면 아래와 같이 할 수도 있다
+```js
+type Person = {
+    name: string;
+    age: number;
+}
+
+type Developer = {
+    skill: string;
+
+}
+
+type Choi = Person & Developer
+
+var who: Choi = {
+    name: "Yjin",
+    age : 21,
+    skill : "JS"
+}
+```
+이렇게 인터페이스와 타입 별칭 모두 타입을 확장할 수는 있지만 <u>방식이 다르다.</u> 인터페이스의 <u>**선언 병합**</u>이라는 
+성질이 있는데 동일한 이름으로 인터페이스를 선언하면 인터페이스 내용을 합치는 특성이 있다.
+```js
+interface Person {
+    name: string;
+    age: number;
+}
+
+interface Person {
+    skill: string;
+}
+
+var Choi: Person = {
+    name: "Yjin",
+    age : 21,
+    skill : "JS"
+}
+```
+<br></br>
+<br></br>
+# 타입 별칭은 언제 쓰는 것이 좋을까 ?
+타입 별칭으로만 타입 정의가 가능한 곳에서는 타입 별칭을 사용하고 백엔드와의 인터페이스를 정의하는 곳에서는 인터페이스를 이용하자.
+## 타입 별칭으로만 정의할 수 있는 타입들을
+타입 별칭으로만 정의할 수 있는 타입은 주요 데이터 타입이나 인터섹션, 유니업 타입이다.
+```js
+type MyString = string;
+type StringOrNumber = string | number;
+type Admin = Person & Developer
+```
+그리고 제네릭, 유티리티 타입, 맵드 타입과도 연동하여 사용할 수 있다.
+
+```js
+// 제네릭
+type Dropdown<T> = {
+    id: string;
+    title: T;
+}
+
+// 유틸리티 타입
+type Admin = { name: string; age: number; role: string;}
+type onlyName = Pick<Admin, 'name'>
+
+// 맵드 타입
+type Picker<T, K extends keyof T> = {
+    [P in K]: T[P];
+}
+```
+
+제네릭은 인터페이스와 타입 별칭에 모두 사용할 수 있지만 유틸리티 타입이나 맵드 타입은 타입 별칭으로만 정의할 수 있다.
+## 백엔드와의 인터페이스 정의
+타입 별칭과 인터페이스로 API 함수의 응답 형태를 정의해보자
+
+```js
+type User = {
+    id: string;
+    name: string;
+}
+
+function fetchData(): User {
+    return axios.get("http://localhost:3000/users/1");
+}
+
+interface User {
+    id: string;
+    name: string;
+}
+
+function fetchData(): User {
+    return axios.get("http://localhost:3000/users/1");
+}
+```
+둘이 똑같아 보인다 하지만 인터페이스를 이용했을 때 장점이 더 크다. 요구사항이 변경되어 화면에 노출해야 하는 데이터 구조가 바뀐다면
+기존 타입의 확장이라는 측면에서 인터페이스로 정의하는 것이 더 수월하다.
+```js
+interface Admin {
+    role: string;
+    department: string;
+}
+
+// 상속을 통한 인터페이스 확장
+interface User extends Admin {
+    id: string;
+    name: string;
+}
+
+// 선언 병합을 통한 타입 확장
+interface User {
+    skill: string;
+}
+```
+
+> **유연하게 타입을 확장하는 관점에서는 타입 별칭보다 인터페이스가 더 유리하다.**
+
+> <u>출처</u>
+> <br></br>
+> 캡틴 판교님의 쉽게 시작하는 타입스크립트 <br></br>
+> https://www.yes24.com/Product/Goods/119410497

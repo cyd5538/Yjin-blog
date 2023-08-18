@@ -1,0 +1,202 @@
+---
+title: TypeScript 타입 가드란 ?
+description: 타입 가드에 대해 알아보자.
+date: 2023-08-10
+tags:
+  - typescript
+  - 타입 가드
+image: /img/ts/ts.png
+---
+
+# 타입 가드란?
+**타입 가드**란 여러 개의 타입으로 지정된 값을 특정 위치에서 원하는 타입으로 구분하는 것을 의미한다.
+여러 타입이 있을 때 내가 원하는 타입을 뽑기 위해 다른 타입들을 막아 낸다라는 의미다.
+<p align="center">
+  <img src="/img/ts/guard.jpg" alt="guard" width="500" />
+</p>
+text라는 값이 number | string 의 유니언 타입으로 정의되어 있고, 이 타입에 타입 가드를 적용하여 number 타입으로 구분한 것이다.
+마치 코드를 보면 아래와 같다
+```js
+function updateInput(text: number | string) {
+    // 타입 가드
+    if(typeof text === "number"){
+        text
+    }
+}
+```
+타입 가드를 사용하면 이처럼 특정 위치에서 여러 개의 타입 중 하나의 타입으로 걸러 낼 수 있다.
+<br></br>
+<br></br>
+# 왜 타입 가드가 필요할까 ?
+```js
+function updateInput(text: number | string) {
+    text
+}
+```
+text에 toFixed()를 사용하고 싶은데 number 타입이 아니면 사용할 수 없다.
+## 1. 타입 단언으로 타입 에러 해결하기
+```js
+function updateInput(text: number | string) {
+    (text as number).toFixed(2);
+}
+```
+as 키워드를 사용해서 타입을 number로 주기
+
+문제점
+* 실행 시점의 에러는 막을 수 없다.
+* 타입 단언을 계속해서 사용해야 한다.
+
+## 2. 타입 단언으로 해결했을 때 문제점
+1. 첫 번째 문제점은 실행 시점의 에러는 막을 수 없다.
+```js
+function updateInput(text: number | string) {
+    (text as number).toFixed(2);
+}
+
+updateInput("hello");
+```
+```
+Uncaught TypeError: text.toFixed is not a function
+```
+위에 에러를 해결하라면 또 다른 코드를 추가해야 한다.
+2. 두 번째 문제점은 타입 단언을 계속해서 사용해야 한다는 것이다.
+```js
+function updateInput(text: number | string) {
+    (text as number).toFixed(2);
+    console.log((text as string).length);
+}
+```
+문자열 속성인 length 속성에 접근하려고 string으로 타입을 한 번 더 단언했다 매 번 특정 타입을 할 때 as 키워드를 사용하여 타입을 단언하는
+코드를 작성해야 한다. 이런 코드 방식은 가급적 지양하자 ❌❌❌
+## 타입 가드로 문제점 해결하기
+타입 단언을 사용해서 생기는 문제점은 타입 가드로 쉽게 해결이 가능하다.
+```js
+function updateInput(text: number | string) {
+   if(typeof text === 'number'){
+    console.log(text.toFixed(2))
+   }
+   if(typeof text === 'string'){
+    console.log(text.length)
+   }
+}
+```
+<br></br>
+<br></br>
+# 타입 가드 문법
+* typeof
+* instanceof
+* in
+
+## typeof 연산자
+```js
+typeof 10; // 'number'
+typeof 'hello'; // 'string'
+typeof function() {} // 'function'
+```
+typeof 연산자는 어떻게 타입 가드 역할을 할까 ?
+```js
+function value(text : string | number) {
+  if (typeof text === 'string') {
+    console.log(`문자열의 길이는 ${text.length}입니다.`);
+  } else if (typeof text === 'number') {
+    console.log(`값은 숫자입니다.`);
+  }
+}
+
+value("안녕하세요"); // "문자열의 길이는 5입니다." 
+value(42);          // "값은 숫자입니다." 
+```
+## instanceof 연산자
+instanceof 연산자는 객체가 특정 클래스나 생성자 함수의 인스턴스인지를 확인하는 데 사용되는 JavaScript 연산자다
+instanceof를 사용해서 타입 가드를 구현해 보자.
+```js
+class 동물 {
+  소리내기() {
+    console.log("동물 소리");
+  }
+}
+
+class 개 extends 동물 {
+  짖기() {
+    console.log("멍멍");
+  }
+
+}
+
+class 고양이 extends 동물 {
+  꾹꾹이() {
+    console.log("꾹꾹이");
+  }
+
+}
+
+function 동작실행(애완동물: 동물) {
+  if (애완동물 instanceof 개) {
+    애완동물.짖기(); // 타입 추론으로 동물에 소리내기() 개의 짖기()
+  } else if (애완동물 instanceof 고양이) {
+    애완동물.꾹꾹이(); // 타입 추론으로 동물에 소리내기() 고양이의 꾹꾹이()
+  }
+}
+```
+instanceof는 주로 클래스 타입이 유니언 타입으로 묶여 있을 때 타입을 구분하기 위해 사용
+## in 연산자
+in 연산자는 객체에 속성이 있는지 확인해 준다.
+```js
+interface 개 {
+  짖기(): void;
+}
+
+interface 고양이 {
+  꾹꾹이(): void;
+}
+
+function animals(animal: 개 | 고양이) {
+  if ('짖기' in animal) {
+    animal.짖기()
+  } 
+  animal. // 타입 추론을 할 수 없기 때문에, 자동 완성 기능 동작X
+}
+```
+두 인터페이스의 공통 속성을 in 연산자로 체크하면 특정 타입으로 구분해 주지 않는다. <u>타입 가드 역할을 하지 못한다.</u>
+타입 가드로 특정 타입을 걸러 내려면 해당 타입이 다른 타입과 구분되는 유일한 특징을 조건으로 걸어야 한다.
+<br></br>
+<br></br>
+# 타입 가드 함수
+타입 가드 함수란 타입 가드 역할을 하는 함수를 의미한다 주로 객체 유니언 타입 중 하나를 구분하는데 사용하며, in 연산자와
+역할은 같지만 좀 더 복잡한 경우에도 사용할 수 있다.
+```js
+function is개(animal: 개 | 고양이): animal is 개 {
+  return '짖기' in animal;
+}
+```
+이 코드는 개 타입과 고양이 타입 중 개 타입으로 구분하는 타입 가드 함수다
+## 타입 가드 함수 예시
+```js
+interface Person {
+  name: string;
+  age: number;
+}
+
+interface Developer {
+  name: string;
+  skill: string;
+}
+
+function isPerson(someone: Person | Developer): someone is Person {
+  return (someone as Person).age !== undefined;
+}
+
+function greet(someone: Person | Developer) {
+  if(isPerson(someone)){
+    console.log("사람의 나이는", someone.age)
+  }else{
+    console.log("개발자의 스킬은", someone.skill);
+  }
+}
+```
+<u>유니언 타입으로 정의된 파라미터는 별도의 타입 가드를 적용하지 않으면 함수 내부에서 공통 속성만 접근할 수 있다.</u>
+따라서 as를 사용하여 Person 타입으로 추론을 강제한 후 age 속성에 접근 그리고 age 속성이 있는지 없는지 !== undefined로 체크 마지막으로
+이 함수의 반환 타입을 보면 is 연산자를 사용하여 someone 파라미터가 Person 타입인지 체크한다. 이것이 타입 가드 함수다.
+
+**Person과 Developer 타입의 값을 받아 Person 타입의 속성이 있는지 확인한 후 속성이 있다면 Person 타입으로 간주하라.**
+## 복잡한 경우의 타입 가드 예시

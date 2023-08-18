@@ -1,0 +1,198 @@
+---
+title: TypeScript 제네릭이란 ?
+description: 타입스크립트 제네릭에 대해 알아보자.
+date: 2023-08-07
+tags:
+  - typescript
+  - generic
+image: /img/ts/ts.png
+---
+
+# 제네릭이란?
+제네릭은 타입을 미리 정의하지 않고 사용하는 시점에 원하는 타입을 정의해서 쓸 수 있는 문법이다.
+마치 함수의 파라미터와 같은 역할을 한다.
+```js
+function getText(text) {
+  return text;
+}
+```
+getText() 함수는 인자로 넘겨받은 text를 그대로 반환해 준다.
+```js
+getText('hi'); // hi
+getText(10); // 10
+```
+getText() 함수의 파라미터인 text는 어떤 값이든 인자로 받을 수 있다. 이 원리를 타입스크립트에 대입해서 타입을 넘기고 그 '타입을 그대로 반환받는다는것'이 바로 제네릭이다.
+<br></br>
+<br></br>
+# 제네릭 기본 문법
+```js
+function getText<T>(text : T): T {
+  return text;
+}
+```
+getText()라는 함수를 실행할 때 아무 타입이나 넘길 수 있다.
+```js
+function getText<T>(text : T): T {
+  return text;
+}
+
+console.log(getText<string>('hi')); // hi
+console.log(getText<number>(10));// 10
+```
+<br></br>
+<br></br>
+# 왜 제네릭을 사용할까?
+## 중복되는 타입 코드의 문제점
+제네릭을 사용하는 1번째 이유는 반복되는 타입 코드를 줄여 주기 때문이다.
+```js
+function getText(text:string): string {
+  return text;
+}
+
+function getNumber(num: number): number {
+  return num;
+}
+
+function getBoolean(boo: boolean): boolean {
+  return num;
+}
+```
+위에 세 함수는 역할과 동작은 같은데 타입이 다릅니다. 결과론적으로 같은 동작을 하는 함수를 두개를 선언한 꼴입니다.
+중복되는 코드를 줄일 떄 제네릭을 사용합니다.
+## any를 쓰면 되지 않을까?
+그렇다면 이런 생각을 할 수 있다 위와 같은 코드에 any를 넣으면 되지 않을까? <u>any를 사용하면 타입스크립트의 장점들이 사라집니다.
+타입스크립트의 코드 자동 완성이나 에러의 사전 방지 혜택을 받지 못하게 됩니다.</u>
+<br></br>
+<br></br>
+# 인터페이스에 제네릭 사용하기
+제네릭은 인터페이스에도 사용할 수 있다.
+```js
+interface ProductDropdown {
+  value : string
+  selected: boolean;
+}
+
+interface StockDropdown {
+  value : number;
+  selected : boolean;
+}
+
+```
+상품 목록과 상품의 재고를 보여 주는 드롭다운 UI를 인터페이스로 정의한 코드다.
+<u>value에 따른 데이터 타입을 갖는 드롭다운 UI가 필요하다면 어떻게 해야 할까 ? </u>
+```js
+interface Dropdown<T> {
+  value: T;
+  selected : T;
+}
+```
+
+```js
+// 드롭다운 유형별로 각각의 인터페이스를 연결
+var product: ProductDropdown;
+var stock: StockDropdown;
+
+// 드롭다운 유형별로 하나의 제네릭 인터페이스를 연결
+var product : Dropdown<string>;
+var stock: Dropdown<number>;
+
+```
+이처럼 인터페이스에 제네릭을 사용하여 타입을 유연하게 확장할 수 있다.
+<br></br>
+<br></br>
+# 제네릭의 타입 제약
+제네릭의 타입제약은 제네릭으로 타입을 정의할 때 좀 더 정확한 타입을 정의할 수 있게 도와주는 문법이다. exntends, keyof 등 새로운 키워드를 사용하여 타입을 제약하는 방법을 알아보자.
+## extends를 사용한 타입 제약
+제네릭을 선언은 하면 모든 타입을 넘길 수 있다. 그런데 모든 타입이 아니라 몇 개의 타입만 제네릭으로 받고 싶다면 어떻게 해야할까?
+```js
+function Team<T extends string>(text: T):T {
+  return text;
+}
+```
+제네릭을 선언하는 부분에 T extends 타입과 같은 형태로 코드를 작성해주면 string 타입을 넘길 수 있다
+```js
+Team<string>('manu');
+```
+string이 아닌 다른 타입을 제네릭으로 넘기려고 하면 에러가 발생한다
+```js
+Team<number>(400);
+Type 'number' does not satisfy the constraint 'string'.
+```
+
+## 타입 제약의 특징
+다음과 같이 length 속성을 갖는 타입만 취급하겠다고 하면 받을 수 있는 타입은 string, array, object이 된다
+```js
+function lengthOnly<T extends { length: number}>(value: T) {
+  return value.length;
+}
+```
+이전 예제들과 다르게 제네릭으로 받은 타입을 파라미터에만 연결해 주었고 반환 타입에는 연결하지 않았다.
+ 이 함수의 인자로 넘길 수 있는 데이터 타입은 문자열, 배열, length 속성을 갖는 객체 3가지다
+3가지의 타입이 아닌 다른 타입은 에러가 발생한다.
+```js
+lengthOnly("hi");
+lengthOnly([1,2,3]);
+lengthOnly({ title: 'abc', length: 123});
+lengthOnly(300) // Argument of type 'number' is not assignable to parameter of type '{ length: number; }'
+```
+<u>제네릭의 타입 제약은 하나의 특정 타입뿐만 아니라 특정 범위에 해당하는 여러 개의 타입을 대상으로 지정할 수 있다.</u>
+## keyof를 사용한 타입 제약
+keyof는 특정 타입의 키 값을 추출해서 문자열 유니언 타입으로 변환해 준다.
+```js
+type DeveloperKeys = keyof { name: string; skill: string; }
+```
+keyof 키워드를 사용하여 객체의 키를 DeveloperKeys라는 타입 별칭에 담아 둔다. 
+DeveloperKeys 타입에 마우스 커서를 올리면 다음과 같이 객체의 키가 유니언 타입으로 변환되어 있는 것을 볼 수 있다.
+```js
+type DeveloperKeys = "name" | "skill"
+```
+
+제네릭 타입에서 keyof를 적용해 보자
+```js
+function printKeys<T extends keyof { name: string; skill: string; }>(value:T) {
+  console.log(value);
+}
+
+printKeys("address"); // Argument of type '"address"' is not assignable to parameter of type '"name" | "skill"'.
+printKeys(100); // Argument of type '100' is not assignable to parameter of type '"name" | "skill"'.
+printKeys('name'); // name
+printKeys('skill'); // skill
+```
+name과 skill 속성을 갖는 객체의 키만 타입으로 받겠다고 정의했다 다른 값을 넘기면 에러가 발생한다.
+<br></br>
+<br></br>
+# 제네릭을 처음 사용할 때 주의해야 할 사고방식
+제네릭을 처음 사용할 때 가장 헷갈리는 부분은 함수 안에서 제네릭으로 받은 타입을 다룰 때다.
+```js
+function printTextLength<T>(text: T) {
+  console.log(text.length); // Property 'length' does not exist on type 'T'
+}
+
+printTextLength<string>('hello');
+```
+위의 함수는 문제가 없을 것 같아 보이지만 에러가 발생한다. '함수에 문자열을 넘겼으니 당연히 이 문자열을 받아서 처리하는 함수 내부에서도
+문자열로 취급되겠지'라고 생각하는 것은 타입스크립트 컴파일러가 아닌 개발자의 관점이다.
+타입스크립트 컴파일러 관점에서는 printTextLength() 함수에 어떤 타입이 들어올지 모르기 때문에 에러가 발생한다.
+
+타입 제약 문법을 사용해서 이 문제를 해결하자
+```js
+function printTextLength<T extends { length: number }>(text: T) {
+  console.log(text.length);
+}
+```
+length 속성이 있는 데이터 타입만 제네릭 타입으로 넘길 수 있게 한다. 또는 배열 형태로 정의하는 방법이 있다
+```js
+function printTextLength<T>(text: T[]) {
+  console.log(text.length);
+}
+```
+배열로 정의하는 방법은 호출할 때도 배열 형태로 데이터를 넣어야 한다.
+```js
+printTextLength<string>(['hello']); // 1
+printTextLength<string>(['h','e','l','l','o']) // 5
+```
+
+> <u>출처</u>
+> <br></br>
+> 캡틴 판교님의 쉽게 시작하는 타입스크립트 <br></br>
+> https://www.yes24.com/Product/Goods/119410497

@@ -1,0 +1,126 @@
+---
+title: TypeScript 타입 추론이란?
+description: 타입 추론에 대해 알아보자.
+date: 2023-08-08
+tags:
+  - typescript
+  - 타입추론
+image: /img/ts/ts.png
+---
+
+# 타입 추론이란 ?
+**타입 추론**이란 타입스크립트가 코드를 해석하여 적절한 타입을 정의하는 동작을 의미한다. 
+> 자동으로 타입이 추론되는 코드는 타입을 표기하지 않아도 된다. 타입 추론을 통해 코드의 가독성을 높이고 실수를 미리 방지할 수 있다.
+```js
+var a = 10;
+```
+이 코드에서 a 변수의 타입은 number로 정의 된다
+<p align="center">
+  <img src="/img/ts/inference1.jpg" alt="inference1" width="300" />
+</p>
+a 변수에 마우스 커서를 올리면 number라고 타입이 지정되어 있는 것을 볼 수 있다. 아래 코드처럼 변수를 선언하면서 타입을 지정한 것과 효과가 같다.
+```js
+var a: number = 10;
+```
+변수를 초기화하거나 함수의 파라미터에 기본값을 설정하거나 반환값을 설정했을 때 지정딘 괎을 기반으로 적당한 타입을 제시하고 정의해 주는 것을 **  **이라고 한다.
+<br></br>
+<br></br>
+# 변수의 타입 추론 과정
+<u>변수 타입은 선언하는 시점에 할당된 값을 기반으로 추론된다.⭐</u> 이게 무슨 말이냐
+<p align="center">
+  <img src="/img/ts/inference2.jpg" alt="inference2" width="300" />
+</p>
+위에 코드는 a를 선언만 하고 할당을 하지 않았기 때문에 어떤 값이 들어올지 모른다.
+<p align="center">
+  <img src="/img/ts/inference3.jpg" alt="inference3" width="300" />
+</p>
+아래 코드는 선언을 하고 number타입을 할당했지만 any로 뜬다.왜 그럴까?
+ <u>var a; 라고 선언되고 나면 그 이후에 어떤 값으로 변경될지 타입스크립트 일장에서 알수 없기 때문이다.</u> 
+<br></br>
+<br></br>
+# 함수의 타입 추론:반환 타입
+<p align="center">
+  <img src="/img/ts/inference4.jpg" alt="inference4" width="400" />
+</p>
+위에 함수는 number a,b를 받아서 number를 return하는 함수다. 변수의 타입 추론 과정과 마찬가지로 함수의 반환 타입이 추론이됩니다.
+<p align="center">
+  <img src="/img/ts/inference5.jpg" alt="inference5" width="400" />
+</p>
+<u>두 숫자를 더한 결과는 당연히 숫자이기 때문에 반환 타입이 number로 정의된다.</u> 이번엔 함수를 살짝 바꿔 보자
+<p align="center">
+  <img src="/img/ts/inference6.jpg" alt="inference6" width="400" />
+</p>
+a === b로 바꾸면 반환 타입은 boolean이 된다.
+<br></br>
+<br></br>
+# 함수의 타입추론:파라미터 타입 
+<p align="center">
+  <img src="/img/ts/inference7.jpg" alt="inference7" width="400" />
+</p>
+함수의 파라미터 타입을 지정하지 않았으므로 기본 타입은 any가 된다.
+
+파라미터의 기본값을 지정한 경우 어떻게 타입이 추론될까? 기본값이 문자이기 때문에 타입은 string으로 추론됩니다.
+그리고 함수의 파라미터에 값을 넘기거나 넘기지 않아도 되기 때문에 옵셔널 파라미터를 의미하는 ?가 붙는다. 
+파라미터 타입이 string이므로 반환도 string으로 추론된다.
+<p align="center">
+  <img src="/img/ts/inference8.jpg" alt="inference8" width="500" />
+</p>
+<br></br>
+<br></br>
+# 인터페이스와 제네릭의 추론 방식
+```js
+interface Dropdown<T> {
+    title: string;
+    value: T;
+}
+```
+Dropdown이라는 인터페이스를 선언하고 제네릭으로 타입을 받을 수 있게 작성한 코드다.
+객체를 하나 선언해서 어떻게 추론되는지 보자.
+```js
+let shoppingItem: Dropdown<number> = {
+   
+}
+```
+
+<p align="center">
+  <img src="/img/ts/inference9.jpg" alt="inference9" width="400" />
+</p>
+* title은 인터페이스에서 string으로 선언했기 때문에 string 타입으로 추론된다.
+* value는 제네릭 타입으로 number를 넘겼기 때문에 number 타입으로 추론된다.
+<br></br>
+<br></br>
+# 복잡한 구조에서 타입 추론 방식
+인터페이스와 그 인터페이스를 상속받는 인터페이스를 선언해보자. 그리고 제네릭을 각각 선언해보자. 
+
+<p align="center">
+  <img src="/img/ts/inference10.jpg" alt="inference10" width="500" />
+</p>
+각각의 속성은 어떻게 타입추론이 될까?
+```js
+interface DetailedDropdown {
+    tag: string;
+    description: string;
+    title: string;
+    value: number;
+}
+```
+title과 value는 DetailedDropdown 인터페이스에서 상속을 받기때문에 그대로 자식 인터페이스로 간다
+그렇다면 코드가 이렇게 되는데
+```js
+interface DetailedDropdown<T> extends Dropdown<T> {
+    tag: string;
+    description: string;
+    title: string;
+    value: T;
+}
+
+let shoppingDetailItem: DetailedDropdown<number> = {
+
+}
+```
+shoppingDetailItem에서 제네릭 타입이 number로 되어있기 떄문에 value는 number로 추론이 된다.
+
+> <u>출처</u>
+> <br></br>
+> 캡틴 판교님의 쉽게 시작하는 타입스크립트 <br></br>
+> https://www.yes24.com/Product/Goods/119410497
