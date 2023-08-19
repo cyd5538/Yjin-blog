@@ -7,15 +7,15 @@ import Nav from '@/components/ui/Nav'
 import Footer from "@/components/ui/Footer"
 
 export const metadata: Metadata = {
-  title: 'BLOG',
-  description: '프론트엔드 개발자 Yjin의 블로그입니다.',
+  title: 'YJin BLOG',
+  description: '프론트엔드 개발자 YJin의 블로그입니다.',
   generator: 'Next.js',
   applicationName: 'Yjin Blog',
   referrer: 'origin-when-cross-origin',
   keywords: ['Next.js', 'React', 'JavaScript', 'TypeScript', 'tailwindcss', 'markdown', 'node', 'react-native','html','css'],
-  authors: [{ name: 'YJIN' }, { name: 'YJIN', url: 'https://' }],
-  creator: 'YJIN',
-  publisher: 'YJIN',
+  authors: [{ name: 'YJin' }, { name: 'YJin', url: 'https://yjin.vercel.app/' }],
+  creator: 'YJin',
+  publisher: 'YJin',
   alternates: {},
   formatDetection: {
     email: false,
@@ -24,9 +24,9 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'Next.js',
-    description: '프론트엔드 개발자 Yjin의 블로그입니다.',
+    description: '프론트엔드 개발자 YJin 블로그입니다.',
     url: '',
-    siteName: 'Yjin Blog',
+    siteName: 'YJin Blog',
     locale: 'ko-KR',
     type: 'website',
   },
