@@ -1,0 +1,302 @@
+---
+title: TypeScript 유틸리티 타입이란 ?
+description: 타입스크립트에서 유틸리티 타입에 대해 알아보자
+date: 2023-08-13
+tags:
+  - typescript
+  - 유틸리티 타입
+image: /img/ts/ts.png
+---
+
+# 유틸리티 타입이란 ?
+**유틸리티 타입**은 이미 정리되어 있는 타입 구조를 변경하여 재사용하고 싶을 때 사용하는 타입이다. 
+타입스크립트에서 미리 정의해 놓은 내장 타입이기 때문에 타입스크립트를 설치한 후 타입스크립트 설정 파일의 lib 속성만
+변경해 주면 바로 사용이 가능하다.
+```js
+{
+  "compilerOptions": {
+    "lib": ["ESNext"]
+  }
+}
+```
+> **lib옵션은 뭘까 ?** <br></br>
+> 타입스크립트 파일을 자바스크립트로 컴파일 할 때 포함될 라이브러리의 목록입니다.
+> Math.floor() 등 자바스크립트 내장 API나 브라우저 DOM API 등을 스펙에 맞게 미리 정의해 두어 사용자가 가져다 쓸 수 있다.
+
+lib에 ESNext를 추가하면 유틸리티 타입이 지원되는 것을 볼 수 있다.
+
+<br></br>
+<br></br>
+# Pick 유틸리티 타입
+## Pick 타입 예시
+Pick 유틸리티 타입은 특정 타입의 속성을 뽑아서 새로운 타입을 만들어 낼 때 사용한다.
+
+```ts
+interface Team {
+  name: string;
+  rank: number;
+}
+
+type Manu = Pick<Team, "name">;
+```
+
+Team 인터페이스의 name 속성을 추출해서 Manu라는 새로운 타입으로 정의한다.
+위에 코드는 아래와 같이 정의 된 것처럼 보인다.
+
+```ts
+type Manu = {
+    name: string;
+}
+```
+Pick 타입으로 속성을 추출할 때 1개가 아니라 여러 개를 추출해서 타입을 정의할 수 있다.
+```ts
+interface Team {
+  name: string;
+  rank: number;
+}
+
+type Manu = Pick<Team, "name" | "rank">;
+```
+위에 코드는 아래와 같이 정의 된 것처럼 보인다.
+```ts
+
+type Manu = {
+    name: string;
+    rank: number;
+}
+```
+## Pick 타입 문법
+
+```
+Pick<대상 타입, '대상 타입의 속성 이름'>
+Pick<대상 타입, '대상 타입의 속성 1 이름' | '대상 타입의 속성 2 이름'>
+```
+이미 정의해 놓은 타입의 속성을 추출하여 새로운 타입을 정의하고 싶을 때는 Pick 타입을 사용하자.
+<br></br>
+<br></br>
+# Omit 유틸리티 타입
+Omit 타입은 특정 타입에서 속성 몇 개를 제외한 나머지 속성으로 새로운 타입을 생성할 때 사용하는 유틸리티 타입이다.
+
+## Omit 타입 문법
+```
+Omit<대상 타입, '대상 타입의 속성 이름'>
+Omit<대상 타입, '대상 타입의 속성 1 이름' | '대상 타입의 속성 2 이름'>
+```
+## Omit 타입 예시
+```ts
+interface Team {
+  name: string;
+  rank: number;
+  year: number;
+}
+
+type Manu = Omit<Team, "name" >;
+```
+name, rank, year 속성을 갖는 인터페이스를 하나 선언하고, name 속성을 제외한 나머지 속성들을 Omit 타입으로 선언했다.
+```ts
+type Manu = {
+    rank: number;
+    year: number;
+}
+```
+## Omit 타입과 Pick 타입 비교
+```ts
+interface Team {
+  name: string;
+  rank: number;
+  year: number;
+}
+
+type Manu = Omit<Team, "name" >;
+type Mancity = Pick<Team, "rank" | "year">;
+```
+Omit과 Pick 타입을 이용하여 rank와 year 속성을 갖는 타입을 생성했다. Manu와 Mancity의 타입 구조는 동일하다.
+```ts
+type Manu = {
+    rank: number;
+    year: number;
+}
+type Mancity = {
+    rank: number;
+    year: number;
+}
+```
+Pick과 Omit 은 개인의 취향이나 선호도에 따라 정할 수 있겠지만 <u>Omit 타입을 사용하는 것이 더 유리하다.</u>
+속성 이름을 여러 개 넣지 않고 1개만 넣어도 되기 때문에 코드를 덜 작성해도 같은 결과가 나오기 때문이다.
+가급적이면 코드를 줄이는 방향으로 유틸리티 타입을 정해서 사용하는 것이 좋다.
+<br></br>
+<br></br>
+# Partial 유틸리티 타입
+Partial 타입은 Pick 타입, Omit 타입과는 다르게 다음과 같이 대상 타입만 넘기면 된다. 
+```
+Partial<대상 타입>
+```
+간단한 예시를 보자
+```ts
+interface Todo {
+    id : string;
+    title: string;
+    completed: boolean;
+}
+
+type OptionalTodo = Partial<Todo>;
+```
+id, title, completed 속성을 가지는 인터페이스를 선언하고 Partial 유틸리티 타입을 적용한다.
+```ts
+type OptionalTodo = {
+    id?: string | undefined;
+    title?: string | undefined;
+    completed?: boolean | undefined;
+}
+```
+Todo 인터페이스의 id, title, completed 속성에 옵션 속성 표시인 ?가 붙어 있는 것을 볼 수 있다.
+OptionalTodo 타입을 이용하면 id, title, completed 속성을 선택적으로 적용하여 객체를 생성할 수 있다.
+```ts
+var nothing: OptionalTodo = {};
+var onlyId: OptionalTodo = { id: "아이디만"};
+var onlyTitle: OptionalTodo = { title: "타이틀만"};
+var onlyCompleted: OptionalTodo = { completed: false};
+```
+## Partial 타입 예시
+Partial 타입은 특정 타입의 속성을 모두 선택적으로 사용할 수 있으므로 <u>보통 데이터 수정 API를 다룰 때 사용한다.</u>
+```ts
+interface Todo {
+    id : string;
+    title: string;
+    completed: boolean;
+}
+
+function updateTodo(todo: Todo) {
+    // ...
+}
+```
+위와 같은 코드가 있다고 하자. updateTodo() 함수는 할 일 정보를 변경하여 서버에 전달해 주는 함수라고 가정하자
+id, title, completed 속성 중 변경된 속성만 넘기게 된다면 아래처럼 코드를 짜야 한다.
+```ts
+// id 속성만 넘기는 경우
+function updateTodo(todo: {id: string}) {
+    // ...
+}
+// title 속성만 넘기는 경우
+function updateTodo(todo: {title: string}) {
+    // ...
+}
+```
+이처럼 일일이 정의해 주어야 한다. Pick과 Omit 유틸리티 타입을 이용해보자
+```ts
+// id 속성만 넘기는 경우
+function updateTodo(todo: Pick<Todo, "id">) {
+    // ...
+}
+// title 속성만 넘기는 경우
+function updateTodo(todo: Omit<Todo, "id" | "completed">) {
+    // ...
+}
+```
+위에 방식도 물론 좋지만 Partial 타입을 쓰면 이 세 가지 케이스를 모두 만족시킬 수 있다.
+```ts
+function updateTodo(todo: Partial<Todo>) {
+    // ...
+}
+
+updateTodo({id: '1'});
+updateTodo({id: '1', title: 'Partial 학습'});
+updateTodo({id: '1', title: 'Partial 학습', completed: true});
+```
+<br></br>
+<br></br>
+# Exclude 유틸리티 타입
+> Exclude 타입은 유니언 타입을 변형한다.
+## Exclude 타입 문법
+```
+Exclude<대상 유니언 타입, "제거할 타입 이름">
+Exclude<대상 유니언 타입, "제거할 타입 이름1" | "제거할 타입 이름 2">
+```
+## Exclude 타입 예시
+```ts
+type Team = "Manu" | "Mancity" | "Chelsea" | "Arsenal";
+type TeamPick = Exclude<Team, "Arsenal">
+```
+type Team으로 Manu, Manciy, Chelsea, Arsenal 을 유니언 타입으로 넣어줬습니다. TemPick으로 Arsenal 타입을 제거했습니다.
+TeamPick 타입에 마우스 커서을 올려 보면 아래와 같이 나오는 것을 볼 수 있다.
+```ts
+type TeamPick = "Manu" | "Manciy" | "Chelsea"
+```
+제외할 타입은 하나가 아니라 여러 개 넘길 수도 있다.
+```ts
+type TeamPick = Exclude<Team, "Arsenal" | "Chelsea">
+```
+유니언 타입에서 특정 타입을 제거하고 싶으면 Exclude 타입을 사용하자.
+<br></br>
+<br></br>
+# Record 유틸리티 타입
+Record 타입은 타입 1개를 속성의 키로 받고 다른 타입 1개를 속성 값으로 받아 객체 타입으로 변환해 준다.
+배열을 다룰 때 자주 사용하는 map() API와 역할이 비슷하지만 실제 값을 변경하는 것이 아니라 타입만 map() API처럼 변환해 준다.
+## Record 타입 첫 번째 예시
+```ts
+type HeroProfile = {
+    skill: string;
+    age: number;
+}
+
+type HeroNames = 'thor' | 'hulk' | 'capt';
+
+type Heroes = Record<HeroNames, HeroProfile>
+```
+Heroes 타입에 마우스 커서를 올리면 아래와 같이 나온다
+```ts
+type Heroes = {
+    thor: HeroProfile;
+    hulk: HeroProfile;
+    capt: HeroProfile;
+}
+```
+Heroes 타입을 이용하면 다음과 같이 객체를 선언할 수 있다.
+```ts
+type Heroes = Record<HeroNames, HeroProfile>
+
+var avengers: Heroes = {
+    capt: {
+        skill: "방패",
+        age: 100
+    },
+    thor: {
+        skill: "방패",
+        age: 100
+    },
+    hulk: {
+        skill: "방패",
+        age: 100
+    },
+}
+```
+## Record 타입 두 번째 예시
+더 단순한 형태의 데이터 타입을 활용해도 된다.
+```ts
+type PhoneBook = Record<string, string>;
+```
+Record 타입의 첫 번째와 두 번째 타입으로 모두 문자열을 넘겨서 PhoneBook이라는 타입을 생성한다. 이 타입에 커서를 올려보면 다음과 같이 정의되어 있다.
+```ts
+type PhoneBook = {
+    [x: string]: string;
+}
+```
+이 코드는 문자열 키를 여러 개 정의할 수 있다는 것이다. 키도 문자열로 값도 문자열로 선언하자.
+```ts
+var familyPhones: PhoneBook = {
+    dad: "010-0000-0000",
+    mom: "010-1111-1111"
+};
+```
+## Record 타입 문법
+```
+Record<객체 속성의 키로 사용할 타입, 객체 속성의 값으로 사용할 타입>
+```
+첫 번째 제네릭 타엡이는 string, number, string 유니언, number 유니언 등이 들어갈 수 있고, 두 번째 제네릭 타입에는 아무 타입이나 넣을 수 있다.
+<br></br>
+<br></br>
+
+> <u>출처</u>
+> <br></br>
+> 캡틴 판교님의 쉽게 시작하는 타입스크립트 <br></br>
+> https://www.yes24.com/Product/Goods/119410497
