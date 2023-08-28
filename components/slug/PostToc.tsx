@@ -98,7 +98,7 @@ const PostToc = ({ toc, slugs, height }: PostTocType) => {
       <button 
       className="pt-6 flex justify-end w-full"
       onClick={() => {
-        handleCopyClipBoard(`https://yjin.vercel.app/${pathname}`)  
+        handleCopyClipBoard(`https://yjin.vercel.app${pathname}`)  
         if(!isCopy){
           toast({
             title: "링크를 복사했습니다.",
