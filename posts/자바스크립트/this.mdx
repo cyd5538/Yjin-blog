@@ -1,0 +1,174 @@
+---
+title: 자바스크립트 this ? 
+description: 함수 호출, 객체 메서드, 화살표 함수 등 다양한 상황에서의 this 동작 이해하기
+date: 2023-08-21
+tags:
+  - 자바스크립트
+  - this
+image: /img/js/js.jpg
+---
+
+# this란 뭘까 ?
+**<u>this는 자신이 속한 객체 또는 자신이 생성할 인스턴스를 가리키는 자기 참조 변수(self-reference variable)이다.</u>**
+간단하게 말하면 this는 코드 상에서 자신이 지금 어디에 속하거나, 누가 자신을 호출하고 있는지 에 따라 다른 값을 가지는 특별한 변수다.<br></br>
+**<u>this는 함수를 호출할 때 함수가 어떻게 호출되었는지에 따라 this에 바인딩할 객체가 동적으로 결정된다.⭐</u>**<br></br>
+
+함수를 호출하는 방식은 아래와 같이 다양하다.✔
+* 일반적인 함수 호출
+* 메서드 호출
+* 생성자 함수 호출
+* apply/call/bind 호출
+<br></br>
+<br></br>
+# 전역 범위에서 this
+JavaScript 최상위에서 this를 호출한다면 window라는 전역객체를 가리킨다. (Node에서는 Global)
+```js
+// 1. 전역 범위에서 호출
+console.log(this); // Window {...}
+```
+<br></br>
+<br></br>
+# 함수 호출에서 this
+**기본적으로 this는 전역 객체다.**<br></br>
+전역함수는 물론이고 심지어 내부함수의 경우도 this는 외부함수가 아닌 전역객체에 바인딩된다.
+```js
+function greet() {
+  console.log(this); // window
+
+  function greet2(){
+    console.log(this); // window
+  }
+  greet2()
+}
+greet()
+```
+메서드의 내부함수일 경우에도 this는 전역객체에 바인딩된다.
+```js
+var value = 1;
+
+var obj = {
+  value: 100,
+  foo: function() {
+    console.log("foo's this: ",  this);  // obj
+    console.log("foo's this.value: ",  this.value); // 100
+    function bar() {
+      console.log("bar's this: ",  this); // window
+      console.log("bar's this.value: ", this.value); // 1
+    }
+    bar();
+  }
+};
+
+obj.foo();
+```
+콜백 함수의 경우에도 this는 전역객체에 바인딩된다.
+```js
+var value = 1;
+
+var obj = {
+  value: 100,
+  foo: function() {
+    setTimeout(function() {
+      console.log("callback's this: ",  this);  // window
+      console.log("callback's this.value: ",  this.value); // 1
+    }, 100);
+  }
+};
+
+obj.foo();
+```
+<br></br>
+<br></br>
+# 객체의 메서드에서 this
+객체의 메서드로 호출 시 this는 해당 객체를 가르킨다.
+```js
+const person = {
+  name: "Yjin",
+  introduce: function() {
+    console.log("My name is " + this.name);
+  }
+};
+
+person.inntroduce(); // My name is Yjin
+```
+
+<br></br>
+<br></br>
+# 생성자 함수에서의 this
+함수 앞에 new 키워드가 붙이고 선언할 때, this를 해당 객체에 바인딩합니다. 
+**기존 함수에 new 연산자를 붙여서 호출하면 해당 함수는 생성자 함수로 동작한다.**
+```js
+function Person() {
+    this.name = 'Yjin';
+}
+
+var person1 = new Person();
+
+console.log(person1.name); // 'Yjin'
+```
+<br></br>
+<br></br>
+# call,apply,bind 에서의 this
+자바스크립트에서 함수의 this 값을 명시적으로 지정하거나 함수를 호출할 때 사용되는 메서드 call,apply,bind가 있다.
+각각 메서드의 활용법을 보자.
+## 1. apply
+apply 메서드는 함수를 호출하면서 this 값을 특정 객체로 지정하며, 함수에 인자를 **배열**로 넘기는 방식이다.
+```js
+const personage = {
+  age: 12 
+}
+function Person(name) {
+  console.log(this.age, name)
+}
+Person.apply(personage, ['Yjin'])   // 12, Yjin
+```
+## 2. call
+call 메서드는 함수를 호출하면서 this 값을 특정 객체로 지정하며, 두 번째 인자부터는 함수에 넘겨줄 **매개변수를 지정**한다.
+```js
+const personage = {
+  age: 12 
+}
+function Person(name) {
+  console.log(this.age, name)
+}
+Person.call(personage, 'Yjin')
+```
+## 3. bind
+bind는 함수에 인자로 전달한 this가 바인딩된 새로운 함수를 리턴한다.
+```js
+const personage = {
+  age: 12 
+};
+
+function Person(name) {
+  console.log(this.age, name);
+}
+
+const bindPerson = Person.bind(personage); 
+
+bindPerson('Yjin'); // '12 Yjin'
+```
+<br></br>
+<br></br>
+# 화살표 함수에서의 this ⭐
+화살표 함수에는 this라는 것이 존재하지 않기 때문에 상위 환경에서의 this값을 그대로 참조한다.
+```js
+const person = {
+  name: "Alice",
+  normal : function () {
+      console.log(this)
+  },
+  arrow: () => {
+    console.log(this); 
+  }
+};
+
+person.arrow(); // Window 
+person.normal(); // {name: 'Alice', normal: ƒ, arrow: ƒ}
+```
+<br></br>
+<br></br>
+<u>출처</u>
+> * https://poiemaweb.com/es6-arrow-function
+> * https://poiemaweb.com/js-this
+> * https://wormwlrm.github.io/2019/03/04/You-should-know-JavaScript-this.html.html
