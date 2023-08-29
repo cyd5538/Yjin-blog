@@ -5,6 +5,8 @@ import { Toaster } from "@/components/ui/toaster"
 import Container from '@/components/ui/Container'
 import Nav from '@/components/ui/Nav'
 import Footer from "@/components/ui/Footer"
+import Script from 'next/script'
+const googleAnalyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
 
 export const metadata: Metadata = {
   title: 'YJin BLOG',
@@ -42,6 +44,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
+      <Script async src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`} />
+      <Script strategy="lazyOnload" id="google-analytics">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${googleAnalyticsId}');
+        `}
+      </Script>
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className='font-HakgyoansimWoojuR text-black dark:bg-zinc-800 dark:text-white'>
