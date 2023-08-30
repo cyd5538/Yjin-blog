@@ -1,0 +1,59 @@
+---
+title: Nextjs13 tailwindcss custom font 적용하기
+description: nextjs13 에서 tailwindcss custom font를 적용해봅시다.
+date: 2023-08-01
+tags:
+  - tailwindcss
+image: 
+---
+
+## 1. global.css에 자신이 사용할 폰트를 추가.
+```js
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+ 
+@font-face {
+  font-family: 'HakgyoansimWoojuR';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-2@1.0/HakgyoansimWoojuR.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+```
+
+## 2. tailwind.config.js theme에 font 추가
+```js
+module.exports = {
+  darkMode: ["class"],
+  content: [
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
+	],
+  theme: {
+    fontFamily: {
+      HakgyoansimWoojuR: ["HakgyoansimWoojuR"],
+    },
+  }
+```  
+## 3. 사용하고 싶은 곳 className에 font family 설정했던 이름 적용
+
+ex) 
+```js
+  <html lang="ko">
+    <body>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <div className='font-HakgyoansimWoojuR text-black dark:bg-zinc-800 dark:text-white'>
+          <Toaster />
+          <Nav />
+          <Container>
+            {children}
+            <Footer />
+          </Container>
+        </div>
+      </ThemeProvider>
+    </body>
+  </html>
+```
+
