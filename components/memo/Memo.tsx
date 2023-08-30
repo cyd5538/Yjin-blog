@@ -4,6 +4,7 @@ import { Post, allPosts } from 'contentlayer/generated'
 import React from 'react'
 import SinglePost from '../slug/SinglePost'
 import { compareDesc } from 'date-fns'
+import NotFound from '@/app/not-found';
 
 interface MemoProps {
   params : {
@@ -13,7 +14,10 @@ interface MemoProps {
 }
 
 const Memo:React.FC<MemoProps> = ({params}) => {
-  const post =  allPosts.filter((post : Post) => post._raw.flattenedPath.split("/")[1] === params.slug)[0]
+  const post = allPosts.filter((post: Post) => {
+    const pathParts = post._raw.flattenedPath.split("/");
+    return pathParts[0] === 'memo' && pathParts[1] === params.slug;
+  })[0];
   const postSort = allPosts
   .filter(post => post._id.startsWith('memo'))
   .sort((a, b) =>
@@ -21,7 +25,7 @@ const Memo:React.FC<MemoProps> = ({params}) => {
   );
 
   if(!post){
-    return 
+    return <NotFound />
   }
 
   return (
