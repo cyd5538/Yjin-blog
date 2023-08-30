@@ -84,7 +84,7 @@ const PostToc = ({ toc, slugs, height }: PostTocType) => {
             <li key={`#${heading.slug}`}>
               <div className={`flex items-start ${heading.slug === currentHeading ? "font-bold underline" : ""}`}>
                 <a
-                  className={`p-[2px] text-base ${heading.level === "three" ? "pl-4" : ""} ${heading.level === "two" ? "pl-2 text-sm" : ""}`}
+                  className={`p-[2px] text-base ${heading.level === "three" ? "pl-4 text-sm" : ""} ${heading.level === "two" ? "pl-2 text-sm" : ""}`}
                   data-level={heading.level}
                   href={link}
                 >
