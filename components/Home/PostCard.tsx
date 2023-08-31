@@ -13,9 +13,6 @@ function PostCard(post: Post) {
               {post.title}
             </h2>
           </Link>
-          <h3 className="mb-2 text-sm dark:text-white text-gray-700 pl-1">
-            {post.description}
-          </h3>
           <ul className='flex mt-2 gap-2 pl-1 flex-wrap'>
             {post.tags?.map((tag, index) =>
               <Link
