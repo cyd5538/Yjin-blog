@@ -1,0 +1,70 @@
+---
+title: 자바스크립트에서의 null과 undefined 의미와 차이
+description: 자바스크립트에서의 null과 undefined에 대한 이해와 차이점을 자세히 알아보자 
+date: 2023-08-24
+tags:
+  - 자바스크립트
+image: /img/js/js.jpg
+---
+
+# null과 undefined란 ?
+## null
+null은 어떤 값이 의도적으로 비어있음을 의미한다, 변수는 존재하나 null로 값이 할당된 상태이다.
+즉 null은 자료형이 정해진 상태다. 또한 식별되지 않아 변수가 아무런 객체를 가리키지 않음을 나타낸다.
+
+함수가 유효한 값을 반환할 수 없는 경우, 명시적으로 null을 반환한다.
+```js
+var tag = document.querySelector('.tag');
+console.log(tag) // null
+```
+## undefined
+undefined는 변수는 존재하나 어떠한 값도 할당받지 않아 자료형이 정해지지않은 상태다. 또한 메서드와 선언도
+평가할 변수가 값을 할당받지 않은 경우에 undefined를 반환한다. 함수는 값을 명시적으로 반환하지 않으면 undefined를 반환한다.
+```js
+var a;
+console.log(a); // undefined
+
+function a(x) {
+  console.log(x); 
+}
+a() // undefined
+```
+자바스크립트는 오브젝트 내부에 존재하지 않는 프로퍼티(속성)를 참조할 시, 오류가 나타나는 것이 아닌 undefined  값을 반환한다. 
+그렇기 때문에 실수로 속성 이름을 잘못 입력할 경우에도 확인해 볼 수 있고 혹은 객체에 특정한 프로퍼티가 있는지, 속성 유무를 확인할 경우에도 볼 수 있다.
+
+# null과 undefined 비교
+간단하게 말하면 undefined는 변수를 선언했지만 값을 아직 할당하지 않은 상태고, null은 변수를 선언하고 '빈 값'이라는 값을 할당한 상태다.
+
+## 공통점
+1. **undefined와 null은 모두 ‘값이 없음’을 의미한다.**
+```js
+console.log(undefined == null) // true
+console.log(undefined === null) // false
+
+console.log(typeof undefined) // undefined 
+console.log(typeof null) // object
+```
+동등 연산자(==)는 두 값의 일치 여부를 느슨하게 검사한다. undefined와 null의 경우에는 이 없음이라는 공통점에 초점을 맞추어 true를 반환하고
+일치 연산자(===)는 두 값의 일치 여부를 엄격하게 검사하기 때문에 false를 반환한다
+
+2. **<u>falsy 값에 속한다.</u>자바스크립트에서는 다음 값들을 falsy한 값으로 간주한다.**
+* false
+* 0
+* '"'
+* null
+* undefined
+* NaN
+## 차이점
+1. **값이 없는 이유가 다르다**
+  * undefined는 변수를 선언하고 값을 아직 할당하지 않은 상태
+  * null은 변수를 선언하고 빈 값을 할당한 상태
+2. **undefined는 암시적이고 null은 명시적이다.**
+undefined의 경우에는 변수를 선언하고 값을 할당하지 않으면 자바스크립트 엔진이 알아서 반환해 준다. 
+하지만, null의 경우에는 값이 없음을 사용자가 명시적으로 표현하기 위해서 사용한다.
+```js
+console.log(hello); // undefined
+
+let hi = 'hi';
+hi = null;
+console.log(hi); // null
+```

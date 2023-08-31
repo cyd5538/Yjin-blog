@@ -1,0 +1,190 @@
+---
+title: 자바스크립트에서 예외처리란?
+description: 자바스크립트에서는 두 가지 주요 오류 유형인 구문 오류와 런타임 예외로 인해 프로그램이 동작하지 않을 수 있다. 이중에서 런타임 에러 상황을 처리하기 위해 예외처리 하는 방법을 알아보자.
+date: 2023-08-23
+tags:
+  - 자바스크립트
+  - closure
+image: /img/js/js.jpg
+---
+
+# 예외처리란 ?
+프로그래밍을 하다 보면 여러 가지 오류에 맞닥뜨릴 수 있다. 자바스크립트에서는 실행 되기 전에 발생하는 
+**'구문 오류'** 와 프로그램 실행 도중 발생하는 **'예외'** 두 가지 상황으로 인해 오류가 발생한다.
+* 구문 오류란?
+구문 오류는 코드의 문법적인 규칙을 위반하여 발생하는 오류입니다. 
+프로그램이 실행하기 전에 발생하여 코드가 실행조차 되지 않는 문법을 의미한다.
+```js
+if (x > 10) {
+  console.log("x가 10보다 크다");
+```
+위의 코드는 if 문이 닫히지 않아서 구문 오류가 발생한다.
+* 런타임오류 또는 예외 오류란?
+예외는 프로그램이 실행 중에 예상치 못한 상황이나 오류 조건을 만났을 때 발생하는 오류다. 예외는 실행중인
+코드 블록 내에서 발생하며, 이러한 에러는 예외처리를 해주지 않으면 프로그램이 예상치 못하게 종료될 수가 있다.
+예외 오류는 프로그램이 실행할 때 발생하기 때문에 발생하기 전에는 발견하기가 어렵다.
+```
+배열 인덱스를 벗어난 접근, null이나 undefined인 값에 접근, 이러한 경우에 오류가 발생한다.
+ ```
+위의 두 오류는 콘솔에 자동으로 검출되어 출력된다. 그렇기 때문에 오류를 찾고수정하기가 수월하다. 반면에 
+**논리적 오류**는 그 원인을 파악하기 어려운 코드다.<u>코드 작성자의 논리적 실수가 있어 예상한 값이 출력되지 않는 경우</u>
+인데 프로그램은 정상적으로 작동하고 종료된다.
+```js
+function calculate(a, b) {
+  return a / b;
+}
+```
+이 함수는 문법적으로는 올바르지만, 논리적으로는 문제가 있을 수 있다.
+만약 b에 0이 전달된다면, 위 함수는 무한대(Infinity)를 반환하게 된다. 개발자는 이런 다양한 예외 상황이 발생할 수 있다는 것을 전제하고
+이에 대응하는 코드를 작성해야 한다. 오류를 처리하는 것은 더 나은 사용자 경험을 제공하고 흐름을 제어할 수 있는 프로그램 관리가 가능하기 때문에 오류 처리 전략을 잘 세워야 한다.
+
+그럼 기본 예외 처리하는 방법을 알아보자 ✨
+```js
+function error(a, b) {
+    if (b <= 0) {
+        throw "0 보다 큰 수를 입력하세요!";
+    }
+    return a / b;
+}
+```
+이렇게 예외처리를 할 수 있지만 코드의 가독성도 떨어지고 유지 보수성을 저하시킬수 있다. 
+# try-catch-finally 문
+try-catch-finally 문은 에러가 날 상황에 대비하는 코드로 프로그램이 강제 종료되는 상황을 막고자하는 목표가 있다.<br></br>
+## 기본 구조
+```js
+try{
+  //실행할 코드
+
+} catch(error){
+
+  /* try 코드 블록에서 error가 발생하면 실행되는 코드
+      try 구문에서 생성된 Error객체가 catch 매개변수로 전달 됨 */
+
+} finally {
+
+  /* 에러 발생과 무관하게 반드시 한 번 실행되는 코드
+      try 블록이나 catch 블록이 실행을 마친 뒤, 마지막에 실행 됨*/
+
+}
+```
+* try : try에는 실행할 코드가 들어간다. 여기서 에러가 발생시 Error 객체를 catch에 error 매개변수로 보내준다.
+* catch : 에러에 대한 정보를 담고 있는 error 매개변수를 사용할 수 있다.
+* finally : 에러가 있든 없든 무조건 실행되는 코드다. 생략이 가능하다.
+## 동작 과정
+- 에러 발생한 경우
+    1. try 코드 실행
+    2. try 실행 중 에러 발견, try 코드 실행 중단
+    3. try 구문 안에서 에러에 대한 정보가 담긴 Error객체를 생성하고 catch에게 전달
+    4. catch 코드 실행, catch 구문이 제어 흐름을 가짐
+    5. finally 코드 실행
+- 에러가 발생하지 않은 경우
+    1. try 코드 전부 실행
+    2. finally 코드 실행
+
+## 예제
+- 에러가 발생한 경우
+```js
+try {
+  alert('try 블록 시작!'); 
+  const number = 1;
+  number = 10; // const는 상수이므로 재할당이 안되므로 에러 발생
+  alert('try 블록 코드 전부 실행');
+
+} catch(err) {
+  alert(err); //에러에 대한 정보가 담긴 Error 객체를 인자값을 받아서 alert함.
+} finally{
+  alert('finally');
+}
+
+//try 블록 시작!
+//TypeError: Assignment to constant variable.
+//finally
+```
+- 에러가 발생하지 않는 경우
+```js
+try {
+  alert('try 블록 시작!'); 
+  let number = 1;
+  number = 10; // let은 재할당이 가능하므로 error가 나지 않는다
+  alert('try 블록 코드 전부 실행');
+} catch(err) {
+  alert(err); 
+} finally{
+  alert('finally');
+}
+
+//try 블록 시작!
+//try 블록 코드 전부 실행
+//finally
+```
+## 유의사항
+### 1. try-catch 구문은 동기적으로 작동한다
+동기적으로 동작하기 때문에 setTimeout과 같이 동작하는 시간이 정해진 코드에선 작동하지 않는다.
+* try 구문→ finally구문→ 정해진 시간이 흐른 뒤, setTimeout 실행 
+```js
+try {
+  alert("try 시작");
+  setTimeout(() => {
+      const number = 1;
+      number = 1234;
+      alert("try 블록 코드 전부 실행");
+  }, 2000);
+} catch (error) {
+  alert(error);
+} finally {
+  alert("finally");
+}
+```
+위의 코드를 실행하면 alert("try 시작")이 먼저 실행되고 alert("finally")이 실행되고 끝난다
+### 2. try-catch-finally 구문은 실행 가능한 코드에서 동작한다.
+코드식 자체가 성립이 안된다면 JS엔진이 코드 자체를 읽는 것이 불가하다. 따라서 에러가 발생하고 try-catch 함수를 읽지 못하게 된다.
+```js
+try {
+  console.log('try'; //SyntaxError
+} catch(error) {
+  alert(error);
+}
+//Uncaught SyntaxError: missing ) after argument list
+```
+<br></br>
+# 예외 객체와 throw 
+## 예외 객체
+**예외 객체**는 try-catch 구문에서 catch 괄호 안에 입력하는 식별자이다.  e, exception 등의 변수명으로 표현하며 예외 정보를 담고 있다.<br></br>
+예외 객체의 기본 속성은 name, message 이다.
+```js
+try {
+  const number = 5; 
+  number = 100;
+} catch(e) {
+  console.log(`예외 이름 : ${e.name}`);
+  console.log(`에외 메시지 : ${e.message}`);
+}
+```
+```
+예외 이름 : TypeError
+에외 메시지 : Assignment to constant variable.
+```
+const는 상수인데 재할당을 해서 에러가 나고 메시지가 나오는걸 볼 수 있다.
+## throw 
+throw 구문은 사용자가 정의한 예외를 강제로 발생시킬 때 사용한다. 
+예외가 발생하면 현재 실행되고 있던 동작이 중지되고 throw 호출자 함수 사이에 catch 블록이 실행되며 없다면 종료된다.
+```js
+function getNumber(number) {
+    if (number !== 0)
+				return 10/number;
+    else
+        throw 'number 없음!';
+}
+
+try {
+    let number = 0;
+    getNumber(number);
+} catch (e) {
+    console.log(e);
+    console.log('0으로는 나눌 수 없다!');
+}
+
+// number 없음!
+// 0으로는 나눌 수 없다!
+```
+자바스크립트는 0으로 나누면 Infinity가 나온다 이런 경우를 대비해 getNumber 함수를 넣어 throw 구문으로 예외를 넣었다.

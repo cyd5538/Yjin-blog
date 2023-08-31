@@ -1,0 +1,99 @@
+---
+title: 자바스크립트 이벤트 버블링, 캡처링, 위임
+description: 이벤트 버블링과 캡처링에 대한 이해와 이벤트 위임을 활용하여 효율적으로 이벤트를 처리하는 방법을 알아보자.
+date: 2023-08-25
+tags:
+  - 자바스크립트
+image: /img/js/js.jpg
+---
+
+# 이벤트란 ?
+웹 페이지나 애플리케이션에서 발생하는 사건이나 상황을 나타내는 것을 말한다.
+특정 버튼을 클릭하거나 DOM 로드가 완료되는 등의 이벤트가 발생하면 브라우저는 이와 같은 이벤트를 감지할 수 있다.
+아래의 에시를 보고 쉽게 이해해보자.
+```js
+<button id="button">Click me</button>
+```
+html에 button이 하나 있다.
+```js
+const button = document.getElementById("button");
+
+button.addEventListener("click", function() {
+    alert("버튼 클릭!");
+});
+```
+위의 html에서 만든 버튼을 getElementById로 접근을 하고 addEventListener 줘서 이벤트 이름과, 함수를 전달했다.
+버튼을 클릭하면 alert 창으로 "버튼클릭!"이 나온다.
+
+# 이벤트 전파
+이벤트 전파는 브라우저가 이벤트를 어떤 순서로 탐지하고 처리할지를 결정한다.
+이벤트 전파에는 3가지 단계가 있다.
+* 캡처링 단계 : 이벤트가 상위 요소에서 하위 요소 방향으로 전파되는 단계
+* 타깃 단계 : 이벤트가 이벤트 타깃에 도달하는 단계
+* 버블링 단계 : 이벤트가 하위 요소에서 상위 요소 방향으로 전파하는 단계
+## 버블링 단계
+이벤트가 제일 깊은 곳에 있는 요소에서 시작해 부모 요소를 거슬러 올라가며 발생하는 모양이 마치 물속 거품(bubble)과 닮았다고 하여 정해진 이름이다. 
+즉, 이벤트가 발생한 요소로부터 시작하여 그 요소를 포함한 부모 요소, 그리고 그 부모 요소의 부모 요소로 계속해서 전파한다.
+```js
+<div onclick="alert('div')">
+  <button onclick="alert('button')">Click me</button>
+</div>
+```
+1. button에 할당된 onclick 이벤트가 발생
+2. div에 할당된 onclick 이벤트가 발생
+3. document 객체를 만날 때까지, 각 요소에 할당된 onclick 핸들러가 동작한다.
+
+button → div 순서로 alert 창이 열린다. 이러한 흐름을 **'이벤트 버블링'** 이라 한다
+> 아래의 이벤트들은 버블링이 되지 않는다.✔
+> * 포커스 이벤트 : focus / blur
+> * 리소스 이벤트 : load / unload / abort / error
+> * 마우스 이벤트 : mouseenter / mouseleave
+## 캡처링 단계
+이벤트 전파의 시작 단계로, 이벤트가 최상위 요소에서부터 시작하여 실제 이벤트가 발생한 하위 요소로 내려가는 과정이다.
+캡처링 단계에서 이벤트를 잡아내려면 addEventListener의 capture 옵션을 true로 설정하자.
+```js
+elem.addEventListener(..., {capture: true})
+elem.addEventListener(..., true)
+// 위의 두 코드는 같은 코드다
+```
+capture 옵션
+* false이면(default 값) 핸들러는 버블링 단계에서 동작한다
+* true이면 핸들러는 캡처링 단계에서 동작한다.
+# 이벤트 위임
+이벤트 위임은 앞서 학습한 이벤트 전파를 활용해 상위 DOM 요소에 이벤트 핸들러를 등록하는 것이다.
+위 DOM 요소에 각각 여러 개의 이벤트 핸들러를 등록할 필요 없이 상위에만 이벤트 핸들러를 등록하면 코드가 간결해진다.
+```js
+<ul id="list">
+    <li>Item 1</li>
+    <li>Item 2</li>
+    <li>Item 3</li>
+    <li>Item 4</li>
+    <li>Item 5</li>
+</ul>
+```
+위의 코드를 보면 ul에 여러 li들이 있는걸 볼 수 있다. 각 리스트마다 이벤트 핸들러를 등록하면 코드가 복잡해지고 메모리 사용이 증가할 수 있다.
+이럴때 이벤트 위임을 활용하여 리스트 전체에서 요소마다 핸들러를 할당하지 않고, 요소의 공통 조상에 이벤트 핸들러를 단 하나만 할당해도 여러 요소를 한꺼번에 다룰 수 있다.
+
+이벤트 위임 예시
+```js
+<ul id="myList">
+  <li>Item 1</li>
+  <li>Item 2</li>
+  <li>Item 3</li>
+</ul>
+```
+
+```js
+const myList = document.getElementById("List");
+
+myList.addEventListener("click", function(event) {
+    if (event.target.tagName === "LI") {
+        console.log("클릭", event.target.textContent);
+    }
+});
+```
+이벤트 위임을 사용하면 새로운 리스트 아이템을 추가하더라도 별도의 이벤트를 해 줄 필요가 없고, 코드의 가독성과 유지 보수성을
+향상시킬 수 있다.
+<u>참고</u>
+> * https://ko.javascript.info/bubbling-and-capturing
+> * https://ko.javascript.info/event-delegation
