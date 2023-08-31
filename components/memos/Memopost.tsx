@@ -7,7 +7,7 @@ function Memopost(post: Post) {
   return (
     <div className="mb-4 rounded-xl shadow-md p-2 bg-white dark:bg-zinc-900">
       <div className='flex gap-2 h-auto'>
-        <div className='mb-4 w-3/4 flex flex-col'>
+        <div className='mb-4 w-full flex flex-col'>
           <Link href={{
             pathname : `memo/${post.url}`
           }}>
