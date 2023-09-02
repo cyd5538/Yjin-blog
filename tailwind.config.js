@@ -22,9 +22,12 @@ module.exports = {
       typography: {
         DEFAULT: {
           css: {
-            // 'h1,h2,h3,h4,p,li,span,td,tr,strong,u,a': {
-            //   'color': 'white',
-            // },
+            h2: {
+              'font-size': '1.75em'
+            },
+            h3: {
+              'font-size': '1.5em'
+            },
             u : {
               'text-decoration-style': 'wavy',
               'text-underline-offset' : "0.3em",
