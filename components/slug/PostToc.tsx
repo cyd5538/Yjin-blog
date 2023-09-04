@@ -76,7 +76,7 @@ const PostToc = ({ toc, slugs, height }: PostTocType) => {
   }, [height]);
 
   return (
-    <div ref={tocRef} className="fixed top-28 w-[300px] rounded-2xl p-4 bg-indigo-200 drop-shadow-md dark:bg-zinc-900 dark:text-white border-black dark:border-white">
+    <div ref={tocRef} className="fixed top-28 w-[300px] rounded-2xl p-4 bg-violet-600 text-white drop-shadow-md dark:bg-zinc-900 dark:text-white border-black dark:border-white">
       <h3 className="font-bold pb-4">목차</h3>
       <ul className="flex flex-end w-full flex-col gap-[1px] border-l-[1px] pl-2 border-white">
         {toc.map((heading) => {

@@ -21,7 +21,7 @@ const Nav = () => {
   ];
 
   return (
-    <div className='z-20 top-0 border-b-[1px] dark:bg-zinc-900 dark:text-white border-black bg-white w-full h-20'>
+    <div className='z-20 top-0 border-b-[2px] dark:bg-zinc-900 dark:text-white border-violet-600 dark:border-none bg-white w-full h-20'>
       <div className='m-auto flex justify-between items-center max-w-[1200px] h-20 pl-4 pr-4 sm:pl-2 sm:pr-2 '>
         <h1 className='text-3xl font-bold cursor-pointer'>
           <Link href="/">Home</Link>

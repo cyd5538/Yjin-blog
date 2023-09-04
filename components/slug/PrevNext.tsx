@@ -30,10 +30,10 @@ const PrevNext: React.FC<PrevNextProps> = ({ next, prev, postmemo }) => {
   }, [next, prev, postmemo]);
 
   return (
-    <div className='pb-24 flex justify-between w-full mt-8'>
+    <div className='pb-24 flex justify-between w-full mt-8 '>
       {/* next */}
       {next && nextUrl ? 
-        <Link href={nextUrl} className="rounded-md w-36 md:w-80 justify-center items-center bg-indigo-200 hover:bg-indigo-300 dark:bg-zinc-700 dark:hover:bg-zinc-900 shadow-lg cursor-pointer p-2 flex gap-4">
+        <Link href={nextUrl} className="rounded-md w-48 sm:w-72 md:w-96 justify-center items-center bg-violet-600 text-white hover:bg-violet-700 dark:bg-zinc-700 dark:hover:bg-zinc-900 shadow-lg cursor-pointer p-2 flex gap-4">
           <div><ChevronLeft /></div>
           <div className='font-bold text-xl'>{next?.title}</div>
         </Link>
@@ -41,9 +41,9 @@ const PrevNext: React.FC<PrevNextProps> = ({ next, prev, postmemo }) => {
       }
       {/* prev */}
       {prev && prevUrl ?
-        <Link href={prevUrl} className="rounded-md w-36 md:w-80 justify-center items-center bg-indigo-200 hover:bg-indigo-300 dark:bg-zinc-700 dark:hover:bg-zinc-900 shadow-lg cursor-pointer p-2 flex gap-4">
-          <div><ChevronRight /></div>
+        <Link href={prevUrl} className="rounded-md w-48 sm:w-72 md:w-96 justify-center items-center bg-violet-600 text-white hover:bg-violet-700 dark:bg-zinc-700 dark:hover:bg-zinc-900 shadow-lg cursor-pointer p-2 flex gap-4">
           <div className='font-bold text-xl'>{prev?.title}</div>
+          <div><ChevronRight /></div>
         </Link>
         : <div></div>
       }

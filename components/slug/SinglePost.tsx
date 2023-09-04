@@ -110,7 +110,7 @@ const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo
                     query: { tag: `${tag}` }
                   }}
                 >
-                  <li className='rounded-md bg-violet-300 dark:bg-zinc-700 pl-2 pr-2 hover:bg-violet-400 dark:hover:bg-zinc-800'>{tag}</li>
+                  <li className='rounded-md bg-violet-600 text-white dark:bg-zinc-700 pl-2 pr-2 hover:bg-violet-400 dark:hover:bg-zinc-800'>{tag}</li>
                 </Link>
               )}
             </ul>
