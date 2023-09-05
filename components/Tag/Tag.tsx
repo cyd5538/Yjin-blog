@@ -21,7 +21,7 @@ const Tag = () => {
 
   const [searchs, setSearchs] = useState<string | null>(search)
 
-  const { currentPage, currentData, totalPages, handlePageChange } = usePagination(filteredPosts);
+  const { currentPage, currentData, totalPages, handlePageChange } = usePagination(filteredPosts, searchs as string);
 
   useEffect(() => {
     const filteredPost = allPosts
