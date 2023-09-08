@@ -1,0 +1,105 @@
+---
+title: React와 TailwindCSS로 재사용 가능한 모달 만들기
+description: React와 tailwindcss를 사용해서 재사용이 가능한 모달을 만들어보자.
+date: 2023-09-03
+tags:
+  - React
+  - tailwindcss
+image: /img/react/react.png
+---
+
+## 모달 컴포넌트 만들기
+```tsx
+import React from 'react';
+import { AiOutlineClose } from "react-icons/ai";
+
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  titleContent: React.ReactElement;
+  bodyContent: React.ReactElement;
+}
+
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, titleContent, bodyContent }) => {
+  if (!isOpen) return null;
+
+  const handleModalContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  };
+
+  return (
+    <div
+      className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
+      onClick={onClose}
+    >
+      <div className="bg-white p-6 rounded shadow-lg relative" onClick={handleModalContentClick}>
+        {titleContent}
+        <button
+          className="bg-blue-500 text-white py-2 px-2 mt-4 rounded-full hover:bg-blue-600 absolute top-0 right-4"
+          onClick={onClose}
+        >
+          <AiOutlineClose />
+        </button>
+        <div>
+          {bodyContent}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Modal;
+```
+
+isOpen, onClose, titleContent, bodyContent prop을 받는다.
+* isOpen: boolean 값으로 모달이 열려있으면 true 닫혀있으면 false 
+* onClose: isOpen을 false로 해주는 함수를 받아온다.
+* titleContent: 모달 제목을 넣어준다.
+* bodyContent: 모달 내부에 표시할 컨텐츠다.
+* handleModalContentClick(): 모달 내부를 클릭했을 때 닫히지 않게 (이벤트 버블링)
+
+이제 이 모달을 사용해보자
+## 모달 사용하기
+```tsx
+import { useState } from 'react';
+import Modal from "./Modal";
+
+const Button: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  const titleContent = (
+    <h2 className="text-lg font-semibold mb-4">모달 제목입니다.</h2>
+  )
+
+  const bodyContent = (
+    <>
+      <p className='text-gray-300'>모달 내용입니다. 모달 내용입니다. 모달 내용입니다. 모달 내용입니다. 모달 내용입니다.</p>
+    </>
+  );
+
+  return (
+    <div className='w-full h-screen flex justify-center items-center'>
+      <button
+        className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+        onClick={openModal}
+      >
+        모달 열기
+      </button>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        titleContent={titleContent}
+        bodyContent={bodyContent}
+      />
+    </div>
+  );
+};
+
+export default Button;
+```
+<p align="center">
+  <img src="/img/react/modal.gif" width="600"/>
+</p>
