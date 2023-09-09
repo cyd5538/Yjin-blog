@@ -1,0 +1,39 @@
+---
+title: clsx와 Tailwind CSS로 코드 가독성 높이기
+description: clsx를 사용해서 가독성을 높이는 방법을 알아보자.
+date: 2023-08-05
+tags:
+  - clsx
+  - tailwindcss
+image: 
+---
+
+# clsx 란?
+조건부로 클래스명을 결합하고 관리하기 위한 유틸리티 함수 쉽게 말해 복잡한 조건부 스타일링을 간단하게 할 수 있도록 도와준다.
+
+## 설치
+```js
+yarn add clsx
+```
+## 기존 코드
+```js
+<a
+  className={`p-[2px] text-base ${heading.level === "three" ? "pl-4 text-sm" : ""} ${heading.level === "two" ? "pl-2 text-sm" : ""}`}
+  data-level={heading.level}
+  href={link}
+>
+  {heading.text}
+</a>
+```
+## 개선 후 코드
+```js
+import clsx from "clsx";
+
+<a
+  className={clsx('p-[2px] text-base', heading.level === 'three' && 'pl-4 text-sm', heading.level === 'two' && 'pl-2 text-sm')}
+  data-level={heading.level}
+  href={link}
+>
+  {heading.text}
+</a>  
+```

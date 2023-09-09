@@ -1,0 +1,117 @@
+---
+title: 개인 사이드 프로젝트 진행기 1 ✨
+description: React와 Typescript 에서 useResize 사용해서 반응형 사이드바 만들기. 
+date: 2023-09-04 07:00
+tags:
+  - 개인프로젝트
+image: /img/etc/sideproject.png
+---
+
+# 프로젝트 계획
+아래의 API를 사용해서 개인 사이드프로젝트를 진행하려고 한다. 
+물론 무료로는 1분의 10개의 요청밖에 못 하지만 연습으로 사이드 프로젝트 진행하기에는 문제가 없다고 생각했다.
+> https://www.football-data.org/
+
+**현재 생각중인 기능은 이정도로 생각하고 있다.**
+* 리그별로 순위표를 만들기
+* 리그별로 득점왕
+* 팀 정보
+* 경기 일정
+* 선수 정보
+# Sidebar 만들기
+Sidebar를 만드는데 useResize hook을 만들어서 가로픽셀이 일정숫자 이하로 낮아지면 사이드바 크기를 줄여주고 싶었다.
+그리고 useToggle로 버튼을 만들어서 사이드바를 열고닫는 기능을 만들었다.
+## useResize 반응형 사이드바 만들기
+```tsx
+import { useEffect, useState } from 'react';
+
+interface WindowSize {
+  width: number;
+}
+
+const useResize = (): WindowSize => {
+  const [windowSize, setWindowSize] = useState<WindowSize>({
+    width: window.innerWidth,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({ width: window.innerWidth });
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  return windowSize;
+};
+
+export default useResize;
+```
+가로픽셀의 변경이 있을때마다 width값이 바뀐다. 픽셀은 빈번하게 변화가 일어나지 않을 것 같아서 이런식으로 접근해도 괜찮을 것 같다고 생각했다.
+사실 tailwindcss에서 sm,md,lg 이런것들을 사용하면 간편하게 가능한데 useResize를 한 번 사용해보고싶었다.🖐
+```tsx
+const { width } = useResize();
+```
+이런식으로 불러와서 사용하면 된다.
+## useToggle 토글 버튼 만들기
+```tsx
+import { Dispatch, SetStateAction, useCallback, useState } from 'react'
+
+export function useToggle(
+  defaultValue?: boolean,
+): [boolean, () => void, Dispatch<SetStateAction<boolean>>] {
+  const [value, setValue] = useState(!!defaultValue)
+
+  const toggle = useCallback(() => setValue(x => !x), [])
+
+  return [value, toggle, setValue]
+}
+```
+useToggle을 사용해서 사이드바 버튼을 만들어줬다.
+## 완성 코드
+```tsx
+  import useResize from "../../hook/useResize";
+  import clsx from "clsx";
+  import Sidebartitle from "./Sidebartitle";
+  import SidebarMenu from "./SidebarMenu";
+  import { useToggle } from "../../hook/useToggle";
+  import SidebarToggle from "./SidebarToggle";
+
+  const Sidebar = () => {
+    const { width } = useResize();
+    const [value, toggle] = useToggle()
+
+    return (
+      <nav 
+        className={clsx(
+          'h-screen relative bg-[#213555] ease-in duration-100',
+          width < 768 || value ? 'w-24' : 'w-56',
+        )}
+      >
+        {width > 768 && (
+          <SidebarToggle 
+            value={value}
+            toggle={toggle}
+          />
+        )}
+        <Sidebartitle
+          value={value} 
+          width={width}
+        />
+        <SidebarMenu 
+          value={value} 
+          width={width}
+        />
+      </nav>
+    )
+  }
+
+  export default Sidebar
+```
+width가 768px 보다 작거나 value가 true이면 w-24값을 주고 아닐땐 w-56을 줬다.
+그리고 width가 768px 보다 작아지면 버튼을 안보이게 처리해줬다.
+

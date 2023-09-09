@@ -1,0 +1,188 @@
+---
+title: 개인 사이드 프로젝트 진행기 2 ✨
+description: sidebar 데이터 만들고 Redux-toolkit 사용해서 전역처리 하기.
+date: 2023-09-04 09:00
+tags:
+  - 개인프로젝트
+image: /img/etc/sideproject.png
+---
+
+## 데이터 만들기
+* name: 모바일 환경에서 menu 이름
+* fullname: menu 이름
+* league: api 요청시 쿼리(?) 넣어줄 값.
+```ts
+const menuData = [
+  {
+    "name": "EPL",
+    "fullname": "Premier League",
+    "league": "PL"
+  },
+  {
+    "name": "LaLiga",
+    "fullname": "LaLiga",
+    "league": "PD"
+  },
+  {
+    "name": "Bundes",
+    "fullname": "Bundesliga",
+    "league": "BL1"
+  },
+  {
+    "name": "SerieA",
+    "fullname": "Serie A",
+    "league": "SA"
+  },
+  {
+    "name": "CL",
+    "fullname": "Champions League",
+    "league": "FL"
+  }
+];
+
+export default menuData;
+```
+
+## sidebar menu 만들기
+```tsx
+import { useState } from 'react';
+import menuData from '../../data/menuData.js'
+
+interface SiderbarMenuProps {
+  width: number
+  value: boolean
+}
+
+const SidebarMenu:React.FC<SiderbarMenuProps> = ({width, value}) => {
+  const [activeMenu, setActiveMenu] = useState<string | null>(menuData[0].name);
+  
+  const handleMenuItemClick = (menuName: string) => {
+    setActiveMenu(menuName);
+  };
+
+  return (
+    <ul className='pt-12 flex flex-col justify-center items-center gap-6 text-xl font-bold'>
+      {menuData.map((menu) => {
+        const text = width < 768 || value ? menu.name : menu.fullname; 
+        const isActive = activeMenu === menu.name;
+        return (
+          <li 
+            key={menu.name}
+            onClick={() => handleMenuItemClick(menu.name)}
+            className={`cursor-pointer ${isActive ? 'text-[#989898]' : 'text-[#F0F0F0]'}`}
+          >
+            {text}
+          </li>
+        );
+      })}
+    </ul>
+  )
+}
+
+export default SidebarMenu
+```
+* 변수 text는 해상도 width값이 768px보다 작거나 또는 value가 true이면 name을 그렇지 않으면 fullname을 줬다.
+* 현재 메뉴의 위치를 알 수 있게 useState를 활용해서 다른 text 색상을 넣어줬다.
+## Redux-toolkit 사용해서 전역데이터 관리하기
+sidebar에서 만든 메뉴에서 'league' 값이 필요하다. 클릭하면 이 값을 가져와야하는데 Redux-toolkit을 사용해서 가져왔다.<br></br>
+설치과정은 생략하겠다.
+### leagueSlice.ts
+```tsx
+import menuData from '../data/menuData';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+interface LeagueState {
+  activeLeague: string; 
+}
+
+const initialState: LeagueState = {
+  activeLeague: menuData[0].league, 
+};
+
+const leagueSlice = createSlice({
+  name: 'league',
+  initialState,
+  reducers: {
+    setActiveLeague: (state, action: PayloadAction<string>) => {
+      state.activeLeague = action.payload;
+    },
+  },
+});
+
+export const { setActiveLeague } = leagueSlice.actions;
+export const selectActiveLeague = (state: { league: LeagueState }) => state.league.activeLeague;
+export default leagueSlice.reducer;
+```
+### store.ts
+```tsx
+import { configureStore } from '@reduxjs/toolkit';
+import leagueReducer from './leagueSlice';
+
+export const store = configureStore({
+  reducer: {
+    league: leagueReducer,
+  },
+});
+```
+### SidebarMenu
+```tsx
+import { useState } from 'react';
+import menuData from '../../data/menuData.js'
+import { useDispatch } from 'react-redux';
+import { setActiveLeague } from '../../redux/leagueSlice.js';
+
+interface SiderbarMenuProps {
+  width: number
+  value: boolean
+}
+
+const SidebarMenu:React.FC<SiderbarMenuProps> = ({width, value}) => {
+  const [activeMenu, setActiveMenu] = useState<string | null>(menuData[0].name);
+  const dispatch = useDispatch();
+  
+  const handleMenuItemClick = (menuName: string, league: string) => {
+    setActiveMenu(menuName);
+    dispatch(setActiveLeague(league))
+  };
+
+  return (
+    <ul className='pt-12 flex flex-col justify-center items-center gap-6 text-xl font-bold'>
+      {menuData.map((menu) => {
+        const text = width < 768 || value ? menu.name : menu.fullname;
+        const isActive = activeMenu === menu.name;
+        return (
+          <li 
+            key={menu.name}
+            onClick={() => handleMenuItemClick(menu.name, menu.league)}
+            className={`cursor-pointer ${isActive ? 'text-[#989898]' : 'text-[#F0F0F0]'}`}
+          >
+            {text}
+          </li>
+        );
+      })}
+    </ul>
+  )
+}
+
+export default SidebarMenu
+```
+handleMenuItemClick 함수에 두번째 인자에 menu.league를 넣어주고 dispatch를 이용해서 보내줬다.
+### 값 가져오기
+```tsx
+import Sidebar from "./components/sidebar/Sidebar"
+import { useSelector } from 'react-redux';
+import { selectActiveLeague } from './redux/leagueSlice';
+
+const App = () => {
+  const league = useSelector(selectActiveLeague);
+
+  return (
+    <div className="flex">
+      <Sidebar />
+      <p>리그 : {league}</p>
+    </div>
+  )
+}
+
+export default App;
+```
