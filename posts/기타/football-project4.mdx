@@ -1,0 +1,170 @@
+---
+title: 개인 사이드 프로젝트 진행기 4 ✨
+description: API 사용해서 연도별로 리그순위와, 득점순위 가져오기
+date: 2023-09-06 08:00
+tags:
+  - 개인프로젝트
+image: /img/etc/sideproject.png
+---
+
+저번에 리그순위를 가져왔는데 이번엔 득점순위를 추가하고, 연도별로 데이터를 가져올 생각이다.
+## 득점순위 가져오기
+```tsx
+const [activeMenu, setActiveMenu] = useState<string>(homeMenulist[0]);
+
+{activeMenu === "리그 순위" && (
+  <LeagueLanks
+    league={league}
+    season={season}
+  />
+)}
+{activeMenu === "득점 순위" && (
+  <LeagueScoreLank 
+    league={league}
+    season={season}
+  />
+)}
+```
+useState에 메뉴0을 초기화로 넣고 득점 순위를 누르면 득점순위 컴포넌트가 보여지고 리그 순위를 넣으면 리그 순위 컴포넌트가 보여지게 구현했다.
+득점순위도 리그순위랑 만드는 방식이 동일하다 
+```tsx
+import useAxios from "../../hook/useAxios"
+import { ScoreLank } from "../../types/Types";
+import Error from "../Error";
+import Loading from "../Loading";
+import LeagueScoreThead from "./LeagueScoreThead";
+import LeagueScoretbody from "./LeagueScoretbody";
+
+interface LeagueScoreLankProps {
+  league: string
+  season: number
+}
+
+const LeagueScoreLank:React.FC<LeagueScoreLankProps> = ({league,season}) => {
+  const { response, error, loading } = useAxios<ScoreLank>(
+    `/v4/competitions/${league}/scorers?season=${season}`
+  );
+
+  if(loading){
+    return <Loading />
+  }
+
+  if(error){
+    return <Error />
+  }  
+
+  const LankScorers = response?.scorers
+  return (
+    <table className="border-collapse border border-gray-300 text-sm md:text-xl mb-24">
+      <LeagueScoreThead />
+      <tbody>  
+        {LankScorers?.map((lanker, index) =>{
+          return (
+            <LeagueScoretbody 
+              key={lanker.player.id} 
+              lanker={lanker}
+              index={index}
+            />
+          )
+        })}
+      </tbody>
+    </table>
+  )
+}
+export default LeagueScoreLank
+```
+저 위에서 season은 조금 이따가 옵션으로 넣어서 연도별로 데이터를 가져올 것이다.
+## 연도별로 리그순위 득점왕순위
+Home 컴포넌트에 아래와 같이 코드를 구현했다.
+```tsx
+const Home = () => {
+  const league = useSelector(selectActiveLeague);
+  const [activeMenu, setActiveMenu] = useState<string>(homeMenulist[0]);
+  
+  const [season, setSeason] = useState<number>(2023); 
+  
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newSeason = parseInt(e.target.value, 10);
+    setSeason(newSeason);
+  };
+
+  return (
+    <Container>
+      <div className={'flex flex-col items-start pl-6 pr-2 gap-6'}>
+        <HomeMenu 
+          activeMenu={activeMenu}
+          setActiveMenu={setActiveMenu}
+          homeMenulist={homeMenulist}
+        />
+        <LeagueYearSelectBox season={season} handleChange={handleChange} />
+        {activeMenu === "리그 순위" && (
+          <LeagueLanks
+            league={league}
+            season={season}
+          />
+        )}
+        {activeMenu === "득점 순위" && (
+          <LeagueScoreLank 
+            league={league}
+            season={season}
+          />
+        )}
+      </div>
+    </Container>
+  )
+}
+```tsx
+
+```tsx
+const [season, setSeason] = useState<number>(2023); 
+```
+season은 현재연도로 초기화를 넣어놓고
+```tsx
+const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const newSeason = parseInt(e.target.value, 10);
+  setSeason(newSeason);
+};
+```
+options이 바뀔때마다 season에 값을 변경해줬다. setSeason(e.target.value) 는 e.target.value가 string이기 떄문에 number 타입으로 변환해서 넣어주자
+
+옵션을 선택하는 컴포넌트는 아래의 코드로 구현했다
+
+```tsx
+import React from 'react';
+
+interface LeagueYearSelectBoxProps {
+  season: number;
+  handleChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+}
+
+const LeagueYearSelectBox: React.FC<LeagueYearSelectBoxProps> = ({ season, handleChange }) => {
+
+  const options = [];
+  for (let i = 2023; i >= 2020; i--) {
+    options.push(
+      <option key={i} value={i}>
+        {i}
+      </option>
+    );
+  }
+
+  return (
+    <div>
+      <select
+        className="p-2 border border-violet-600 rounded"
+        value={season}
+        onChange={handleChange}
+      >
+        {options}
+      </select>
+    </div>
+  );
+};
+
+export default LeagueYearSelectBox;
+```
+데이터를 2020까지 되고 2019부터는 가져오기가 안됐다.
+<p align="center">
+  <img src="/img/etc/sideproject3.jpg" alt="사이드프로젝트 이미지" width="900"/>
+</p>
+현재까지 작업화면

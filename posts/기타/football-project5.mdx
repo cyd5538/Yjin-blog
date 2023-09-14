@@ -1,0 +1,146 @@
+---
+title: 개인 사이드 프로젝트 진행기 5 ✨
+description: API 팀 정보 가져와서 데이터 나눠서 표 만들기
+date: 2023-09-06 09:00
+tags:
+  - 개인프로젝트
+image: /img/etc/sideproject.png
+---
+
+이번에는 팀 정보를 가지고 화면을 구성해야 한다.
+## 쿼리 파라미터 
+팀의 id값이 필요하다. 리그 순위에서 팀을 클릭하면 /team 페이지로 team id를 넘겨줄것이다. 아래 방식으로 넘겨주자
+```tsx
+const navigate = useNavigate();
+const openTeam = (id:number) => {
+  navigate({
+    pathname: '/team', 
+    search: `?id=${id}`
+  })
+}
+
+<td onClick={() => openTeam(teamData.team.id)} className="px-4 py-2 flex gap-4 items-center cursor-pointer">
+  <img src={teamData.team.crest} alt="" className='w-8 h-8 md:w-12 md:h-12'/>
+</td>
+```
+팀 컴포넌트에서 아래 방식으로 받아오면 된다
+```tsx
+const [searchParams] = useSearchParams();
+const query = searchParams.get('id');
+```
+## 구조 짜기
+팀페이지는 팀로고랑 제목, 스쿼드 이정도를 넣어야하고 경기일정은 따로 API를 받아와야했다. 우선 팀로고,제목과 스쿼드를 진행했다<br></br>
+Team.tsx 
+```tsx
+import { useSearchParams } from "react-router-dom";
+import useAxios from '../hook/useAxios'
+import Container from '../components/Container';
+import { TeamData } from '../types/Types';
+import TeamTitle from "../components/team/TeamTitle";
+import SquadLists from "../components/team/SquadLists";
+import Loading from "../components/Loading";
+import Error from "../components/Error";
+
+const Team = () => {
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get('id');
+
+  const {response, error, loading} = useAxios<TeamData>(
+    `/v4/teams/${query}`
+  )
+  
+  if(loading){
+    return <Loading />
+  }
+
+  if(error){
+    return <Error />
+  }
+
+  return (
+    <Container>
+      <TeamTitle 
+        name={response?.name} 
+        image={response?.crest} 
+        founded={response?.founded}
+      />
+      {/* <TeamSchedule 
+        query={query}
+      /> 팀 스케줄 */} 
+      <SquadLists 
+        squad={response?.squad}
+      />
+    </Container>
+  )
+}
+
+export default Team
+```
+* TeamTitle: 제목과 로고 창단연도
+* TeamSchedule: 추후 API 연결해서 경기일정 가져오기 (팀ID를 prop으로 넘김)
+* SquadLists: 팀 스쿼드 가져오기
+## SquadLists 컴포넌트 재사용
+SquadLists에서 스쿼드를 가져오면 되는데 포지션 별로 표를 만들고 싶었다. 그렇게 하기위해서 아래와 같이 코드를 짰다
+SquadLists.tsx
+```tsx
+import { TeamSquad } from "../../types/Types"
+import SquadList from "./SquadList";
+
+interface SquadListsProps {
+  squad?: TeamSquad[]
+}
+
+const SquadLists:React.FC<SquadListsProps> = ({squad}) => {
+  return (
+    <div className="flex justify-center">
+      <div className="grid grid-cols-1 gap-12 sm:grid-cols-2">
+        <SquadList squad={squad} label="골키퍼" position="Goalkeeper" />
+        <SquadList squad={squad} label="수비수" position="Defence" />
+        <SquadList squad={squad} label="미드필더" position="Midfield" />
+        <SquadList squad={squad} label="공격수" position="Offence" />
+      </div>
+    </div>
+  )
+}
+export default SquadLists
+```
+SquadList로 제목과 포지션과 squad 데이터를 보내준다.<br></br>
+SquadList.tsx
+```tsx
+import { TeamSquad } from "../../types/Types"
+import SquadTbody from "./SquadTbody"
+import SquadThead from "./SquadThead"
+
+interface SquadListProps {
+  squad?: TeamSquad[]
+  label: string
+  position: string
+}
+
+const SquadList:React.FC<SquadListProps> = ({squad, label, position}) => {
+  const players = squad?.filter(player => player.position === position);
+  
+  return (
+    <div>
+      <h2 className="text-lg text-[#213555] font-bold pb-2">
+        {label}
+      </h2>
+      <table>
+        <SquadThead />
+        <tbody>
+          {players?.map(player => (
+            <SquadTbody key={player.id} player={player}/>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+export default SquadList
+```
+SquadList에서 squad와 position을 사용해서 필터를 처리해주면 포지션별로 표를 만들 수 있다.
+<p align="center">
+  <img src="/img/etc/sideproject4.jpg" alt="사이드프로젝트" width="900"/>
+</p>
+현재까지 작업화면 

@@ -1,0 +1,194 @@
+---
+title: 개인 사이드 프로젝트 진행기 3 ✨
+description: useAxios custom hook으로 api 데이터 처리하기
+date: 2023-09-05 
+tags:
+  - 개인프로젝트
+image: /img/etc/sideproject.png
+---
+
+## 메인 화면 구조 짜기
+```tsx
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { selectActiveLeague } from '../redux/leagueSlice'
+import { homeMenulist } from '../data/menuData';
+import HomeMenu from '../components/home/HomeMenu';
+import LeagueLanks from '../components/home/LeagueLanks';
+import Container from '../components/Container';
+
+const Home = () => {
+  const league = useSelector(selectActiveLeague);
+  const [activeMenu, setActiveMenu] = useState<string>(homeMenulist[0]);
+  
+  return (
+    <Container>
+      <div className={'flex flex-col items-start pl-6 pr-2 gap-6'}>
+        <HomeMenu 
+          activeMenu={activeMenu}
+          setActiveMenu={setActiveMenu}
+          homeMenulist={homeMenulist}
+        />
+        <LeagueLanks
+          league={league}
+        />
+      </div>
+    </Container>
+  )
+}
+
+export default Home
+```
+League는 api에 params로 넣을 데이터고 activeMenu 메뉴는 팀순위와 득점왕순위를 넣어줬다. 일단은 팀순위만 만들었다
+팀순위를 고르면 팀순위를 보여주고 득점왕순위를 고르면 득점왕순위를 보여줄 것이다.
+## useAxios hook 만들기
+```tsx
+import { useState, useEffect, useCallback } from 'react';
+import axios, { AxiosError } from 'axios';
+
+interface UseAxiosResponse<T> {
+  response: T | null;
+  error: AxiosError | null;
+  loading: boolean;
+}
+
+function useAxios<T>(url: string): UseAxiosResponse<T> {
+  const [response, setResponse] = useState<T | null>(null);
+  const [error, setError] = useState<AxiosError | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true)
+      const headers = {
+        'X-Auth-Token': import.meta.env.VITE_API_KEY,
+      };
+      
+      const res = await axios.get(url, { headers }); 
+      setResponse(res.data);
+    } catch (err) {
+      setError(err as AxiosError<unknown>);
+    } finally {
+      setLoading(false);
+    }
+  }, [url]);
+
+  useEffect(() => {
+    fetchData();
+  }, [url, fetchData]); 
+
+  return { response, error, loading };
+}
+
+export default useAxios;
+```
+## useAxios 사용하기
+```tsx
+  const { response, error, loading } = useAxios<LeagueData>(
+    `/v4/competitions/${league}/standings`
+    );
+```
+위에서 만든 훅은 이런식으로 불러와서 사용하면된다. 
+> cors에러가 있었는데 아래와 같이 해결했다
+### vite.config.ts로 cors 해결
+```ts
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react-swc'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    proxy: {
+      '/v4': {
+        target: 'https://api.football-data.org/v4',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/v4/, ''),
+        secure: false,
+        ws: true
+      }
+    }
+  }
+})
+```
+위에처럼 해주면 cors error는 해결이 된다.
+## Home 꾸미기
+```tsx
+    <div className='flex flex-col gap-8 pb-12'>
+      {/* 리그순위 4위까지 */}
+      <div className='flex gap-4'>
+        {response?.standings.map((standing) => (
+          standing.table.slice(0,4).map((teamData, teamIndex) => (
+            <LeagLankfour key={teamIndex} teamData={teamData} />
+          ))
+        ))}
+      </div>
+      {/* 리그 표 테이블 */}
+      <table className="border-collapse border border-gray-300 text-sm md:text-xl">
+        <LeagueLanktHead />
+        <tbody>
+          {response?.standings.map((standing) => (
+            standing.table.slice(0,lankCount).map((teamData, teamIndex) => (
+              <LeagueLanktbody key={teamIndex} teamData={teamData} />
+            ))
+          ))}
+        </tbody>
+      </table>
+      <LeagueLankPlusbtn hideButton={hideButton} handleRankPlus={handleRankPlus}/>
+    </div>
+```
+메인화면 구조는 이런식으로 짰다
+* LeagLankfour : 리그순위 4위까지 카드형식으로 그려줄 컴포넌트
+* LeagueLanktHead : 표 테이블에 thead 컴포넌트
+* LeagueLanktbody : 표 테이블에 tbody에 들어갈 api 데이터
+* LeagueLankPlusbtn : 리그 순위 더보기 컴포넌트
+
+코드를 다 보여주면 너무 많으니까 순위더보기 버튼 구현한 코드만 보자
+```tsx
+  const [lankCount, setlankCount] = useState<number>(10); // 순위 처음에 10위까지만
+  const [hideButton, setHideButton] = useState<boolean>(false); // 더보기 한 번 누르면 사라지게
+  const totalTeams = 20;
+
+  useEffect(() => {
+    if (lankCount >= totalTeams) {
+      setHideButton(true);
+    } else {
+      setHideButton(false);
+    }
+  }, [lankCount, totalTeams]);
+  
+  // league 바뀔 시 초기화
+  useEffect(() => {
+    setlankCount(10);
+    setHideButton(false)
+  }, [league]);
+  
+  // 리그 더보기 함수
+  const handleRankPlus = () => {
+    if (lankCount >= totalTeams) {
+      return;
+    }
+    setlankCount(prevCount => prevCount + 10);
+
+    if (lankCount + 10 >= totalTeams) {
+      setHideButton(true);
+    }
+  };
+```
+각각 리그 참여하는 팀이 다르지만 20개 팀이 최대다. 처음에 10개만 보여주고 버튼을 한 번 누르면 사라지게 구현했다.
+문제점은 league를 다른 걸 클릭하면 lankCount,hideButton은 그대로 있어서
+```tsx
+  useEffect(() => {
+    setlankCount(10);
+    setHideButton(false)
+  }, [league]);
+```
+이렇게 초기화를 해줘야된다.
+<p align="center">
+  <img src="/img/etc/sideproject1.jpg" width="700"/>
+</p>
+<p align="center">
+  <img src="/img/etc/sideproject2.jpg" width="700"/>
+</p>
+
+지금까지 작업화면이다, 
