@@ -51,9 +51,9 @@ const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo
     scriptElem.crossOrigin = 'anonymous';
 
     scriptElem.setAttribute('data-repo', 'cyd5538/Yjin-blog');
-    scriptElem.setAttribute('data-repo-id', 'R_kgDOKGXk4Q');
+    scriptElem.setAttribute('data-repo-id', 'R_kgDOKIzj_A');
     scriptElem.setAttribute('data-category', 'Announcements');
-    scriptElem.setAttribute('data-category-id', 'DIC_kwDOKGXk4c4CYkG_');
+    scriptElem.setAttribute('data-category-id', 'DIC_kwDOKIzj_M4CYtG4');
     scriptElem.setAttribute('data-mapping', 'pathname');
     scriptElem.setAttribute('data-strict', '1');
     scriptElem.setAttribute('data-reactions-enabled', '1');
