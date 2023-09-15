@@ -1,0 +1,237 @@
+---
+title: 개인 사이드 프로젝트 진행기 6 ✨
+description: 팀 경기 일정 적용하기, React-swiper 적용하기, React-sipwer buttn custom 하기
+date: 2023-09-08 09:00
+tags:
+  - 개인프로젝트
+image: /img/etc/sideproject.png
+---
+
+경기일정 API를 적용하고, React-swiper를 사용해서 슬라이더를 구현하려고 했는데 지난번의 코드에서
+수정할 부분이 있다
+## 코드 수정
+```tsx
+import { useSearchParams } from "react-router-dom";
+import useAxios from '../hook/useAxios'
+import Container from '../components/Container';
+import { TeamData } from '../types/Types';
+import TeamTitle from "../components/team/TeamTitle";
+import SquadLists from "../components/team/SquadLists";
+import Loading from "../components/Loading";
+import Error from "../components/Error";
+ 
+const Team = () => {
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get('id');
+ 
+  const {response, error, loading} = useAxios<TeamData>(
+    `/v4/teams/${query}`
+  )
+  
+  if(loading){
+    return <Loading />
+  }
+ 
+  if(error){
+    return <Error />
+  }
+ 
+  return (
+    <Container>
+      <TeamTitle 
+        name={response?.name} 
+        image={response?.crest} 
+        founded={response?.founded}
+      />
+      {/* <TeamSchedule 
+        query={query}
+      /> 팀 스케줄 */} 
+      <SquadLists 
+        squad={response?.squad}
+      />
+    </Container>
+  )
+}
+ 
+export default Team
+```
+Team 컴포넌트에서 API를 받고 그다음에 TeamSchedule에서 API를 받는 코드였다. 그래서 아래처럼 동시에 API를 받아오는 코드로 바꿨다.
+```tsx
+import { useState, useEffect} from 'react';
+import { useSearchParams } from "react-router-dom";
+import axios from 'axios';
+import Container from '../components/Container';
+import TeamTitle from "../components/team/TeamTitle";
+import SquadLists from "../components/team/SquadLists";
+import Loading from "../components/Loading";
+import Error from "../components/Error";
+import TeamSchedules from "../components/team/TeamSchedules";
+import { TeamData, ResultSet } from '../types/Types';
+
+const Team = () => {
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get('id');
+  const [teamData, setTeamData] = useState<TeamData>();
+  const [schedulesData, setSchedulesData] = useState<ResultSet>();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const headers = {
+    'X-Auth-Token': import.meta.env.VITE_API_KEY,
+  };
+
+  useEffect(() => {
+    Promise.all([
+      axios.get(`/v4/teams/${query}`, { headers }),
+      axios.get(`/v4/teams/${query}/matches/`, { headers }),
+    ])
+      .then(([teamResponse, schedulesResponse]) => {
+        setTeamData(teamResponse.data); 
+        setSchedulesData(schedulesResponse.data); 
+        setLoading(false); 
+      })
+      .catch(error => {
+        setError(error); 
+        setLoading(false); 
+      });
+  }, []);
+
+  if (loading) {
+    return <Loading />;
+  }
+
+  if (error) {
+    return <Error />;
+  }
+
+  return (
+    <Container>
+      <div className='flex flex-col items-start'>
+        <TeamTitle 
+          name={teamData?.name} 
+          image={teamData?.crest} 
+          founded={teamData?.founded}
+        />
+        <TeamSchedules 
+          schedulesData={schedulesData}
+        />
+        <SquadLists 
+          squad={teamData?.squad}
+        />
+      </div>
+    </Container>
+  )
+}
+
+export default Team
+```
+## 데이터 필터링
+팀 스케줄을 가져왔는데 지난 경기와, 앞으로의 경기 일정을 나눠야 했다.<br></br>
+TeamSchedules.tsx
+```tsx
+const TeamSchedules: React.FC<TeamSchedulesProps> = ({ schedulesData }) => {
+
+  const currentDate = new Date();
+
+  const pastMatches = schedulesData?.matches.filter(match => {
+    const matchDate = new Date(match.utcDate);
+    return matchDate <br currentDate;
+  }).reverse();
+
+  const futureMatches = schedulesData?.matches.filter(match => {
+    const matchDate = new Date(match.utcDate);
+    return matchDate >= currentDate;
+  });
+
+
+  return (
+    <div className='pb-12 flex flex-col items-center'>
+      <TeamSchedule 
+        label="경기 일정"
+        data={futureMatches}
+      />
+      <TeamSchedule 
+        label="지난경기 결과"
+        data={pastMatches}
+      />
+    </div>
+  );
+};
+```
+이런식으로 나눠서 데이터를 넣어줬다.
+## React-swiper 사용해서 슬라이드
+사용법은 아래와 같다.<br></br>
+TeamSchedule.tsx
+```tsx
+import { Navigation } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+import 'swiper/css';
+import 'swiper/scss/navigation';
+
+
+      <Swiper
+        modules={[Navigation]}
+        navigation={true}
+        className="w-[370px] lg:w-[800px] md:w-[600px]"
+        breakpoints={{
+          1024: {
+            slidesPerView: 4,
+            spaceBetween: 30
+          },
+          750: {
+            slidesPerView: 3,
+            spaceBetween: 20
+          },
+          400: {
+            slidesPerView: 2,
+            spaceBetween: 10
+          },
+        }}
+      >
+        {data?.map((match) => (
+          <SwiperSlide key={match.id}>
+            <Schedule 
+              match={match}
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+```
+Swiper 여러가지 옵션이 있는데 나는 navigation, breakpoints을 사용했다
+* navigation: 슬라이드 버튼
+* breakpoints: 반응형을 위한 props 
+> swiper options <br></>
+> https://swiperjs.com/react#swiper-props
+## swiper button custom
+버튼이 맘에 안들어서 커스텀 디자인을 아래와 같이 적용했다 <br></br>
+index.css
+```tsx
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  display: none 
+}
+
+.swiper-button-next {
+  background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWFycm93LXJpZ2h0Ij48cGF0aCBkPSJNNSAxMmgxNCIvPjxwYXRoIGQ9Im0xMiA1IDcgNy03IDciLz48L3N2Zz4=) no-repeat;
+  background-position: center;
+  width: 30px;
+  height: 30px;
+  transition: all ease-in 0.3s;
+  background-color: rgb(228, 226, 255);
+  border-radius: 50%;
+}
+.swiper-button-prev {
+  background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWFycm93LWxlZnQiPjxwYXRoIGQ9Im0xMiAxOS03LTcgNy03Ii8+PHBhdGggZD0iTTE5IDEySDUiLz48L3N2Zz4=) no-repeat;
+  background-position: center;
+  width: 30px;
+  height: 30px;
+  transition: all ease-in 0.3s;
+  background-color: rgb(228, 226, 255);
+  border-radius: 50%;
+}
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+  background-color: rgb(176, 172, 255);
+}
+``` 
