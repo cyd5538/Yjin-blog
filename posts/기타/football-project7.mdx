@@ -1,0 +1,97 @@
+---
+title: 개인 사이드 프로젝트 진행기 7 ✨
+description: Match API 이용하기.
+date: 2023-09-10
+tags:
+  - 개인프로젝트
+image: /img/etc/sideproject.png
+---
+
+> 이전의 만들었던 경기일정과 경기 결과의 Match들을 클릭하면 Match에 맞는 API를 가져올 생각이다.
+
+## API 호출하기
+두 개의 api를 호출해야 한다.
+* `/v4/matches/{id}`: 특정 경기의 대한 정보를 가져옴
+* `/v4/matches/{id}/head2head`: 두 경기 팀의 이전 맞대결 기록을 가져옴.
+
+Match.tsx
+```tsx
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom';
+import { MatchData, TeamMatch } from '../types/Types';
+import axios from 'axios';
+import Container from '../components/Container'
+import Loading from '../components/Loading';
+import Error from '../components/Error';
+import MatchTeamData from '../components/Match/MatchTeamData';
+import MatchPrevData from '../components/Match/MatchPrevData';
+import MatchTitle from '../components/Match/MatchTitle';
+
+const Match = () => {
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get('id');
+
+  const [matchdata, setMatchdata] = useState<TeamMatch>()
+  const [prevData, setPrevdata] = useState<MatchData>()
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState(null);
+
+  const headers = {
+    'X-Auth-Token': import.meta.env.VITE_API_KEY,
+  };
+
+  useEffect(() => {
+    Promise.all([
+      axios.get(`/v4/matches/${query}`, { headers }),
+      axios.get(`/v4/matches/${query}/head2head?limit=100`, { headers }),
+    ])
+      .then(([matchdResponse, prevResponse]) => {
+        setMatchdata(matchdResponse.data); 
+        setPrevdata(prevResponse.data); 
+        setLoading(false); 
+      })
+      .catch(error => {
+        setError(error); 
+        setLoading(false); 
+      });
+  }, []);
+
+  if (loading) {
+    return <Loading />;
+  }
+
+  if (error) {
+    return <Error />;
+  }
+  
+  return (
+    <Container>
+      <MatchTitle data={matchdata}/>
+      <div className='flex justify-center items-center mt-10'>
+        <div className='flex flex-col gap-8 justify-center items-center lg:flex-row lg:gap-24'>
+          <MatchTeamData 
+            data={matchdata}
+            prevData={prevData}
+          />
+          <MatchPrevData 
+            data={prevData}
+          />
+        </div>
+      </div>
+    </Container>
+  )
+}
+
+export default Match
+```
+searchParams을 사용해서 match?id=435993 id값을 가져와서 query에 넣어줬다.
+###  `/v4/matches/{id}` 사용하기
+`/v4/matches/{id}` API example을 보면 홈팀 어웨이팀 라인업, 포메이션, 경기내용, 누가 득점을 했는지 등이 나와있었는데. API를 호출하니까 값이 없었다.
+돈을 내야 위의 값들이 포햄돼서 나오는거였다.🤦‍♂️ 그래서 팀 로고와 팀 이름만 가져왔다..
+###  `/v4/matches/{id}/head2head` 사용하기
+여기에는 역대전적과 결과가 나와있다. limit=100으로 설정하면 100경기의 상대전적이 나온다. 그리고 배열로 역대경기 결과과 나오는데
+배열안의 경기결과가 몇 개 안들어있다.🤦‍♂️ 돈을 내야 더 들어오나보다.
+<p align="center">
+  <img src="/img/etc/sideproject6.jpg" width="800"/>
+</p>
+역대 전적과, 과겨 경기결과가 몇개 들어있는 모습.
