@@ -24,15 +24,15 @@ function page() {
       <Title title="🖐"/>
       <SubTitle subtitle="프론트엔드 취준생 YJIN의 블로그입니다."/>
       <HomeTitle title="Recent Post"/>
-      <div className="mt-10 grid gap-4 justify-center md:grid-cols-2 grid-cols-1">
-        {posts.slice(0, 4).map((post, idx) => (
+      <div className="mt-10 grid gap-4 justify-center md:grid-cols-3 grid-cols-1">
+        {posts.slice(0,6).map((post, idx) => (
           <PostCard key={idx} {...post} />
         ))}
       </div>
       <Plus title="All post" url="/posts"/>
       <HomeTitle title="Recent Memo"/>
       <div className='mt-10 grid gap-4 justify-center md:grid-cols-3 grid-cols-1'>
-        {memos.slice(0,3).map((post: Post) => (
+        {memos.slice(0,4).map((post: Post) => (
           <Memopost key={post.title} {...post} />
         ))}
       </div>

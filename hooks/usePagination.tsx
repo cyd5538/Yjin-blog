@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { compareDesc } from 'date-fns';
 import { Post } from 'contentlayer/generated';
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 12;
 
 const usePagination = (data: Post[], category: string) => {
   const [currentPage, setCurrentPage] = useState(1);

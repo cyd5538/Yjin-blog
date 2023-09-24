@@ -78,7 +78,7 @@ const Tag = () => {
         ))}
       </div>
       <TagTitle title={`${search as string} 태그에 대한 블로그`} length={filteredPosts.length as number} />
-      <div className='mt-10 grid gap-4 justify-center md:grid-cols-2 grid-cols-1'>
+      <div className='mt-10 grid gap-4 justify-center md:grid-cols-3 grid-cols-1'>
         {currentData.map((post: Post) => (
           <PostCard key={post.title} {...post} />
         ))}

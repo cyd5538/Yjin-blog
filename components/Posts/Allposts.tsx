@@ -37,7 +37,7 @@ const Allposts = ({ params }: { params: { slug: string } }) => {
     <div className='pb-32'>
       <Title title="Blog"/>
       <SubTitle subtitle="공부한 것을 기록하는 블로그 페이지입니다."/>
-      <ul className='flex gap-4 text-2xl'>
+      <ul className='flex gap-4 text-2xl flex-wrap justify-center items-center'>
         <li className={`flex gap-2 items-center`}>
           <Link className='flex items-center gap-2' href="/posts">
             <p className={`${categoery === "" ? "underline underline-offset-8" : ""} font-bold`}>All post</p>
