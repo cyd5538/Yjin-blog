@@ -1,0 +1,108 @@
+---
+title: TCP와 UDP의 차이
+description: TCP와 UDP는 OSI 모델의 전송 계층에서 사용되는 프로토콜로, 연결 지향적인 TCP와 신속성을 추구하는 UDP의 차이를 알아보자.
+date: 2023-09-15
+tags:
+  - 네트워크
+image: /img/network/networkTcpUdp.jpg
+---
+
+**TCP와 UDP는 OSI 7 계층들 중 TCP/IP의 <u>전송 계층</u>에서 사용되는 프로토콜이다.<br></br>
+TCP와 UDP는 포트 번호를 이용하여 주소를 지정하는것과 데이터 오류검사를 위한 체크섬 존재하는 두가지 공통점을 가지고 있지만 
+정확성(TCP)을 추구할지 신속성(UDP)을 추구할지를 구분하여 나눈다.<br></br>**
+
+> **전송 계층**은 송신자와 수신자를 연결하는 통신서비스를 제공하는 계층이다.
+
+# TCP(Transmission Control Protocol)란
+TCP (Transmission Control Protocol)는 OSI 모델의 전송 계층 (Layer 4)에서 동작하는 프로토콜로 **연결 지향적 프로토콜**이다.
+TCP는 서버와 클라이언트 간에 데이터를 **신뢰성** 있게 전달한다.
+
+## TCP 특징
+- 연결형 서비스로 가상 회선 방식을 제공한다.
+- 3-way handshaking과정을 통해 연결을 설정하고 4-way handshaking을 통해 해제한다.
+- 흐름 제어 및 혼잡 제어.
+- 높은 신뢰성을 보장한다.
+- UDP보다 속도가 느리다.
+- 전이중(Full-Duplex), 점대점(Point to Point) 방식
+
+## 3 way handshake (연결)
+<p align="center">
+  <img src="/img/network/3way.jpg" width="600"/>
+</p>
+TCP 통신을 위한 네트워크 연결은 3 way handshake 이라는 방식으로 연결된다.
+3way handshake 방식은 서로의 통신을 위한 관문(port)을 확인하고 연결하기 위하여 3번의 요청/응답 후에 연결이 되는 것을 말한다.
+
+**연결과정**
+1. Client에서 Server에 연결 요청을 하기위해 SYN 데이터를 보낸다.
+2. Server에서 해당 포트는 LISTEN 상태에서 SYN 데이터를 받고 SYN_RCV로 상태가 변경된다.
+3. 그리고 요청을 정상적으로 받았다는 대답(ACK)와 Client도 포트를 열어달라는 SYN 을 같이 보낸다.
+4. Client에서는 SYN+ACK 를 받고 ESTABLISHED로 상태를 변경하고 서버에 ACK 를 전송한다.
+5. ACK를 받은 서버는 상태가 ESTABLSHED로 변경된다. 
+
+> **SYN(synchronize sequence numbers)** - 연결 확인을 보내는 무작위의 숫자 값 <br></br>
+> **ACK(acknowledgements)** - Client 혹은 Server로부터 받은 SYN에 1을 더해 SYN을 잘 받았다는 ACK
+
+
+| 상태          | 설명                                    |
+|---------------|-----------------------------------------|
+| CLOSED        | 연결 수립을 시작하기 전의 기본 상태 (연결 없음) |
+| LISTEN        | 포트가 열린 상태로 연결 요청 대기 중           |
+| SYN-SENT      | SYN을 요청한 상태                           |
+| SYN-RECEIVED  | SYN 요청을 받고 상대방의 응답을 기다리는 중  |
+| ESTABLISHED   | 연결 수립이 완료된 상태, 서로 데이터를 교환할 수 있다. |
+
+## 4-way handshake (해제)
+<p align="center">
+  <img src="/img/network/4way.jpg" width="600"/>
+</p>
+3 way handshake와 반대로 가상 회선 연결을 해제할 때 주고 받는 확인작업이다. 이 작업은 4번의 확인과정을 거친다.
+
+**연결과정**
+1. 클라이언트가 서버에게 연결을 종료하겠다는 FIN 플래그가 설정된 패킷을 보낸다.
+2. 서버는 확인했다고 알려주기 위해 ACK 플래그가 설정된 패킷을 보낸 후, 자신의 통신이 끝날 때까지 기다린다. (TIME_WAIT) 이때 자신이 전송할 패킷이 남아있다면 이어서 전송한다.
+3. 서버의 통신이 끝났으면 연결 종료 요청에 합의한다는 의미로 클라이언트에게 FIN 플래그가 설정된 패킷을 보낸다.
+4. 클라이언트는 확인했다는 의미로 ACK 플래그가 설정된 패킷을 보낸다.
+5. 연결이 종료된다.
+
+> **TIME-WAIT** : 먼저 연결을 끊는 쪽에서 생성되는 소켓으로, 혹시 모를 전송 실패에 대비하기 위해 존재하는 소켓이며,
+TIME-WAIT이 없다면, 패킷의 손실이 발생하거나 통신자 간 연결 해제가 제대로 되지 않을 수 있다.
+
+| 상태          | 설명                                    |
+|---------------|-----------------------------------------|
+| ESTABLISHED   | 연결 수립이 완료된 상태, 서로 데이터를 교환할 수 있다. |
+| FIN-WAIT-1    | 자신이 보낸 FIN에 대한 ACK를 기다리거나 상대방의 FIN을 기다린다. |
+| FIN-WAIT-2    | 자신이 보낸 FIN에 대한 ACK를 받았고, 상대방의 FIN을 기다린다. |
+| CLOSE-WAIT    | 상대방의 FIN(종료 요청)을 받은 상태. 상대방 FIN에 대한 ACK를 보내고 어플리케이션에 종료를 알린다. |
+| LAST-ACK      | COLSE-WAIT 상태를 처리 후 자신의 FIN 요청을 보낸 후 FIN에 대한 ACK를 기다리는 상태. |
+| TIME-WAIT     | 모든 FIN에 대한 ACK를 받고 연결 종료가 완료된 상태. 새 연결과 겹치지 않도록 일정 시간 기다린 후 CLOSED로 전이 한다. |
+| CLOSED        | 연결 수립을 시작하기 전의 기본 상태 (연결 없음) |
+
+# UDP(User Datagram Protocol)
+UDP(User Datagram Protocol)는 전송계층의 <u>비연결</u> 지향적 프로토콜이다.<br></br>
+비연결 지향적이란 데이터를 주고받을 때 연결 절차를 거치지 않고 발신자가 일방적으로 데이터를 발신하는 방식을 의미한다. 
+UDP는 TCP와 다르게 연결 설정하고 해제하는 과정이 없어서 속도는 빠르지만 신뢰성 있는 데이터 전송은 보장하지 못하기 떄문에 실시간 서비스 등에 사용된다.
+
+## UDP의 특징
+- 비연결형 서비스로 연결 없이 통신이 가능하며 데이터그램 방식을 제공
+- TCP보다 전송속도가 빠르다
+- 신뢰성 없는 데이터를 전송
+- 패킷 오버헤드가 적어 네트워크 부하가 감소
+- 1:1 & 1:N & N:N 통신이 가능
+
+# TCP vs UDP
+
+| 프로토콜 종류 | TCP | UDP |
+| --- | --- | --- |
+| 연결 방식 | 연결형 서비스 | 비연결형 서비스 |
+| 패킷 교환 방식 | 가상 회선 방식 | 데이터그램 방식 |
+| 전송 순서 | 전송 순서 보장 | 전송 순서가 바뀔 수 있음 |
+| 수신 여부 확인 | 수신 여부를 확인함 | 수신 여부를 확인하지 않음 |
+| 통신 방식 | 1:1 통신 | 1:1 OR 1:N OR N:N 통신 |
+| 신뢰성 | 높다. | 낮다. |
+| 속도 | 느리다. | 빠르다. |
+
+> 출처 <br></br>
+> https://dev-coco.tistory.com/144<br></br>
+> https://seongonion.tistory.com/74<br></br>
+> https://coding-factory.tistory.com/614<br></br>
+> https://steady-coding.tistory.com/505
