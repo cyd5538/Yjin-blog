@@ -89,7 +89,7 @@ const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo
           style={{ width: `${progress}%` }}
         ></div>
       </div>
-      <div  className="flex w-ful justify-center gap-2 border-b-[1px] border-white dark:border-violet-700">
+      <div  className="flex w-ful justify-center gap-2 ">
         <div ref={heightRef} className="w-[750px] h-fit flex flex-col pb-32">
           <div className="flex flex-col p-2 ">
             <p className="mb-4 text-left">

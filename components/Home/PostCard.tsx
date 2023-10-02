@@ -6,7 +6,7 @@ import Image from 'next/image';
 function PostCard(post: Post) {
   
   return (
-    <div className="max-w-sm w-80 rounded overflow-hidden shadow-lg mx-auto my-2">
+    <div className="max-w-sm w-80 rounded overflow-hidden shadow-lg dark:bg-zinc-900 mx-auto my-2">
       <div className='w-full h-48'>
         <Image
           src={post?.image as string}
