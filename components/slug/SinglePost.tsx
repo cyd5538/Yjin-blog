@@ -8,7 +8,6 @@ import MDXComponents from "@/utils/mdxcomponents";
 import PostToc from "@/components/slug/PostToc";
 import NextPrev from "@/components/slug/PrevNext";
 import { Post  } from "contentlayer/generated";
-import useProgress from '@/hooks/useProgress';
 import Link from 'next/link';
 
 interface SinglePostProps {
@@ -25,7 +24,6 @@ const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo
   const [divHeight, setDivHeight] = useState<number | undefined>(undefined);
   const heightRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
-  const { progress } = useProgress();
 
   const { resolvedTheme } = useTheme() 
   const theme = resolvedTheme === 'dark' ? 'dark' : 'light';
@@ -83,12 +81,6 @@ const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo
   
   return (
     <div className="flex w-full flex-col gap-2 pb-32 p-2">
-      <div className='fixed top-0 left-0 w-full h-1 bg-white dark:bg-zinc-300'>
-        <div
-          className="h-full bg-violet-600 absolute dark:bg-zinc-950"
-          style={{ width: `${progress}%` }}
-        ></div>
-      </div>
       <div  className="flex w-ful justify-center gap-2 ">
         <div ref={heightRef} className="w-[750px] h-fit flex flex-col pb-32">
           <div className="flex flex-col p-2 ">

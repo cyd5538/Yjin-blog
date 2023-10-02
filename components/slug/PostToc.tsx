@@ -6,6 +6,7 @@ import { ClipboardCopy } from "lucide-react";
 import useCopyClipBoard from "@/hooks/useCopy";
 import { useToast } from "@/components/ui/use-toast"
 import clsx from "clsx";
+import useProgress from "@/hooks/useProgress";
 
 type PostTocType = {
   height : number | undefined
@@ -24,6 +25,7 @@ const PostToc = ({ toc, slugs, height }: PostTocType) => {
   const pathname = usePathname()
 
   const [isCopy, onCopy] = useCopyClipBoard();
+  const { progress } = useProgress();
 
   const handleCopyClipBoard = (text: string) => {
     onCopy(text);
@@ -59,8 +61,8 @@ const PostToc = ({ toc, slugs, height }: PostTocType) => {
     const handleScroll = () => {
       if (tocRef.current && height) {
         const scrollY = window.scrollY;
-
-        if (scrollY >= height - 300) {
+        console.log(scrollY,height)
+        if (scrollY >= height - 200) {
           tocRef.current.classList.add('hidden');
         } else {
           tocRef.current.classList.remove('hidden');
@@ -77,6 +79,12 @@ const PostToc = ({ toc, slugs, height }: PostTocType) => {
 
   return (
     <div ref={tocRef} className="fixed top-28 w-[300px] rounded-2xl p-4 bg-violet-600 text-white drop-shadow-md dark:bg-zinc-900 dark:text-white border-black dark:border-white">
+      <div className='fixed top-[5%] left-0 w-2 h-[92%] bg-violet-600 dark:bg-zinc-900'>
+        <div
+          className="w-full absolute bg-white"
+          style={{ height: `${progress}%` }}
+        ></div>
+      </div>
       <h3 className="font-bold pb-4">목차</h3>
       <ul className="flex flex-end w-full flex-col gap-[1px] border-l-[1px] pl-2 border-white">
         {toc.map((heading) => {
