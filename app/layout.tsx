@@ -60,8 +60,8 @@ export default function RootLayout({
             <Nav />
             <Container>
               {children}
-              <Footer />
             </Container>
+            <Footer />
           </div>
         </ThemeProvider>
       </body>
