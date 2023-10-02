@@ -28,6 +28,7 @@ const usePagination = (data: Post[], category: string) => {
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
+    window.scrollTo(0, 0);
   };
 
   return {
