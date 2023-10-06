@@ -16,7 +16,7 @@ const Allpost:React.FC<AllpostProps> = ({categoery}) => {
 
   return (
     <div>
-      <div className='mt-10 grid gap-2 justify-center md:grid-cols-3 grid-cols-1'>
+      <div className='mt-10 grid gap-1 justify-center items-center md:grid-cols-2 lg:grid-cols-3 grid-cols-1'>
         {currentData.map((post: Post) => (
           <PostCard key={post.title} {...post} />
         ))}
