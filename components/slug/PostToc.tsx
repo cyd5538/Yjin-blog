@@ -78,8 +78,8 @@ const PostToc = ({ toc, slugs, height }: PostTocType) => {
   }, [height]);
 
   return (
-    <div ref={tocRef} className="fixed top-28 w-[300px] rounded-2xl p-4 bg-violet-600 text-white drop-shadow-md dark:bg-zinc-900 dark:text-white border-black dark:border-white">
-      <div className='fixed top-[5%] left-0 w-2 h-[92%] bg-violet-600 dark:bg-zinc-900'>
+    <div ref={tocRef} className="fixed top-28 w-[300px] rounded-2xl p-4 bg-violet-400 text-white drop-shadow-md dark:bg-zinc-900 dark:text-white border-black dark:border-white">
+      <div className='fixed top-[5%] left-0 w-2 h-[92%] bg-violet-500 dark:bg-zinc-800'>
         <div
           className="w-full absolute bg-white"
           style={{ height: `${progress}%` }}
