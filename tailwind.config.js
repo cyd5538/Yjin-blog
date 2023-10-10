@@ -22,16 +22,19 @@ module.exports = {
       typography: {
         DEFAULT: {
           css: {
+            h1: {
+              'font-size': '1.8em'
+            },
             h2: {
-              'font-size': '1.75em'
+              'font-size': '1.6em'
             },
             h3: {
-              'font-size': '1.5em'
+              'font-size': '1.3em'
             },
             u : {
               'text-decoration-style': 'wavy',
-              'text-underline-offset' : "0.3em",
-              "text-decoration-color" : 'rgb(192,192,192)'
+              'text-underline-offset' : "0.5em",
+              "text-decoration-color" : 'rgb(139,92,246)'
             },
             'blockquote': {
               overflow: 'hidden', 
