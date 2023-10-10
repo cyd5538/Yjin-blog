@@ -81,9 +81,9 @@ const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo
   
   return (
     <div className="flex w-full flex-col gap-2 pb-32 p-2">
-      <div  className="flex w-ful justify-center gap-2 ">
+      <div className="flex w-ful justify-center gap-2 pl-1 pb-1">
         <div ref={heightRef} className="w-[750px] h-fit flex flex-col pb-32">
-          <div className="flex flex-col p-2 ">
+          <div className="flex flex-col">
             <p className="mb-4 text-left">
               {format(parseISO(post.date), "yy-MM-dd")}
             </p>
@@ -102,11 +102,11 @@ const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo
                     query: { tag: `${tag}` }
                   }}
                 >
-                  <li className='rounded-md bg-violet-600 text-white dark:bg-zinc-700 pl-2 pr-2 hover:bg-violet-400 dark:hover:bg-zinc-800'>{tag}</li>
+                  <li className='rounded-md  bg-violet-500 text-white dark:bg-zinc-700 pl-2 pr-2 hover:bg-violet-300 dark:hover:bg-zinc-800'>{tag}</li>
                 </Link>
               )}
             </ul>
-            <article className="max-w-none w-[350px] min-[400px]:w-[390px] min-[500px]:w-[490px] min-[600px]:w-[560px] min-[700px]:w-[660px] min-[760px]:w-[750px]  prose dark:prose-invert">
+            <article className="max-w-none w-[400px] min-[470px]:w-[440px] min-[560px]:w-full m-auto prose dark:prose-invert">
               <MDXContent components={{ ...MDXComponents }} />
             </article>
           </div>
