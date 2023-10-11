@@ -18,9 +18,10 @@ interface SinglePostProps {
     slugs : string
     slug : string
   }
+  nextprev?: boolean
 }
 
-const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo }) => {
+const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo, nextprev }) => {
   const [divHeight, setDivHeight] = useState<number | undefined>(undefined);
   const heightRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
@@ -115,7 +116,7 @@ const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo
           <PostToc height={divHeight} toc={post.headings} slugs={params.slugs}/>
         </div>
       </div>
-      <NextPrev postmemo={postmemo} next={nextPost} prev={prevPost}/> 
+      {nextprev && <NextPrev postmemo={postmemo} next={nextPost} prev={prevPost}/> }
       <section ref={ref} />
     </div>
   )
