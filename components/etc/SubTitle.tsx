@@ -4,7 +4,7 @@ interface SubTitleProps {
 
 const SubTitle:React.FC<SubTitleProps> = ({subtitle}) => {
   return (
-    <h2 className="text-3xl font-semibold  mb-12">
+    <h2 className="text-2xl font-semibold  mb-12">
       {subtitle}
     </h2>
   )
