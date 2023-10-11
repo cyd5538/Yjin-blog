@@ -16,9 +16,10 @@ import Image from 'next/image';
 const Nav = () => {
 
   const Links = [
-    { title: '블로그', link: '/posts' },
-    { title: '메모', link: '/memo' },
-    { title: '태그', link: '/tag' },
+    { title: 'Posts', link: '/posts' },
+    { title: 'Memo', link: '/memo' },
+    { title: 'Algorithm', link: '/algorithm' },
+    { title: 'tags', link: '/tag' },
   ];
 
   return (
@@ -36,7 +37,7 @@ const Nav = () => {
           </Link>
         </h1>
         <div className='hidden gap-8 sm:flex items-center'>
-          <ul className="flex gap-10 mr-10">
+          <ul className="flex gap-14 mr-10">
             {Links.map((link) => {
               return <li key={link.title} className='cursor-pointer text-2xl hover:text-gray-200 font-bold'>
                 <Link href={link.link}>
