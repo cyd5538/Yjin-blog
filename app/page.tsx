@@ -9,7 +9,7 @@ import SubTitle from "@/components/etc/SubTitle";
 import Title from "@/components/etc/Title";
 
 function page() {
-  const filteredPosts = allPosts.filter(post => !post._id.startsWith('memo'));
+  const filteredPosts = allPosts.filter(post => !post._id.startsWith('memo') && !post._id.startsWith('코딩테스트'));
   const posts = filteredPosts.sort((a, b) =>
     compareDesc(new Date(a.date), new Date(b.date))
   );
