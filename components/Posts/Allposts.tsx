@@ -19,7 +19,9 @@ const Allposts = ({ params }: { params: { slug: string } }) => {
   },[categoryParams])
 
   const Path:any[] = allPosts
-  .filter(post => !post._id.startsWith('memo') && !post._id.startsWith('코딩테스트'))
+  .filter(post => 
+    !post._id.startsWith('memo') && !post._id.startsWith('코딩테스트')
+  )
   .map((flattend) => flattend._raw.flattenedPath)
 
   const categories = Path.reduce((acc, path) => {

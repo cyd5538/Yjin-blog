@@ -10,7 +10,9 @@ interface AllpostProps {
 }
 
 const Allpost:React.FC<AllpostProps> = ({categoery}) => {
-  const filteredPosts = allPosts.filter(post => !post._id.startsWith('memo') && post._id.startsWith(categoery));
+  const filteredPosts = allPosts.filter(post => 
+    !post._id.startsWith('memo') && !post._id.startsWith('코딩테스트')
+  );
   const sortedPosts = filteredPosts.sort((a, b) => compareDesc(new Date(a.date), new Date(b.date)));
   const { currentPage, currentData, totalPages, handlePageChange } = usePagination(sortedPosts,categoery);
 
