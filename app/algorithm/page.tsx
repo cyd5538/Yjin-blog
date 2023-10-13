@@ -9,9 +9,10 @@ export const metadata: Metadata = {
 }
 
 export default function Home() {
-  const programmers = allPosts.filter((post) => post._id.startsWith('코딩테스트/프로그래머스'));
-  const backjoon = allPosts.filter((post) => post._id.startsWith('코딩테스트/백준'));
-  
+  const posts = allPosts.filter((post) => post._id.startsWith('코딩테스트'))
+  const programmers = posts.filter((post) => post.title.startsWith("프로그래머스"))
+  const backjoon = posts.filter((post) => post.title.startsWith("백준"))
+ 
   return (
     <div className='pb-32'>
       <Title title="Algorithm" />

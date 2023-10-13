@@ -1,5 +1,6 @@
 import SinglePost from '@/components/slug/SinglePost';
 import { Post, allPosts } from 'contentlayer/generated';
+import { Metadata } from 'next';
 
 type Props = {
   params: { slug: string, slugs: string };
@@ -10,11 +11,38 @@ export const generateStaticParams = async () => {
   return staticParams;
 }
 
+export const generateMetadata = ({ params }: Props): Metadata => {
+  const post = allPosts.filter((post: Post) => post._raw.flattenedPath.split("/")[1] === params.slug)[0]
+
+  return {
+    title: post?.title,
+    description: post?.description,
+    openGraph: {
+      title: post?.title,
+      description: post?.description,
+      url: '',
+      siteName: 'Yjin Blog' + post?.title,
+      images: [
+        {
+          url: `${post?.image}`,
+          width: 800,
+          height: 600,
+        },
+        {
+          url: `${post?.image}`,
+          width: 1800,
+          height: 1600,
+          alt: post?.title,
+        },
+      ],
+      locale: 'ko-KR',
+      type: 'website',
+    },
+  };
+};
+
 export default function Home({ params }: Props) {
-  const post = allPosts.filter((post: Post) => {
-    const pathParts = post._raw.flattenedPath.split("/");
-    return pathParts[2] === params.slug;
-  })[0];
+  const post = allPosts.filter((post: Post) => post._raw.flattenedPath.split("/")[1] === params.slug)[0];
 
   return (
     <div className='pb-32'>

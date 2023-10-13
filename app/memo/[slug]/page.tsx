@@ -1,6 +1,7 @@
 import Memo from '@/components/memo/Memo';
 import { Post, allPosts } from 'contentlayer/generated';
 import type { Metadata } from 'next'
+
 type Props = {
   params: { slug: string, slugs: string };
   searchParams: { [key: string]: string | string[] | undefined };
