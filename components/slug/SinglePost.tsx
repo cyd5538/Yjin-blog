@@ -107,7 +107,7 @@ const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo
                 </Link>
               )}
             </ul>
-            <article className="max-w-none w-[400px] min-[470px]:w-[440px] min-[560px]:w-full m-auto prose dark:prose-invert">
+            <article className="max-w-none w-[360px] min-[650px]:w-[630px] min-[630px]:w-[600px] min-[600px]:w-[550px] min-[550px]:w-[520px] min-[520px]:w-[500px] min-[500px]:w-[470px] min-[470px]:w-[440px] min-[440px]:w-[410px] min-[670px]:w-full m-auto prose dark:prose-invert">
               <MDXContent components={{ ...MDXComponents }} />
             </article>
           </div>
