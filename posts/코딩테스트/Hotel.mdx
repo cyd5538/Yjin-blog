@@ -1,0 +1,67 @@
+---
+title: 프로그래머스 Lv2 호텔 대실
+description: 프로그래머스 호텔 대실 with JavaScript
+date: 2023-10-05
+tags:
+  - 프로그래머스
+image: /img/js/js.jpg
+---
+
+# 문제 설명
+호텔을 운영 중인 코니는 최소한의 객실만을 사용하여 예약 손님들을 받으려고 합니다. 한 번 사용한 객실은 퇴실 시간을 기준으로 10분간 청소를 하고 다음 손님들이 사용할 수 있습니다.
+예약 시각이 문자열 형태로 담긴 2차원 배열 book_time이 매개변수로 주어질 때, 코니에게 필요한 최소 객실의 수를 return 하는 solution 함수를 완성해주세요.
+
+# 제한사항
+* 1 ≤ book_time의 길이 ≤ 1,000
+  * book_time[i]는 ["HH:MM", "HH:MM"]의 형태로 이루어진 배열입니다
+    * [대실 시작 시각, 대실 종료 시각] 형태입니다.
+  * 시각은 HH:MM 형태로 24시간 표기법을 따르며, "00:00" 부터 "23:59" 까지로 주어집니다.
+    * 예약 시각이 자정을 넘어가는 경우는 없습니다.
+    * 시작 시각은 항상 종료 시각보다 빠릅니다.
+# 입출력 예
+| book_time                                                      | result |
+| --------------------------------------------------------------- | ------ |
+| [["15:00", "17:00"], ["16:40", "18:20"], ["14:20", "15:20"], ["14:10", "19:20"], ["18:20", "21:20"]] | 3 |
+| [["09:10", "10:10"], ["10:20", "12:20"]] | 1 |
+| [["10:20", "12:30"], ["10:20", "12:30"], ["10:20", "12:30"]] | 3 |
+# 내 풀이
+```js
+   function solution(book_time) {
+    const bookArray = book_time
+    .map(([startTime, endTime]) => {
+      return [TimeChange(startTime), TimeChange(endTime) + 10]
+    })
+    .sort((a,b) => a[0] - b[0])
+
+    const roomArray = [];
+    roomArray.push(bookArray[0][1]);
+
+    for(let i=1; i<bookArray.length; i++) {
+      const [start, end] = bookArray[i];
+
+      let j=0;
+      for(j; j<roomArray.length; j++) {
+        if(start >= roomArray[j]) {
+          roomArray[j] = end;
+          break;
+        }
+      }
+
+      if(roomArray.length === j) {
+        roomArray.push(end);
+      }
+    }
+    return roomArray.length;
+  }
+  const TimeChange = (time) => {
+    const [hour, minute] = time.split(":").map(Number);
+    let result = hour * 60 + minute;
+    return result;
+  }
+```
+1. book_time 을 시간으로 변환 해주고 대실 시작 시간으로 정렬을 해준다.
+2. roomArray 배열을 만들고 정렬한 book_time 0번째 인덱스의 끝나는 시간을 넣어준다.
+3. 이중포문을 사용해 book_time 배열을 돌면서 roomArray 배열의 넣은 대실 끝나는 시간과 book_time에 대실 들어가는 시간을 비교해준다
+4. roomArray에 있는 시간이 book_time의 대실 시작 시간보다 크면 roomArray에 있는 대실 끝나는 시간을 book_time에 끝나는 시간으로 업데이트 해주고 반복문을 탈출한다.
+5. roomArray를 끝까지 돌면 방을 더 만들어줘야되는거니까 roomArray에 대실 끝나는시간을 push해준다.
+6. roomArray.length로 결과값 반환.
