@@ -1,0 +1,76 @@
+---
+title: (자료구조) 스택(Stack)과 큐(Queue)
+description: 자료구조 스택(Stack)과 큐(Queue)에 대해서 알아보자!
+date: 2023-10-1
+tags:
+  - 자료구조
+image: /img/dataStructure/stackqueue.jpg
+---
+
+# 스택(Stack)
+* 스택은 가장 최근에 추가된 데이터가 가장 먼저 처리된다 FIFO(First In First Out)
+* 배열에서 push와 pop으로 간단하게 구현할 수 있다.
+* 함수 호출 스택, 실행 취소 기능, 브라우저의 뒤로 가기 등에서 활용한다.
+<p align="center">
+  <img src="/img/dataStructure/stack.jpg" alt="node" width="900" />
+</p>
+```js
+class Stack {
+  constructor() {
+    this._arr = [];
+  }
+  // 데이터를 집어넣는 push
+  push(item) {
+    this._arr.push(item);
+  }
+  // 데이터를 추출하는 pop
+  pop() {
+    return this._arr.pop();
+  }
+
+  // 맨 나중에 집어넣은 데이터를 확인하는 peek
+  peek() {
+    return this._arr[this._arr.length - 1];
+  }
+}
+
+const stack = new Stack();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+stack.pop(); // 3
+```
+
+# 큐(Queue)
+* 큐는 가장먼저 들어온 데이터가 가장 먼저 나가는 First In First Out (FIFO)
+* 배열에서 unshift, shift으로 간단하게 구현할수 있다.
+* 은행창구 번호표 대기, 프린터의 인쇄 대기열, 음식점에서 줄을 서서 기다리는 곳 등에서 활용한다.
+
+
+<p align="center">
+  <img src="/img/dataStructure/queue.jpg" alt="node" width="900" />
+</p>
+```js
+class Queue {
+  constructor() {
+    this._arr = [];
+  }
+  enqueue(item) {
+    this._arr.push(item);
+  }
+  dequeue() {
+    return this._arr.shift();
+  }
+}
+
+const queue = new Queue();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+queue.dequeue(); // 1
+```
+
+> 참고<br></br>
+> https://helloworldjavascript.net/pages/282-data-structures.html <br></br>
+> https://ko.wikipedia.org/wiki <br></br>
+> https://www.youtube.com/watch?v=Nk_dGScimz8
