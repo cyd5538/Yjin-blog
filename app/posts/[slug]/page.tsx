@@ -2,6 +2,7 @@ import { Post, allPosts } from "contentlayer/generated";
 import { Metadata } from "next";
 import { compareDesc } from "date-fns";
 import SinglePost from "@/components/slug/SinglePost";
+import NotFound from "@/app/not-found";
 
 type Props = {
   params: { slug: string, slugs: string };
@@ -43,7 +44,10 @@ export const generateMetadata = ({ params }: Props): Metadata => {
 };
 
 const PostLayout = ({ params }: Props) => {
-  const post = allPosts.filter((post) => post._raw.flattenedPath.endsWith(params.slug))[0];
+  const post = allPosts
+  .filter(post => !post._id.startsWith('memo') && !post._id.startsWith('코딩테스트'))
+  .filter((post) => post._raw.flattenedPath.endsWith(params.slug))[0];
+  
   const postSort = allPosts
   .filter(post => !post._id.startsWith('memo'))
   .sort((a, b) =>
@@ -51,7 +55,7 @@ const PostLayout = ({ params }: Props) => {
   );
 
   if(!post){
-    return 
+    return <NotFound />
   }
 
   return (
