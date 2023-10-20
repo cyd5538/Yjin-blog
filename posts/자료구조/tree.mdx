@@ -1,0 +1,76 @@
+---
+title: (자료구조) 트리(tree)와 이진트리(binary tree)
+description: 자료구조 트리(tree)와 이진트리(binary tree)의 대해 알아보자.
+date: 2023-10-05
+tags:
+  - 자료구조
+image: /img/dataStructure/linkedlist.jpg
+---
+
+# 트리(Tree)
+트리(Tree)는 계층적인 구조를 나타내는 비선형 자료구조다. 트리(Tree)라는용어는 그림으로 나타낼 때 노드들이 가지처럼 연결되어 있다는 모습때문에 트리라게 불리게 되었다.
+
+## 트리 용어
+<p align="center">
+  <img src="/img/dataStructure/tree.jpg" alt="node" width="1000" />
+</p>
+* Root: 부모가없는 가장 상위에 있는 노드 (A)
+* Parent: 자식 노드를 가진 부모 노드 (B는 D,E의 parent 노드다.)
+* Child: 부모 노드의 하위 노드 (D,E는 B의 child 노드다.)
+* Sibling: 같은 부모 노드의 자식을 형제 노드(D,E)
+* Leaf Nodes:  자식 노드가 없는 노드 (K, L, M, N, O, P)
+* Level: 노드의 레벨로 해당 노드까지의 경로에 있는 에지 개수(루트 노드는 0레벨)
+## 트리 특징
+1. 계층적 구조: 부모와 자식의 계층적인 관계다.
+2. 탐색: 트리의 주된 목적은 데이터 저장보다 데이터를 효과적으로 탐색하는 것이다.
+3. 사이클X: 트리는 사이클이 없다.
+4. 단일 부모노드: 트리에서는 루트노드를 제외한 모든 노드는 하나의 부모노르를 가진다.
+## 트리 순회
+트리(Tree) 순회(Tree Traversal)는 트리 구조 내의 노드를 특정 순서로 방문하는 방법이다.
+일반적으로 전위 순회, 중위 순회, 후위 순회 3가지가 있다.
+```
+    A
+   / \
+  B   C
+ /   / \
+D   E   F
+         \
+          G
+```
+* 전위 순회 (Preorder Traversal)
+루트를 먼저 방문하고 왼쪽 서브 트리, 그리고 오른쪽 서브 트리를 순회합니다.
+→ ABDCEFG
+
+* 중위 순회 (Inorder Traversal)
+왼쪽 서브 트리를 먼저 순회하고 루트를 방문한 다음 오른쪽 서브 트리를 순회합니다.
+→ DBAECFG
+
+* 후위 순회 (Postorder Traversal)
+왼쪽 서브 트리를 먼저 순회하고 오른쪽 서브 트리를 순회한 다음 루트를 방문합니다.
+→ DBEGFCA
+
+# 이진트리 (Binary Tree)
+각 노드의 차수 자식노드가 2이하인 트리.
+## 이진트리 종류
+<p align="center">
+  <img src="/img/dataStructure/binarytree.jpg" alt="node" width="1000" />
+</p>
+**Full Binary Tree**  <br></br>
+Full Binary Tree는 모든 노드가 0 또는 2개의 자식을 갖는 트리다. (가지가 1개면 안된다.)
+
+**Perfect Binary Tree**  <br></br>
+Perfect Binary Tree는 모든 내부 노드에 2개의 자식이 있고 모든 리프 노드가 같은 깊이 또는 같은 레벨에 있는 이진 트리입니다.
+
+**Complete Binary Tree**  <br></br>
+완전 이진 트리는 마지막 레벨을 제외한 모든 노드가 가득 차 있어야 하고, 마지막 레벨의 노드는 전부 차 있지 않아도 되지만 왼쪽이 채워져야 한다.
+
+**Degenerate Tree**  <br></br>
+왼쪽 또는 오른쪽으로 편향되게 채워져있는 트리 (연결리스트랑 비슷하다)
+
+**Balanced Binary Tree**  <br></br>
+균형 이진 트리는 모든 노드의 왼쪽과 오른쪽 서브 트리의 높이가 1 이상 차이가 나지 않는 트리이다.
+
+> 참고<br></br> 
+> https://towardsdatascience.com/5-types-of-binary-tree-with-cool-illustrations-9b335c430254<br></br> 
+> https://www.geeksforgeeks.org/introduction-to-tree-data-structure-and-algorithm-tutorials/<br></br> 
+> https://yoongrammer.tistory.com/68#recentComments
