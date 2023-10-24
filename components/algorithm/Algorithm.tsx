@@ -9,7 +9,7 @@ const Algorithm:React.FC<AlgorithmProps> = ({algorithm}) => {
   
   const ClassName = `${
     title.startsWith("Silver") ? "bg-[#4E6A86]" :
-    title.startsWith("Gold") ? "bg-[#c6fc16]" :
+    title.startsWith("Gold") ? "bg-[#c6fc16] text-zinc-700" :
     title.startsWith("Bronze") ? "bg-[#9D4900]" :
     title.startsWith("Lv2") ? "bg-blue-500" :
     title.startsWith("Lv1") ? "bg-blue-300" :
