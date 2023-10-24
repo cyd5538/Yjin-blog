@@ -75,12 +75,13 @@ class BinarySearchTree {
     }
     return found ? current : undefined;
   }
-    // 전위 순회
-    preorder (node, result = []) {
+  
+  // 전위 순회
+  preorder (node, result = []) {
     if (node) {
       result.push(node.value);
-      this.preorderTraversal(node.left, result);
-      this.preorderTraversal(node.right, result);
+      this.preorder(node.left, result);
+      this.preorder(node.right, result);
     }
     return result;
   }
@@ -88,9 +89,9 @@ class BinarySearchTree {
   // 중위 순회
   inorder (node, result = []) {
     if (node) {
-      this.inorderTraversal(node.left, result);
+      this.inorder(node.left, result);
       result.push(node.value);
-      this.inorderTraversal(node.right, result);
+      this.inorder(node.right, result);
     }
     return result;
   }
@@ -98,8 +99,8 @@ class BinarySearchTree {
   // 후위 순회
   postorder (node, result = []) {
     if (node) {
-      this.postorderTraversal(node.left, result);
-      this.postorderTraversal(node.right, result);
+      this.postorder(node.left, result);
+      this.postorder(node.right, result);
       result.push(node.value);
     }
     return result;
