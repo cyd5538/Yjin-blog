@@ -26,7 +26,6 @@ class BinarySearchTree {
     this.root = null;
   }
 
-  // 노드 삽입
   insert(value) {
     const newNode = new Node(value);
     if (!this.root) {
@@ -57,7 +56,6 @@ class BinarySearchTree {
     }
   }
 
-  // 노드 찾기
   find(value) {
     if (!this.root) {
       return null;
@@ -76,6 +74,26 @@ class BinarySearchTree {
     return found ? current : undefined;
   }
   
+  BFS() {
+    let node = this.root;
+    const data = [];
+    const queue = [];
+    
+    queue.push(node);
+    while(queue.length) {
+      node = queue.shift();
+      data.push(node.value);
+
+      if(node.left) {
+        queue.push(node.left)
+      }
+      if(node.right) {
+        queue.push(node.right)
+      }
+    }
+    return data;
+  }
+
   // 전위 순회
   preorder (node, result = []) {
     if (node) {
@@ -114,6 +132,25 @@ class Node {
     this.right = null; 
   }
 }
+
+//   10
+//   / \
+//  6  15
+// / \   \
+// 3  8   20
+
+const tree = new BinarySearchTree();
+tree.insert(10)
+tree.insert(6)
+tree.insert(15)
+tree.insert(3)
+tree.insert(8)
+tree.insert(20)
+console.log(tree.BFS(), "BFS") // [ 10, 6, 15, 3, 8, 20 ] 
+console.log(tree.inorder(tree.root), "inorder") // [ 3, 6, 8, 10, 15, 20 ] 
+console.log(tree.preorder(tree.root), "preorder") // [ 10, 6, 3, 8, 15, 20 ]
+console.log(tree.postorder(tree.root), "postorder") // [ 3, 8, 6, 20, 15, 10 ]
+
 ```
 > 참고<br></br>
 > https://m.blog.naver.com/dlaxodud2388/222647619781 <br></br>
