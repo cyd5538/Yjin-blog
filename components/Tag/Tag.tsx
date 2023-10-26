@@ -66,8 +66,6 @@ const Tag = () => {
     setSearchs(tag)
   }
 
-  console.log(searchs)
-
   return (
     <div className='mb-16'>
       <Title title="Tag" />
