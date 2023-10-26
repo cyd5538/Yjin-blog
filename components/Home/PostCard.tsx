@@ -4,7 +4,8 @@ import { Post } from "contentlayer/generated";
 import Image from 'next/image';
 
 function PostCard(post: Post) {
-  
+  const url = post?.title.startsWith("프로그래머스") || post?.title.startsWith("백준") ? `algorithm/${post.url}` : `posts/${post.url}`
+  // `posts/${post.url}`
   return (
     <div className="max-w-sm w-80 rounded overflow-hidden shadow-lg dark:bg-zinc-900 mx-auto my-2">
       <div className='w-full h-48'>
@@ -17,7 +18,7 @@ function PostCard(post: Post) {
         />
       </div>
       <div className="px-6 py-4">
-        <Link href={`posts/${post.url}`}>
+        <Link href={url}>
           <h2 className="mb-1 mt-3 h-16 text-2xl pl-1 font-bold cursor-pointer hover:underline underline-offset-8">
             {post.title}
           </h2>
