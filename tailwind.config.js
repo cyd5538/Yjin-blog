@@ -32,9 +32,10 @@ module.exports = {
               'font-size': '1.3em'
             },
             u : {
-              'text-decoration-style': 'wavy',
-              'text-underline-offset' : "0.5em",
-              "text-decoration-color" : 'rgb(139,92,246)'
+              'text-decoration-style': 'solid',
+              'text-underline-offset' : "0.2em",
+              "text-decoration-color" : 'rgb(139,92,206)',
+              'text-underline-offset': '8px'
             },
             'blockquote': {
               overflow: 'hidden', 
@@ -48,6 +49,10 @@ module.exports = {
             span: {
               'font-size': '1.1em'
             },
+            
+            blockquote: {
+              "border-left-color": "rgb(139,92,246)",
+            }
           },
         },
       },
