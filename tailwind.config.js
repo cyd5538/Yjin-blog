@@ -39,6 +39,15 @@ module.exports = {
             'blockquote': {
               overflow: 'hidden', 
             },
+            p: {
+              'font-size': '1.1em'
+            },
+            li: {
+              'font-size': '1.1em'
+            },
+            span: {
+              'font-size': '1.1em'
+            },
           },
         },
       },
