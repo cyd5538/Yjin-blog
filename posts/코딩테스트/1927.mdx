@@ -1,0 +1,113 @@
+---
+title: 백준 Silver2 최소힙
+description: 1927 키로커 with Node
+date: 2023-10-15
+tags:
+  - 백준
+image: /img/js/js.jpg
+---
+
+# 문제
+널리 잘 알려진 자료구조 중 최소 힙이 있다. 최소 힙을 이용하여 다음과 같은 연산을 지원하는 프로그램을 작성하시오.
+
+1. 배열에 자연수 x를 넣는다.
+2. 배열에서 가장 작은 값을 출력하고, 그 값을 배열에서 제거한다.
+
+프로그램은 처음에 비어있는 배열에서 시작하게 된다.
+# 입력
+첫째 줄에 연산의 개수 N(1 ≤ N ≤ 100,000)이 주어진다. 다음 N개의 줄에는 연산에 대한 정보를 나타내는 정수 x가 주어진다. 만약 x가 자연수라면 배열에 x라는 값을 넣는(추가하는) 연산이고, x가 0이라면 배열에서 가장 작은 값을 출력하고 그 값을 배열에서 제거하는 경우이다. x는 231보다 작은 자연수 또는 0이고, 음의 정수는 입력으로 주어지지 않는다.
+# 출력
+입력에서 0이 주어진 횟수만큼 답을 출력한다. 만약 배열이 비어 있는 경우인데 가장 작은 값을 출력하라고 한 경우에는 0을 출력하면 된다.
+# 내풀이
+```js
+const fs = require('fs');
+const filePath = process.platform === 'linux' ? '/dev/stdin' : './input.txt';
+let input = fs.readFileSync(filePath, 'utf8').trim().split('\n').map((a) => Number(a))
+
+class minHeap {
+  constructor() {
+    this.array = [];
+  }
+
+  insert(val) {
+    this.array.push(val);
+    this.bubbleUp()
+  }
+
+  bubbleUp() {
+    let index = this.array.length-1;
+    const current = this.array[index];
+
+    while(index > 0) {
+      const parentIndex = Math.floor((index-1)/2)
+      const parent = this.array[parentIndex];
+
+      if(current > parent) break;
+      this.swap(index,parentIndex)
+      index = parentIndex
+    }
+  }
+  swap(index1,index2) {
+    const temp = this.array[index1];
+    this.array[index1] = this.array[index2];
+    this.array[index2] = temp;
+  }
+
+  delete() {
+    if (this.array.length === 0) return 0;
+    const min = this.array[0];
+    this.array[0] = this.array[this.array.length - 1];
+    this.array.pop();
+    this.bubbleDown();
+    return min;
+  }
+
+  bubbleDown() {
+    let index = 0;
+    const current = this.array[index];
+    const length = this.array.length-1;
+
+    while(true) {
+      const leftIndex = index*2 + 1;
+      const rightIndex = index*2 + 2;
+      let left,right;
+      let swap = null;
+
+      if(leftIndex <= length) {
+        left = this.array[leftIndex];
+        if(current > left) {
+          swap = leftIndex;
+        }
+      }
+      if(rightIndex <= length) {
+        right = this.array[rightIndex];
+        if(
+          (swap === null && current > right) ||
+          (swap !== null && left > right)
+        ) {
+          swap = rightIndex;
+        }
+      }
+
+      if(swap === null) break;
+      this.swap(index, swap)
+      this.array[swap] = current;
+      index = swap;
+    }
+  }
+}
+
+const heap = new minHeap();
+const result = []
+for(let i=1; i<input.length; i++) {
+  const temp = input[i];
+  if(temp === 0){
+    const min = heap.delete();
+    result.push(min)
+  } else {
+    heap.insert(temp)
+  }
+}
+
+console.log(result.join("\n"))
+```
