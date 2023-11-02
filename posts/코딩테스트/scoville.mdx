@@ -1,0 +1,135 @@
+---
+title: 프로그래머스 Lv2 더 맵게
+description: 프로그래머스 더 맵게 목록 with JavaScript
+date: 2023-10-14
+tags:
+  - 프로그래머스
+image: /img/js/js.jpg
+---
+
+# 문제 설명
+매운 것을 좋아하는 Leo는 모든 음식의 스코빌 지수를 K 이상으로 만들고 싶습니다. 모든 음식의 스코빌 지수를 K 이상으로 만들기 위해 Leo는 스코빌 지수가 가장 낮은 두 개의 음식을 아래와 같이 특별한 방법으로 섞어 새로운 음식을 만듭니다.
+```
+섞은 음식의 스코빌 지수 = 가장 맵지 않은 음식의 스코빌 지수 + (두 번째로 맵지 않은 음식의 스코빌 지수 * 2)
+```
+Leo는 모든 음식의 스코빌 지수가 K 이상이 될 때까지 반복하여 섞습니다.
+Leo가 가진 음식의 스코빌 지수를 담은 배열 scoville과 원하는 스코빌 지수 K가 주어질 때, 모든 음식의 스코빌 지수를 K 이상으로 만들기 위해 섞어야 하는 최소 횟수를 return 하도록 solution 함수를 작성해주세요.
+# 제한 사항
+* scoville의 길이는 2 이상 1,000,000 이하입니다.
+* K는 0 이상 1,000,000,000 이하입니다.
+* scoville의 원소는 각각 0 이상 1,000,000 이하입니다.
+* 모든 음식의 스코빌 지수를 K 이상으로 만들 수 없는 경우에는 -1을 return 합니다.
+# 입출력 예제
+| scoville   | K | return |
+|----------|----|---|
+| [1, 2, 3, 9, 10, 12] | 7 | 2 |
+
+# 입출력 예 설명
+1. 스코빌 지수가 1인 음식과 2인 음식을 섞으면 음식의 스코빌 지수가 아래와 같이 됩니다.
+새로운 음식의 스코빌 지수 = 1 + (2 * 2) = 5<br></br>
+가진 음식의 스코빌 지수 = [5, 3, 9, 10, 12]
+
+2. 스코빌 지수가 3인 음식과 5인 음식을 섞으면 음식의 스코빌 지수가 아래와 같이 됩니다.
+새로운 음식의 스코빌 지수 = 3 + (5 * 2) = 13<br></br>
+가진 음식의 스코빌 지수 = [13, 9, 10, 12]
+
+모든 음식의 스코빌 지수가 7 이상이 되었고 이때 섞은 횟수는 2회입니다.
+# 내 풀이
+```js
+class minHeap {
+  constructor() {
+    this.array = [];
+  }
+
+  insert(val) {
+    this.array.push(val);
+    this.bubbleUp()
+  }
+
+  bubbleUp() {
+    let index = this.array.length-1;
+    const current = this.array[index];
+
+    while(index > 0) {
+      const parentIndex = Math.floor((index-1)/2)
+      const parent = this.array[parentIndex];
+
+      if(current > parent) break;
+      this.swap(index,parentIndex)
+      index = parentIndex
+    }
+  }
+  swap(index1,index2) {
+    const temp = this.array[index1];
+    this.array[index1] = this.array[index2];
+    this.array[index2] = temp;
+  }
+
+  delete() {
+    if (this.array.length === 0) return 0;
+    const min = this.array[0];
+    this.array[0] = this.array[this.array.length - 1];
+    this.array.pop();
+    this.bubbleDown();
+    return min;
+  }
+
+  bubbleDown() {
+    let index = 0;
+    const current = this.array[index];
+    const length = this.array.length-1;
+
+    while(true) {
+      const leftIndex = index*2 + 1;
+      const rightIndex = index*2 + 2;
+      let left,right;
+      let swap = null;
+
+      if(leftIndex <= length) {
+        left = this.array[leftIndex];
+        if(current > left) {
+          swap = leftIndex;
+        }
+      }
+      if(rightIndex <= length) {
+        right = this.array[rightIndex];
+        if(
+          (swap === null && current > right) ||
+          (swap !== null && left > right)
+        ) {
+          swap = rightIndex;
+        }
+      }
+
+      if(swap === null) break;
+      this.swap(index, swap)
+      this.array[swap] = current;
+      index = swap;
+    }
+  }
+}
+
+
+const heap = new minHeap();
+
+
+function solution(scoville, K) {
+  let count = 0;
+
+  const heap = new minHeap();
+  for(let i=0; i<scoville.length; i++) {
+    heap.insert(scoville[i])
+  }
+
+  while(heap.array[0] < K && heap.array.length > 1) {
+    count++;
+    heap.insert(heap.delete() + heap.delete() * 2)
+  }
+
+  if(heap.array[0] < K) {
+    return -1
+  }
+
+  return count;
+}
+```
