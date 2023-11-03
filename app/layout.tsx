@@ -10,15 +10,18 @@ const googleAnalyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
 
 export const metadata: Metadata = {
   title: 'YJin BLOG',
-  description: '프론트엔드 개발자 YJin의 블로그입니다.',
+  description: '프론트엔드 개발자 YJin의 블로그입니다. JavaScript, React, Next.js, TypeScript, CS 지식 등 프론트엔드 개발과 관련된 다양한 글을 소개하는 블로그입니다.',
   generator: 'Next.js',
   applicationName: 'Yjin Blog',
   referrer: 'origin-when-cross-origin',
-  keywords: ['Next.js', 'React', 'JavaScript', 'TypeScript', 'tailwindcss', 'markdown', 'node', 'react-native','html','css'],
+  keywords: ['Next.js', 'React', 'JavaScript', 'TypeScript', 'tailwindcss', 'markdown', 'node', 'react-native','html','css',"알고리즘", "데이터구조", "네트워크", "데이터베이스"],
   authors: [{ name: 'YJin' }, { name: 'YJin', url: 'https://yjin.vercel.app/' }],
   creator: 'YJin',
   publisher: 'YJin',
   alternates: {},
+  icons: {
+    icon: '/favicon.ico'
+  },
   formatDetection: {
     email: false,
     address: false,
@@ -26,8 +29,8 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'Next.js',
-    description: '프론트엔드 개발자 YJin 블로그입니다.',
-    url: '',
+    description: '프론트엔드 개발자 YJin의 블로그입니다. JavaScript, React, Next.js, TypeScript, CS 지식 등 프론트엔드 개발과 관련된 다양한 글을 소개하는 블로그입니다.',
+    url: 'https://yjin.vercel.app/',
     siteName: 'YJin Blog',
     locale: 'ko-KR',
     type: 'website',
