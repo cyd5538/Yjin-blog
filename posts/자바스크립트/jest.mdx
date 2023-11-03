@@ -1,0 +1,136 @@
+---
+title: JavaScript에서 Jest를 사용하여 테스트 작성하기
+description: Jest의 개념에 대해서 알아보고 JavaScript에서 Jest를 사용해 간단하게 테스트 코드 작성을 해보자.
+date: 2023-11-01
+tags:
+  - Jest
+image: /img/js/jest.jpg
+---
+
+# Jest란?
+Jest는 메타(Facebook)가 개발한 자바스크립트 테스트 프레임워크로 
+Babel, TypeScript, Node, React, Angular, Vue 등에서 사용할 수 있는 테스팅 라이브러리다.
+
+Jest는 자동화된 테스트 실행, 모킹 지원, 비동기 코드 테스트, 스냅샷 테스팅 등을 포함한 다양한 기능을 제공해준다.
+# Jest 설치
+```
+npm i --save-dev jest
+```
+pakckage.json에서 test를 아래와 같이 바꿔주자
+```json
+  "scripts": {
+    "test": "jest"
+  },
+```
+추가로 Jest에서 import 및 export을 사용하려면 아래의 패키지를 설치해서 적용해 줘야한다.
+```
+npm install --save-dev @babel/core @babel/preset-env babel-jest
+```
+pakckage.json에 추가
+```json
+{
+  "name": "jest",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.2",
+    "@babel/preset-env": "^7.23.2",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0"
+  }
+}
+```
+
+# Jest 문법
+app.js 파일을 만들고 아래와 같이 간단한 함수를 만들어주자
+```js
+class App {
+
+  sum(a,b) {
+    return a+b
+  }
+}
+
+export default App
+```
+그리고 test할 파일 app.test.js를 만들어주자(test 하는 파일은 test.js로 끝나야 한다.)
+```js
+import App from './app';
+
+// describe(name, fn)는 여러 관련 테스트를 그룹화하는 블록을 만든다.
+describe('테스트', () => {
+  let app;
+
+  // beforeEach(fn, timeout)는 테스트를 하기 전에 함수를 실행한다.
+  beforeEach(() => {
+    app = new App();
+  });
+
+  test("2 + 3은 5가 나와야 한다", () => {
+    expect(app.sum(2, 3)).toBe(5); // expect는 테스트할 함수나 값을 넣어주고 toBe에는 결과를 넣어준다.
+  });
+
+  test("3 + 5은 8이 나와야 한다", () => {
+    expect(app.sum(3, 5)).toBe(8);
+  });
+});
+```
+npm test를 하면 테스트 결과가 나온다.
+```
+ PASS  ./app.test.js
+  계산 테스트
+    √ 2 + 3은 5가 나와야 한다 (10 ms)
+    √ 3 + 5은 8이 나와야 한다 (10 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        6.061 s
+Ran all test suites.
+```
+테스트 결과를 실패하면 아래와 같이 실패한 항목이 나온다. <br></br>
+3 + 5은 8이 나와야 하는데 toBe에 7을 넣어놔서 테스트가 실패했다고 나온다. 
+``` 
+계산 테스트
+    √ 2 + 3은 5가 나와야 한다 (4 ms)
+    × 3 + 5은 8이 나와야 한다 (3 ms)
+
+  ● 계산 테스트 › 3 + 5은 8이 나와야 한다
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 7
+    Received: 8
+
+      13 |
+      14 |   test("3 + 5은 8이 나와야 한다", () => {    
+    > 15 |     expect(app.sum(3, 5)).toBe(7);
+         |                           ^
+      16 |   });
+      17 | });
+      18 |
+
+      at Object.toBe (app.test.js:15:27)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 passed, 2 total
+Snapshots:   0 total
+Time:        2.155 s, estimated 5 s
+Ran all test suites.
+```
+
+> 참고<br></br>
+> https://jestjs.io/
