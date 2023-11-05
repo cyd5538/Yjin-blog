@@ -1,0 +1,114 @@
+---
+title: (Jest) Jest에서 비동기 테스트하기
+description: Jest에서 비동기 코드를 테스트하는 방법을 알아보자.
+date: 2023-11-03
+tags:
+  - Jest
+image: /img/js/jest.jpg
+---
+
+> Jest를 사용해서 비동기로 된 JavaScript 코드를 테스트 해 보는 방법을 알아보자.
+
+# 콜백 테스트
+공식문서에 있는 에제를 살펴보자.
+```js
+function fetchData(callback) {
+  setTimeout(() => {
+    const data = 'hello';
+    callback(null, data); 
+  }, 3000);
+}
+
+
+test('the data is peanut butter', () => {
+  function callback(error, data) {
+    if (error) {
+      throw error;
+    }
+    expect(data).toBe('peanut butter');
+  }
+
+  fetchData(callback);
+});
+```
+위의 테스트는 성공을 했다고 뜬다 toBe('hello')를 넣어야 성공인데 위의 테스트는 왜 성공이라고 뜰까 ?
+
+Jest 공식문서에는 기본적으로 Jest 테스트는 실행이 끝나면 완료됩니다. 즉, 이 테스트가 의도한 대로 작동하지 않습니다. 라고 적혀있다.
+이 문제를 해결하려면 <u>done</u>을 사용하라고 적혀있다.
+```js
+function fetchData(callback) {
+  setTimeout(() => {
+    const data = 'hello';
+    callback(null, data); 
+  }, 1000);
+}
+
+
+test('the data is peanut butter', done => {
+  function callback(error, data) {
+    if (error) {
+      done(error);
+      return;
+    }
+    try {
+      expect(data).toBe('hello');
+      done();
+    } catch (error) {
+      done(error);
+    }
+  }
+
+  fetchData(callback);
+});
+```
+
+# Promise 테스트
+Jest는 비동기 작업이 완료되기를 기다리지 않고 테스트를 종료한다. return 문을 사용하면 Promise가 완료될 떄까지 테스트를 계속 진행하고 결과를 처리할 수 있게 된다.
+```js
+function fetchData() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const data = 'hello';
+      resolve(data); 
+    }, 1000);
+  });
+}
+
+test('Promise 테스트', () => {
+  return fetchData().then(data => {
+    expect(data).toBe('hello');
+  });
+});
+
+test('Promise 에러 테스트', () => {
+  return fetchData().catch(error => {
+    expect(error).toBeUndefined(); 
+  });
+});
+```
+
+# async/await 테스트 ⭐
+async/await을 사용하여 비동기 테스트를 하면 코드의 가독성이 향상하고 에러 처리가 더 용이해진다.
+
+```js
+function fetchData() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const data = 'hello';
+      resolve(data); 
+    }, 1000);
+  });
+}
+
+test('async wait로 함수 테스트', async () => {
+  try {
+    const data = await fetchData(true); 
+    expect(data).toBe('hello');
+  } catch (error) {
+    throw error; 
+  }
+});
+```
+
+> 참고 <br></br>
+> https://jestjs.io/docs/asynchronous#asyncawait
