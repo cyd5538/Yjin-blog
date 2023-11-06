@@ -1,0 +1,233 @@
+---
+title: (Jest) Jest에서 테스트 전후 설정하기
+description: Jest에서 테스트 전과 후를 설정하는 방법을 알아보자.
+date: 2023-11-04
+tags:
+  - Jest
+image: /img/js/jest.jpg
+---
+
+> 테스트를 작성하는 동안 테스트를 실행하기 전에 해야하는 작업이 있고, 테스트가 실행된 후에 해야하는 작업이 있다. Jest에서 제공해주는 함수를 사용해서 위와 같은 작업을 해보자.
+
+# 설정 반복
+테스트를 할 때 반복적으로 수행해야 하는 작업이 있는 경우가 있다. 그럴 경우 beforeEach, afterEach 와 같은 함수를 사용하자
+## beforeEach
+beforeEach는 각 테스트가 실행 전에 매일 실행을 한다. 
+```js
+const array = [1,2,3];
+
+test("array에 삽입", () => {
+  const data = 4;
+  array.push(data);
+  expect(array.at(-1)).toBe(4);
+})
+
+test("array 길이 반환", () => {
+  expect(array).toHaveLength(3)
+})
+
+```
+테스트 코드 두개를 만들었는데 하나는 배열의 값을 삽입해주는 테스트고, 하나는 배열의 길이를 반환해주는 코드다. 위의 테스트 중에
+`array 길이 반환` 테스트는 실패를 한다 array = [1,2,3]이어서 length는 3이 맞지만 위에서 인덱스를 하나 push 해줬기 때문에 Received length가 4가 나온다. 그럼 테스트를 할 때마다 array를 설정한 값으로 되게 바꿔 보자.
+```js
+let array;
+
+beforeEach(() => {
+  array = [1,2,3];
+})
+
+test("array에 삽입", () => {
+  const data = 4;
+  array.push(data);
+  expect(array.at(-1)).toBe(4);
+})
+
+test("array 길이 반환", () => {
+  expect(array).toHaveLength(3)
+})
+
+```
+위의 처럼 beforeEach를 사용하면 각 테스트 케이스가 실행되기 전에 데이터를 초기화 할 수 있다.
+```
+ PASS  ./app.test.js
+  √ array에 삽입 (7 ms)
+  √ array 길이 반환 (1 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        1.852 s, estimated 2 s
+Ran all test suites.
+```
+
+## afterEach
+afterEach는 반대로 test가 실행한 후에 데이터를 초기화 시켜준다.
+```js
+let array = [];
+
+test("array push", () => {
+  array.push("1");
+  expect(array).toHaveLength(1);
+});
+
+test("array push2", () => {
+  array.push("2");
+  expect(array).toHaveLength(1);
+});
+```
+위의 코드는 초기화를 해주지 않아서 `array push2` 테스트는 실패를 한다.
+```js
+let array = [];
+
+test("array push", () => {
+  array.push("1");
+  expect(array).toHaveLength(1);
+});
+
+test("array push2", () => {
+  array.push("2");
+  expect(array).toHaveLength(1);
+});
+
+afterEach(() => {
+  array = [];
+});
+
+```
+이렇게 바꿔주면 테스트가 끝날 때마다 초기화를 해주기 때문에 테스트를 통과한다.
+# 일회성 설정
+위에서는 반복되는 설정을 알아보았다. 이번엔 한번만 설정하는 함수들을 알아보자 함수로는 beforeAll, afterAll 두 가지가 있다.
+## beforeAll
+테스트가 실행되기 전에 한 번만 실행을 한다. 
+```js
+let db;
+
+beforeAll(async () => {
+  db = await dbConnect(); 
+});
+```
+보통 이런식으로 데이터베이스에 처음 연결 할 때 많이 사용한다.
+
+## afterAll
+테스트가 다 끝난 후 한 번만 실행을 한다
+```js
+let db;
+
+afterAll(async () => {
+  await dbDisconnect();
+});
+```
+이런식으로 테스트가 끝난 후 db 연결을 종료 시켜 줄 수 있다.
+# 범위
+beforeEach, afterEach, beforeAll, afterAll는 모든 테스트에 적용이 된다. 그러면 가독성이 좋지 않다. 따라서
+describe로 블록을 지정해서 블록 내에서만 테스트를 적용하게 해줄 수 있다.
+```js
+describe("그룹안에서 테스트", () => {
+  let a;
+  beforeAll(async () => {
+    a = 13;
+  });
+
+  test("test1", () => {
+    expect(a).toBe(13);
+  });
+});
+
+
+describe("그룹안에서 테스트2", () => {
+  let b;
+  beforeAll(async () => {
+    b = 5;
+  });
+
+  test("test1", () => {
+    expect(b).toBe(5);
+  });
+
+  test("test2", () => {
+    let number = 4;
+    expect(b*number).toBe(20);
+  });
+});
+```
+테스트 결과도 가독성이 좋게 나온다.
+```
+  그룹안에서 테스트
+    √ test1 (4 ms)
+  그룹안에서 테스트2
+    √ test1
+    √ test2 (1 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        2.095 s, estimated 3 s
+```
+✔ 체크해야할 점은 최상위레벨부터 먼저 실행이 되고 그 다음에 블록 내부가 실행이 된다는 점이다.
+```js
+beforeAll(() => console.log('1 - beforeAll'));
+afterAll(() => console.log('1 - afterAll'));
+beforeEach(() => console.log('1 - beforeEach'));
+afterEach(() => console.log('1 - afterEach'));
+
+test('', () => console.log('1 - test'));
+
+describe('Scoped / Nested block', () => {
+  beforeAll(() => console.log('2 - beforeAll'));
+  afterAll(() => console.log('2 - afterAll'));
+  beforeEach(() => console.log('2 - beforeEach'));
+  afterEach(() => console.log('2 - afterEach'));
+
+  test('', () => console.log('2 - test'));
+});
+
+// 1 - beforeAll
+// 1 - beforeEach
+// 1 - test
+// 1 - afterEach
+// 2 - beforeAll
+// 1 - beforeEach
+// 2 - beforeEach
+// 2 - test
+// 2 - afterEach
+// 1 - afterEach
+// 2 - afterAll
+// 1 - afterAll
+```
+# 기타
+## only
+하나의 테스트 만 실행하려면 임시로 only를 사용해서 테스트 할 수 있다.
+```js
+test.only('this will be the only test that runs', () => {
+  expect(true).toBe(true);
+});
+
+test('this test will not run', () => {
+  expect('A').toBe('A');
+});
+```
+테스트 결과를 보면 only를 사용한 테스트만 테스트를 하고 나머지는 스킵하였다
+```js
+  √ this will be the only test that runs (4 ms)
+  ○ skipped this test will not run
+
+Test Suites: 1 passed, 1 total
+Tests:       1 skipped, 1 passed, 2 total
+Snapshots:   0 total
+Time:        1.88 s, estimated 2 s
+Ran all test suites.
+```
+## it
+test 대신 it을 사용해도 똑같다.
+```js
+it.only('this will be the only test that runs', () => {
+  expect(true).toBe(true);
+});
+
+it('this test will not run', () => {
+  expect('A').toBe('A');
+});
+```
+
+> 참고 <br></br>
+> https://jestjs.io/docs/setup-teardown#scoping
