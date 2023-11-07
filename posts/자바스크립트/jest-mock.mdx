@@ -1,0 +1,152 @@
+---
+title: (Jest) Jest 모킹 함수(Mock functions)
+description: 모킹의 개념과 Jest에서 jest.fn()과 jest.spyOn()에 대해 알아보자.
+date: 2023-11-05
+tags:
+  - Jest
+image: /img/js/jest.jpg
+---
+
+# 모킹(Mocking)이란 ?
+
+모킹(Mocking)은 테스트 중에 코드의 일부를 가짜로 대체하거나 시뮬레이션하여, 외부 의존성을 격리하고 테스트를 빠르고 안정적으로 수행하며 예측 가능한 결과를 얻기 위한 기법이다.
+> 왜 사용할까 ? <br></br>
+> 실제 데이터베이스를 연결하여 테스트를 수행할 때 데이터베이스 연결, 데이터 변경, 테스트 예측 불가능성 및 테스트 지연과 같은 문제를 해결하기 위해서다.  모킹을 사용하면 데이터베이스 의존성을 격리하고 테스트를 안정적으로, 예측 가능하게, 빠르게 수행할 수 있다.
+
+# Mocking 메소드 
+Jest 테스트 프레임워크에서 사용되는 모킹(Mock) 함수를 할아보자
+## jest.fn()
+jest.fn()의 기본 사용법은 아래와 같다.
+```js
+function forEach(items, callback) {
+  for (let index = 0; index < items.length; index++) {
+    callback(items[index]);
+  }
+}
+
+const mockCallback = jest.fn(x => 42 + x);
+
+test('forEach mock function', () => {
+  forEach([0, 1], mockCallback);
+
+  // 모킹 함수의 호출 횟수가 2번인지 확인
+  expect(mockCallback.mock.calls).toHaveLength(2);
+  // 첫 번째 호출에서 인수로 전달된 값이 0인지 확인
+  expect(mockCallback.mock.calls[0][0]).toBe(0);
+  // 두 번째 호출에서 인수로 전달된 값이 1인지 확인
+  expect(mockCallback.mock.calls[1][0]).toBe(1);
+  // 모킹 함수의 첫 번째 호출 결과가 42인지 확인
+  expect(mockCallback.mock.results[0].value).toBe(42);
+  // 모킹 함수의 두 번째 호출 결과가 43인지 확인
+  expect(mockCallback.mock.results[1].value).toBe(43);
+  console.log(mockCallback.mock.calls) // [ [ 0 ], [ 1 ] ]
+  console.log(mockCallback.mock.results) // [ { type: 'return', value: 42 }, { type: 'return', value: 43 } ] 
+});
+```
+* calls: 모킹 함수의 호출 정보를 저장하는 배열
+* results: 모킹 함수의 호출 결과를 저장하는 배열
+
+
+
+### mockReturnValue(value)
+기본적으로 jest.fn은 undefined를 반환한다
+```js
+const mockFunction = jest.fn();
+
+const result = mockFunction();
+
+console.log(result); //undefined
+```
+mockReturnValue를 사용하면 호출될 때 반환되는 값을 정해 줄 수 있다. 
+```js
+const mockFunction = jest.fn();
+
+mockFunction.mockReturnValue(42);
+
+const result = mockFunction();
+
+console.log(result); // 42
+```
+
+### mockReturnValueOnce(value)
+모킹 함수가 첫 번째 호출 또는 순차적인 호출 시에만 특정 값을 반환하도록 설정한다.
+```js
+const mockFunction = jest.fn();
+
+mockFunction
+  .mockReturnValueOnce(1)
+  .mockReturnValueOnce(2)
+  .mockReturnValueOnce(3);
+
+const result1 = mockFunction(); // 1
+const result2 = mockFunction(); // 2
+const result3 = mockFunction(); // 3
+const result4 = mockFunction(); // undefined
+```
+
+### mockImplementation(fn)
+모킹 함수의 동작을 사용자가 정의한 함수로 대체하는 메서드다. 이 메서드를 사용하면 사용자가 커스텀한 모크 함수를 사용할 수 있다.
+```js
+const mockFunction = jest.fn();
+
+mockFunction.mockImplementation((x, y) => x * y);
+
+const result = mockFunction(3, 4);
+
+console.log(result); // 12
+```
+
+### mockResolvedValue(value)
+비동기 테스트 할 때 사용한다.
+```js
+const fetchData = jest.fn();
+
+fetchData.mockResolvedValue({ data: 'Hello World!' });
+
+test('Async Mock Test', async () => {
+  const result = await fetchData();
+
+  expect(result).toEqual({ data: 'Hello World!' });
+});
+
+```
+### mockRejectedValue(value)
+비동가가 실패하는 경우를 테스트 할 때 사용한다
+```js
+const fetchError = jest.fn();
+
+const error = new Error('Error');
+fetchError.mockRejectedValue(error);
+
+test('비동기 에러 테스트', async () => {
+  try {
+    await fetchError();
+  } catch (e) {
+    expect(e).toBe(error);
+  }
+});
+```
+
+## jest.spyOn(object, methodName)
+jest.spyOn을 사용하면 특정 함수 또는 메서드의 호출 여부와 어떻게 호출되었는지를 확인할 수 있다.
+```js
+const video = {
+  play() {
+    return true;
+  },
+};
+
+afterEach(() => {
+  jest.restoreAllMocks(); 
+});
+
+test('plays video', () => {
+  const spy = jest.spyOn(video, 'play');
+  const isPlaying = video.play();
+
+  expect(spy).toHaveBeenCalled(); // 함수가 호출됐는지
+  expect(spy).toHaveBeenCalledTimes(1); // 몇번 호출됐는지
+  expect(isPlaying).toBe(true); // 값이 true인지
+});
+```
+위의 예제 코드에서는 video 객체의 play메서드를 jest.spyOn 사용해서 함수 호출 여부와 호출 횟수를 확인하고 함수의 반환 값을 검사
