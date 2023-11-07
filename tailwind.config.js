@@ -52,7 +52,10 @@ module.exports = {
             
             blockquote: {
               "border-left-color": "rgb(139,92,246)",
-            }
+            },
+            'blockquote p::before': {
+              content: "''", 
+            },
           },
         },
       },
