@@ -2,24 +2,29 @@
 title: (자료구조) 이진 탐색 트리(Binary Search Tree)
 description: 이진탐색트리의 개념과 자바스크립트로 구현해보자.
 date: 2023-10-8
-tags: 
+tags:
   - 자료구조
-image: /img/dataStructure/Binary_search_tree.png
+image: /img/dataStructure/Binary_search_tree.jpg
 ---
 
 # 이진 탐색 트리(Binary Search Tree)란?
+
 이진 탐색 트리(BST)는 이진 트리(Binary Tree)에 탐색 특성을 추가한 구조로, 각 노드의 왼쪽 서브트리에는 해당 노드보다 작은 값을, 오른쪽 서브트리에는 해당 노드보다 큰 값을 갖는 트리를 의미한다.
 이진 탐색 트리는 <u>데이터를 빠르게 검색하고 관리</u>하기에 유용한 자료구조다.
+
 <p align="center">
-  <img src="/img/dataStructure/Binary_search_tree.png" alt="Binary_search_tree" width="500" />
+  <img
+    src="/img/dataStructure/Binary_search_tree.png"
+    alt="Binary_search_tree"
+    width="500"
+  />
 </p>
-# 이진 탐색 트리 특징
-* 모든 노드는 중복되지 않는 Key를 가진다.
-* 노드를 기준으로 왼쪽 노드는 노드보다 작다.
-* 노드를 기준으로 오르쪽 노드는 노드보다 크다.
-* 배열을 사용하여 탐색할 때보다 빠르다 (평균적으로 O(log n)의 시간 복잡도)
+# 이진 탐색 트리 특징 * 모든 노드는 중복되지 않는 Key를 가진다. * 노드를 기준으로
+왼쪽 노드는 노드보다 작다. * 노드를 기준으로 오르쪽 노드는 노드보다 크다. * 배열을
+사용하여 탐색할 때보다 빠르다 (평균적으로 O(log n)의 시간 복잡도)
 
 # 자바스크립트 코드
+
 ```js
 class BinarySearchTree {
   constructor() {
@@ -73,29 +78,29 @@ class BinarySearchTree {
     }
     return found ? current : undefined;
   }
-  
+
   BFS() {
     let node = this.root;
     const data = [];
     const queue = [];
-    
+
     queue.push(node);
-    while(queue.length) {
+    while (queue.length) {
       node = queue.shift();
       data.push(node.value);
 
-      if(node.left) {
-        queue.push(node.left)
+      if (node.left) {
+        queue.push(node.left);
       }
-      if(node.right) {
-        queue.push(node.right)
+      if (node.right) {
+        queue.push(node.right);
       }
     }
     return data;
   }
 
   // 전위 순회
-  preorder (node, result = []) {
+  preorder(node, result = []) {
     if (node) {
       result.push(node.value);
       this.preorder(node.left, result);
@@ -105,7 +110,7 @@ class BinarySearchTree {
   }
 
   // 중위 순회
-  inorder (node, result = []) {
+  inorder(node, result = []) {
     if (node) {
       this.inorder(node.left, result);
       result.push(node.value);
@@ -115,7 +120,7 @@ class BinarySearchTree {
   }
 
   // 후위 순회
-  postorder (node, result = []) {
+  postorder(node, result = []) {
     if (node) {
       this.postorder(node.left, result);
       this.postorder(node.right, result);
@@ -129,7 +134,7 @@ class Node {
   constructor(value) {
     this.value = value;
     this.left = null;
-    this.right = null; 
+    this.right = null;
   }
 }
 
@@ -140,19 +145,16 @@ class Node {
 // 3  8   20
 
 const tree = new BinarySearchTree();
-tree.insert(10)
-tree.insert(6)
-tree.insert(15)
-tree.insert(3)
-tree.insert(8)
-tree.insert(20)
-console.log(tree.BFS(), "BFS") // [ 10, 6, 15, 3, 8, 20 ] 
-console.log(tree.inorder(tree.root), "inorder") // [ 3, 6, 8, 10, 15, 20 ] 
-console.log(tree.preorder(tree.root), "preorder") // [ 10, 6, 3, 8, 15, 20 ]
-console.log(tree.postorder(tree.root), "postorder") // [ 3, 8, 6, 20, 15, 10 ]
-
+tree.insert(10);
+tree.insert(6);
+tree.insert(15);
+tree.insert(3);
+tree.insert(8);
+tree.insert(20);
+console.log(tree.BFS(), "BFS"); // [ 10, 6, 15, 3, 8, 20 ]
+console.log(tree.inorder(tree.root), "inorder"); // [ 3, 6, 8, 10, 15, 20 ]
+console.log(tree.preorder(tree.root), "preorder"); // [ 10, 6, 3, 8, 15, 20 ]
+console.log(tree.postorder(tree.root), "postorder"); // [ 3, 8, 6, 20, 15, 10 ]
 ```
-> 참고<br></br>
-> https://m.blog.naver.com/dlaxodud2388/222647619781 <br></br>
-> https://ansohxxn.github.io/algorithm/bst/#-%EC%9D%B4%EC%A7%84-%ED%83%90%EC%83%89-%ED%8A%B8%EB%A6%AC%EB%9E%80 <br></br>
-> https://www.udemy.com/course/best-javascript-data-structures/
+
+> 참고<br></br> > https://m.blog.naver.com/dlaxodud2388/222647619781 <br></br> > https://ansohxxn.github.io/algorithm/bst/#-%EC%9D%B4%EC%A7%84-%ED%83%90%EC%83%89-%ED%8A%B8%EB%A6%AC%EB%9E%80 <br></br> > https://www.udemy.com/course/best-javascript-data-structures/
