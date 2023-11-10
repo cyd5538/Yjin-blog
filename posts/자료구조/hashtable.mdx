@@ -1,0 +1,117 @@
+---
+title: (자료구조) 해시테이블 with JavaScript
+description: 해시테이블이란?, 해시함수, 해시 충돌 등에 대해 알아보자.
+date: 2023-10-20
+tags:
+  - 자료구조
+image: /img/dataStructure/hash.jpg
+---
+
+# 해시테이블(Hash Table) ?
+
+해시테이블은 Key,Value를 저장하는 자료구조로 데이터를 빠르게 검색할 수 있는 자료구조다. Key를 저장할 때는 해시 함수를 사용하여 저장한다.
+해시 테이블의 시간복잡도는 해시 충돌이 일어나지 않는 상황엔 O(1), 최악의 경우 충돌이 일어날 떄에는 O(N)에 수렴하게 된다
+
+# 해시 용어
+
+> 기본적인 용어를 알아보자.
+
+- Key: 데이터를 찾을 때 사용하는 값.
+- Value: 저장되는 값.
+- hash fn: key를 hash로 바꿔주는 함수.
+- Hashing: key를 hash 함수로 바꾼 값.
+
+# 해시 함수
+
+해시 함수(hash function)는 임의의 길이를 가진 데이터를 입력받아 고정된 길이의 값, 즉 해시값을 출력하는 함수입니다. 해시값은 입력 데이터로부터 유도되기 때문에 동일한 입력은 항상 동일한 해시값을 갖게 된다.
+
+> 해시 함수에 의해 반환되는 값은 해시값(hash value), 해시 코드(hash code), 다이제스트(digest) 또는 간단히 해시(hash)라고도 한다.
+
+# 해시 충돌
+
+서로 다른 키가 동일한 해시값을 가져서 출동이 일어나는 현상이다.
+
+**충돌이 일어난다면 ?**
+
+1. 체이닝 (chaining): 충돌이 발생하는 경우 충돌된 값들을 해당 주소에 있는 연결리스트에 삽입해 문제를 해결하는 방법이다.
+2. 개방 해싱 (open addressing): 충돌이 발생하면 다른 빈 공간을 찾아서 데이터를 저장하는 방식
+
+# 해쉬 구현하기
+
+## Class
+
+```js
+class HashTable {
+  constructor(size) {
+    this.size = size;
+    this.table = new Array(size);
+  }
+  // 해쉬함수
+  hash(key) {
+    let hash = 0;
+    for (let i = 0; i <br key.length; i++) {
+      hash += key.charCodeAt(i);
+    }
+    return hash % this.size;
+  }
+
+  insert(key, value) {
+    const index = this.hash(key);
+    // 키값이 존재하지않는다면 빈 배열을 만들어줌
+    if (!this.table[index]) {
+      this.table[index] = [];
+    }
+    this.table[index].push({ key, value });
+  }
+
+  get(key) {
+    const index = this.hash(key);
+    if (this.table[index]) {
+      for (let item of this.table[index]) {
+        if (item.key === key) {
+          return item.value;
+        }
+      }
+    }
+    return undefined;
+  }
+
+  remove(key) {
+    const index = this.hash(key);
+    if (this.table[index]) {
+      this.table[index] = this.table[index].filter((item) => item.key !== key);
+    }
+  }
+}
+```
+
+## Map 사용
+
+자바스크립트에서는 키-값을 저장하는 Map이란게 있다.
+
+```js
+const HashTable = new Map();
+
+// 삽입
+HashTable.set("1", "one");
+HashTable.set("2", "two");
+
+// 검색
+console.log(HashTable.get("1")); // 1
+console.log(HashTable.get("2")); // 2
+
+// 수정
+HashTable.set("1", "일");
+
+// 검색
+console.log(HashTable.get("1")); // 일
+HashTable.clear(); // 다 삭제
+```
+
+참고<br></br>
+
+- https://ko.wikipedia.org/wiki/%ED%95%B4%EC%8B%9C_%ED%85%8C%EC%9D%B4%EB%B8%94
+- https://mangkyu.tistory.com/102
+- https://www.codestates.com/blog/content/%EB%B8%94%EB%A1%9D%EC%B2%B4%EC%9D%B8-%ED%95%B4%EC%8B%9C%ED%95%A8%EC%88%98
+- https://joooing.tistory.com/entry/Data-Structure-3
+- https://you88.tistory.com/38

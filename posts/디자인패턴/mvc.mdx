@@ -1,0 +1,59 @@
+---
+title: (디자인 패턴) MVC 패턴 
+description: MVC 패턴에서 model, view, controller 각각의 역할을 알아보자.
+date: 2023-11-06
+tags:
+  - 디자인 패턴
+  - MVC
+image: /img/design/mvc.jpg
+---
+
+<p align="center">
+  <img src="/img/design/mvc.jpg" width="700"/>
+</p>
+
+# Mvc 패턴이란?
+Mvc패턴은 사용자 인터페이스, 데이터 및 논리 제어를 구현하는데 널리 사용되는 소프트웨어 디자인 패턴이다.
+애플리케이션의 구조를 모델(Model), 뷰(View), 컨트롤러(Controller)로 나누어 각각의 역할을 정의하게 코드를 효율적으로 분리하고 관리할 수 있는 패턴이다.
+이렇게 구성된 MVC 패턴을 사용하면 코드의 가독성, 유지보수성, 확장성이 향상되며, 소프트웨어 개발과 유지보수가 더 쉬워진다.
+
+## Model
+**데이터와 비즈니스 로직을 관리합니다.**
+* Model은 애플리케이션에서 사용되는 데이터를 저장, 업데이트, 검색 및 삭제 한다.
+* 데이터의 변경을 감지하고 해당 변경 사항이 필요한 경우 컨트롤러나 뷰에 알려준다.
+
+<u>규칙</u>✔ <br></br>
+* 모델은 컨트롤러(Controller)와 뷰(View)의 코드와 직접적인 의존성을 갖지 않아야 한다.(Model에서는 Controller와 View의 코드가 있으면 안된다.) 
+* 데이터의 변경이 생기면 알려주는 코드를 처리해야 한다.
+## View
+**사용자한테 보여지는 부분(ui)**
+* 뷰(View)는 사용자에게 보여주는 화면의 역할을 한다.
+* Controller부터 받은 데이터를 가공한 결과를 화면에 출력해 주는 역할을 한다.
+
+<u>규칙</u>✔ <br></br>
+* View에서는 받은 데이터를 따로 저장하면 안된다.
+* 데이터를 저장해서는 안 된다.
+* 데이터의 변경이 생기면 알려주는 코드를 처리해야 한다.
+## Controller
+**Model과 View를 이어주는 역할을 한다.**
+* Controller는 Model과 View 사이를 이어주는 인터페이스 역할을 한다.
+* Model이 데이터를 어떻게 처리할지 알려주는 역할을 한다.
+
+<u>규칙</u>✔ <br></br>
+* Model이나 View에 대해서 알고 있어야 한다
+* Model이나 View의 변경을 모니터링 해야 한다.
+# MVC 장점
+* 로직을 기능별로 분리해서 처리하기 떄문에 코드의 가독성과 유지보수성이 높다.
+* 독립적으로 테스트하기가 용이하다.
+# MVC 한계
+대규모 애플리케이션에서는 다수의 뷰와 모델이 컨트롤러와 연결하기 때문에 컨트롤러가 복잡해질 수 있다. 
+컨트롤러가 너무 복잡하고 많은 책임을 갖고 있는 상태를 Massive View Controller라고 한다. 이를 해결하기 위해서는 다른 디자인 패턴을 도입해야 한다.
+<p align="center">
+  <img src="/img/design/massiveviewcontroller.jpg" width="700"/>
+</p>
+
+> 참고<br></br>
+> https://developer.mozilla.org/ko/docs/Glossary/MVCbr <br></br>
+> https://velog.io/@blackeichi/MVC-Model-View-Controller-%ED%8C%A8%ED%84%B4%EC%9D%B4%EB%9E%80br <br></br>
+> https://velog.io/@seongwon97/MVC-%ED%8C%A8%ED%84%B4%EC%9D%B4%EB%9E%80#mvc-%EA%B5%AC%EB%8F%99-%EC%9B%90%EB%A6%AC <br></br>
+> https://www.youtube.com/watch?v=ogaXW6KPc8I
