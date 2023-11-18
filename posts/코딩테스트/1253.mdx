@@ -1,0 +1,64 @@
+---
+title: 백준 Gold4 좋다
+description: 1927 좋다 with Node
+date: 2023-11-10
+tags:
+  - 백준
+image: /img/js/js.jpg
+---
+
+# 문제
+N개의 수 중에서 어떤 수가 다른 수 두 개의 합으로 나타낼 수 있다면 그 수를 “좋다(GOOD)”고 한다.
+
+N개의 수가 주어지면 그 중에서 좋은 수의 개수는 몇 개인지 출력하라.
+
+수의 위치가 다르면 값이 같아도 다른 수이다.
+
+# 입력
+첫째 줄에는 수의 개수 N(1 ≤ N ≤ 2,000), 두 번째 줄에는 i번째 수를 나타내는 Ai가 N개 주어진다. (|Ai| ≤ 1,000,000,000, Ai는 정수)
+# 출력
+입좋은 수의 개수를 첫 번째 줄에 출력한다.
+# 내풀이
+```js
+const fs = require('fs');
+const filePath = process.platform === 'linux' ? '/dev/stdin' : './input.txt';
+const input = fs.readFileSync(filePath, 'utf8').trim().split('\n');
+
+const n = +input[0];
+const numbers = input[1].split(" ").map((a) => Number(a)).sort((a,b) => a-b);
+
+function solution(arr) {
+  let result = 0;
+
+  for(let i=0; i<n; i++) {
+    let left = 0;
+    let right = n - 1;
+
+    while(left < right) {
+      if(i === left) {
+        left ++
+        continue;
+      }
+
+      if(i === right) {
+        right --
+        continue;
+      }
+
+      const sum = arr[left] + arr[right];
+      if(sum === arr[i]) {
+        result ++;
+        break;
+      } else if(sum > arr[i]) {
+        right--;
+      } else {
+        left ++;
+      }
+    }
+  }
+
+  return result;
+}
+
+console.log(solution(numbers))
+```
