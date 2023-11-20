@@ -44,7 +44,7 @@ module.exports = {
               'font-size': '1.1em'
             },
             li: {
-              'font-size': '1.1em'
+              'font-size': '1.0em'
             },
             span: {
               'font-size': '1.1em'
