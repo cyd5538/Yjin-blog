@@ -1,0 +1,102 @@
+---
+title: 백준 Gold4 소수 경로
+description: 1963 소수 경로 with Node
+date: 2023-11-22
+tags:
+  - 백준
+image: /img/js/js.jpg
+---
+
+# 문제
+소수를 유난히도 좋아하는 창영이는 게임 아이디 비밀번호를 4자리 ‘소수’로 정해놓았다. 어느 날 창영이는 친한 친구와 대화를 나누었는데:
+
+* “이제 슬슬 비번 바꿀 때도 됐잖아”
+* “응 지금은 1033으로 해놨는데... 다음 소수를 무엇으로 할지 고민중이야"
+* “그럼 8179로 해”
+* “흠... 생각 좀 해볼게. 이 게임은 좀 이상해서 비밀번호를 한 번에 한 자리 밖에 못 바꾼단 말이야. 예를 들어 내가 첫 자리만 바꾸면 8033이 되니까 소수가 아니잖아. 여러 단계를 거쳐야 만들 수 있을 것 같은데... 예를 들면... 1033 1733 3733 3739 3779 8779 8179처럼 말이야.”
+* “흠...역시 소수에 미쳤군. 그럼 아예 프로그램을 짜지 그래. 네 자리 소수 두 개를 입력받아서 바꾸는데 몇 단계나 필요한지 계산하게 말야.”
+* “귀찮아”
+
+그렇다. 그래서 여러분이 이 문제를 풀게 되었다. 입력은 항상 네 자리 소수만(1000 이상) 주어진다고 가정하자. 주어진 두 소수 A에서 B로 바꾸는 과정에서도 항상 네 자리 소수임을 유지해야 하고, ‘네 자리 수’라 하였기 때문에 0039 와 같은 1000 미만의 비밀번호는 허용되지 않는다.
+
+# 입력
+첫 줄에 test case의 수 T가 주어진다. 다음 T줄에 걸쳐 각 줄에 1쌍씩 네 자리 소수가 주어진다.
+
+# 출력
+각 test case에 대해 두 소수 사이의 변환에 필요한 최소 회수를 출력한다. 불가능한 경우 Impossible을 출력한다.
+
+# 내풀이
+4자리수의 소수를 배열에 담고 bfs를 사용해서 한 자리수만 다른 소수를 찾는 방식으로 풀이를 진행했다.
+
+```js
+const fs = require('fs');
+const filePath = process.platform === 'linux' ? '/dev/stdin' : './input.txt';
+const input = fs.readFileSync(filePath, 'utf8').trim().split('\n')
+
+// 소수인지 판단하는 함수
+function isPrime(num) {
+  if (num < 2) return false;
+  for (let i = 2; i * i <= num; i++) {
+    if (num % i === 0) return false;
+  }
+  return true;
+}
+
+// 4자리수에서 소수 찾기
+function generatePrimes() {
+  const primes = [];
+  for (let num = 1000; num <= 9999; num++) {
+    if (isPrime(num)) {
+      primes.push(num.toString());
+    }
+  }
+  return primes;
+}
+const primesArray = generatePrimes();
+
+// 두개의 숫자가 하나만 다른지 확인하는 함수
+const diffIndex = (num1, num2) => {
+  let diffNum = 0;
+  for (let i = 0; i < num1.length; i++) {
+    if (num1[i] !== num2[i]) {
+      diffNum++;
+    }
+  }
+  return diffNum === 1;
+};
+
+// bfs
+const bfs = (begin, last) => {
+  // 시작단어와 count 0을 초기에 넣어주고
+  const queue = [{ word: begin, count: 0 }];
+  const visited = new Set(); // 방문 처리할 set
+
+  while (queue.length > 0) {
+    const { word, count } = queue.shift();
+    // queue에 있던 단어가 last와 같다면 return count
+    if (word === last) {
+      return count;
+    }
+
+    for (let next of primesArray) {
+      const nextNum = String(next);
+      // 방문하지 않았고 숫자가 하나만 다르다면 queue에 push하고 방문처리
+      if (!visited.has(nextNum) && diffIndex(word, nextNum)) {
+        queue.push({ word: nextNum, count: count + 1 });
+        visited.add(nextNum);
+      }
+    }
+  }
+
+  return "Impossible"
+};
+
+const result = [];
+
+for (let i = 1; i < input.length; i++) {
+  const [m, n] = input[i].split(" ").map(str => str.trim());
+  result.push(bfs(m,n))
+}
+
+console.log(result.join("\n"));
+```
