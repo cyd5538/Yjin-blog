@@ -1,0 +1,58 @@
+---
+title: (알고리즘) 순열과 조합 width JavaScript
+description: 재귀적인 방법을 사용해서 순열과 조합을 JavaScript 코드로 구현해보자.
+date: 2023-11-16
+tags:
+  - 알고리즘
+  - 순열
+  - 조합
+image: /img/algorithm/permutation.jpg
+---
+
+# 조합
+조합은 주어진 배열에서 요소를 조합해서 만드는 부분 집합이다. 
+순서는 고려되지 않으며, 중복된 요소가 있을 때는 동일한 조합이 여러개 나올 수도 있다.
+
+예를들어서 [A,B,C] 에서 2개의 원소를 조합하면 [A,B] [B,C] [A,C] 이렇게 나온다.
+
+```js
+  function combination(arr, num) {
+    let result = [];
+    if(num == 1) return arr.map(e => [e]);
+    
+
+    arr.forEach((e,i,array) => {
+      let rest = array.slice(i+1); // e를 제외한 나머지
+      let combinations = combination(rest,num-1); // 나머지 부분을 조합을 구함 num -1
+      let combiArr = combinations.map(x => [e, ...x]) // 현재 e와 나머지 조합을 구한 부분을 더하기.
+      result.push(...combiArr);
+    }) 
+    return result;
+  }
+
+  console.log(combination(["A", "B", "C", "D"],3)) // [ 'ABC', 'ABD', 'ACD', 'BCD' ]
+```
+
+# 순열
+순열은 주어진 배열에서 요소들을 나열하는 모든 가능한 순서의 조합을 의미한다. 순열은 조합과는 다르게 순서가 중요하다.
+
+예를들어서 [A,B,C] 에서 2개의 원소를 선택하여 순열을 만들면 [A, B], [B, A], [A, C], [C, A], [B, C], [C, B] 이렇게 나온다.
+
+```js
+function permutation(arr, num) {
+  let result = []; 
+
+  if (num === 1) return arr.map(e => [e]);
+  
+  arr.forEach((e, i, array) => {
+    let rest = [...array.slice(0, i), ...array.slice(i + 1)]; // e를 제외한 나머지 배열
+    let permutations = permutation(rest, num - 1);  // 나머지 배열에 대한 순열을 재귀적으로 호출
+    let permuArr = permutations.map(x => [e, ...x].join(""));  // e와 재귀호출한 값을 더하기
+    result.push(...permuArr); 
+  }) 
+
+  return result; 
+}
+
+console.log(permutation(["A", "B", "C"], 2));
+```
