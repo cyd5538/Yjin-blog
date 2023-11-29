@@ -1,0 +1,74 @@
+---
+title: 백준 Silver3 팰린드롬 만들기
+description: 1213 팰린드롬 만들기 with Node
+date: 2023-11-29
+tags:
+  - 백준
+image: /img/js/js.jpg
+---
+
+# 문제
+임한수와 임문빈은 서로 사랑하는 사이이다.
+
+임한수는 세상에서 팰린드롬인 문자열을 너무 좋아하기 때문에, 둘의 백일을 기념해서 임문빈은 팰린드롬을 선물해주려고 한다.
+
+임문빈은 임한수의 영어 이름으로 팰린드롬을 만들려고 하는데, 임한수의 영어 이름의 알파벳 순서를 적절히 바꿔서 팰린드롬을 만들려고 한다.
+
+임문빈을 도와 임한수의 영어 이름을 팰린드롬으로 바꾸는 프로그램을 작성하시오.
+
+# 입력
+첫째 줄에 임한수의 영어 이름이 있다. 알파벳 대문자로만 된 최대 50글자이다.
+
+# 출력
+첫째 줄에 문제의 정답을 출력한다. 만약 불가능할 때는 "I'm Sorry Hansoo"를 출력한다. 정답이 여러 개일 경우에는 사전순으로 앞서는 것을 출력한다.
+
+# 내풀이
+
+```js
+const fs = require('fs');
+const filePath = process.platform === 'linux' ? '/dev/stdin' : './input.txt';
+const input = fs.readFileSync(filePath, 'utf8').trim();
+
+const strObj = {};
+
+// 각 문자열의 횟수를 세주고
+for (let str of input) {
+  if (!strObj[str]) {
+    strObj[str] = 1;
+  } else {
+    strObj[str] = strObj[str] + 1;
+  }
+}
+
+function solution() {
+  let middleChar = ''; // 갯수가 홀수이면 middleChar에
+  let leftHalf = ''; // 갯수가 짝수이면 leftHalf에
+  let result = ''; // 결과 저장 변수
+  const sortedChars = Object.keys(strObj).sort(); // 사전순으로 정렬
+
+  for (const char of sortedChars) {
+    if (strObj[char] % 2 !== 0) { // 홀수면
+      // 홀수가 두개 이상이면 펠린드롬이 될 수 없다
+      // 이미 홀수가 나와서 middleChar에 값이 있으면 return 해주자.
+      if (middleChar !== '') { 
+        result = "I'm Sorry Hansoo";
+        return result;
+      }
+      middleChar = char;
+      strObj[char]--;
+    }
+
+    // 짝수의 값을 가져와서 절반만 반복해서 넣어준다.
+    const halfCount = strObj[char] / 2;
+    leftHalf += char.repeat(halfCount);
+  }
+
+  // 왼쪽 가운데 왼쪽을 리버스해서 합쳐주자.
+  result = leftHalf + middleChar + leftHalf.split('').reverse().join('');
+
+  return result;
+}
+
+console.log(solution());
+
+```
