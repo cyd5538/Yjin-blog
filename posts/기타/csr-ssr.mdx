@@ -1,0 +1,56 @@
+---
+title: CSR과 SSR의 차이
+description: CSR과 SSR 각각의 개념과 장단점을 알아보자.
+date: 2023-11-30
+tags:
+  - CSR
+  - SSR
+image: /img/etc/csr.jpg
+---
+
+ CSR(클라이언트 사이드 렌더링)과 SSR(서버 사이드 렌더링)는 브라우저에서의 웹 페이지 렌더링 방식이다.
+
+> **브라우저 렌더링 ?**    
+브라우저 렌더링이란 HTML,CSS, 자바스크립트 등 개발자가 작성한 문서가 브라우저에서 출력되는 과정이다.
+
+# CSR(Client Side Rendering)
+<p align="center">
+  <img src="/img/etc/csr.jpg" alt="csr" width="600"/>
+</p>
+<b>CSR은 브라우저가 서버로부터 데이터를 받아와서 클라이언트에서 직접 처리하는 방식이다.</b>   
+서버는 초기 HTML 파일을 보내지만 클라이언트는 JavaScript를 사용하여 필요에 따라 페이지를 동적으로 업데이트한다. 이렇게 하면 클라이언트가 전체 페이지를 다시 로드할 필요 없이 페이지의 특정 부분을 업데이트할 수 있으므로 보다 대화형이고 반응이 빠른 웹 페이지가 가능하다.  
+CSR 프레임워크인 React를 사용하면 필요에 따라 DOM을 업데이트하는 JavaScript 코드를 작성하여 보다 인터랙티브하고 동적인 웹 애플리케이션을 제공한다.  
+
+<b>장점</b>  
+- 페이지 간 이동속도가 빠르다.
+- 필요한 내용만 업데이트할 수 있기에 속도가 빠르다.
+- 화면 깜빡임이 발생하지 않아 사용자에게 친화적이다.
+
+<b>단점</b>  
+- 초기 페이지 렌더링 속도가 느리다
+- 검색엔진최적화(SEO)에 불리하다.
+
+<u>CSR은 소셜 미디어 플랫폼이나 전자 상거래 웹 사이트와 같이 높은 수준의 상호 작용이 필요한 웹 애플리케이션에 사용하면 좋다.</u>
+
+# SSR(Server Side Rendering)
+<p align="center">
+  <img src="/img/etc/ssr.jpg" alt="ssr" width="600"/>
+</p>
+<b>SSR은 서버에서 사용자에게 보여줄 페이지를 미리 만든 다음에서 페이지를 렌더링하는 방식이다.</b>  
+인기있는 SSR 프레임워크에는 Next.js가 있다. React를 사용하고 서버를 직접 관리하지 않아도 서버에서 자동으로 렌더링 될 수 있게 해준다.  
+
+<b>장점</b>  
+- 서버에서 만들어진 페이지를 보여주기 떄문에 초기 페이지 렌더링 속도가 빠르다.
+- 검색엔진최적화(SEO)에 강점을 가진다.
+
+<b>단점</b>  
+- 새로고침을 하게되면 서버에서 다시 받아와야 하기에 화면의 깜빡임이 발생한다.
+- 페이지 이동시 서버에서 다시 받아와야 하기 떄문에 속도가 느리다.
+- 검색엔제최적화(SEO)에 불리하다.
+
+<u>SSR은 빠른 초기 로드 시간과 우수한 SEO 최적화가 중요한 블로그나 뉴스 웹사이트와 같이 콘텐츠가 많은 웹사이트에 일반적으로 사용된다.</u>
+
+> 참고  
+https://www.geeksforgeeks.org/server-side-rendering-vs-client-side-rendering-vs-server-side-generation/  
+https://velog.io/@vagabondms/%EA%B8%B0%EC%88%A0-%EC%8A%A4%ED%84%B0%EB%94%94-SSR%EA%B3%BC-CSR%EC%9D%98-%EC%B0%A8%EC%9D%B4#4--%EC%82%AC%EC%9A%A9-%EA%B6%8C%EC%9E%A5-%EC%98%88%EC%8B%9C  
+https://adjh54.tistory.com/53
