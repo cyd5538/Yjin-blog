@@ -34,7 +34,6 @@ module.exports = {
             u : {
               'text-decoration-style': 'solid',
               'text-underline-offset' : "0.2em",
-              "text-decoration-color" : 'rgb(139,92,206)',
               'text-underline-offset': '8px'
             },
             'blockquote': {
@@ -56,6 +55,10 @@ module.exports = {
             'blockquote p::before': {
               content: "''", 
             },
+            a: {
+             "text-decoration": "none",
+             'font-size': '0.8rem'
+            }
           },
         },
       },
