@@ -61,7 +61,6 @@ const PostToc = ({ toc, slugs, height }: PostTocType) => {
     const handleScroll = () => {
       if (tocRef.current && height) {
         const scrollY = window.scrollY;
-        console.log(scrollY,height)
         if (scrollY >= height - 200) {
           tocRef.current.classList.add('hidden');
         } else {
