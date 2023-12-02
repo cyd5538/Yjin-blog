@@ -2,10 +2,11 @@ import Link from 'next/link';
 import { format, parseISO } from "date-fns";
 import { Post } from "contentlayer/generated";
 import Image from 'next/image';
+import PostCardTags from './PostCardTags';
 
 function PostCard(post: Post) {
   const url = post?.title.startsWith("프로그래머스") || post?.title.startsWith("백준") ? `algorithm/${post.url}` : `posts/${post.url}`
-  // `posts/${post.url}`
+
   return (
     <div className="max-w-sm w-80 rounded overflow-hidden shadow-lg dark:bg-zinc-900 mx-auto my-2">
       <div className='w-full h-48'>
@@ -29,15 +30,7 @@ function PostCard(post: Post) {
       </div>
       <ul className="px-6 py-4">
         {post.tags?.map((tag, index) =>
-          <Link
-            key={index}
-            href={{
-              pathname: `/tag`,
-              query: { tag: `${tag}` }
-            }}
-          >
-            <li className="inline-block bg-gray-100 rounded-full px-3 py-1 text-sm font-semibold text-gray-600 mr-2">{tag}</li>
-          </Link>
+          <PostCardTags key={tag} tag={tag}/>
         )}
       </ul>
       <div className='px-6 py-4 text-right'>
