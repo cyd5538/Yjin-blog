@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { format, parseISO } from "date-fns";
 import { Post } from "contentlayer/generated";
+import PostCardTags from '../Home/PostCardTags';
 
 function Memopost(post: Post) {
   
@@ -17,15 +18,7 @@ function Memopost(post: Post) {
           </Link>
           <ul className='flex mt-2 gap-2 pl-1 flex-wrap pb-2'>
             {post.tags?.map((tag, index) =>
-              <Link
-                key={index}
-                href={{
-                  pathname: `/tag`,
-                  query: { tag: `${tag}` }
-                }}
-              >
-                <li className='rounded-md bg-violet-100 dark:bg-zinc-700 pl-2 pr-2 hover:bg-violet-300 dark:hover:bg-zinc-800'>{tag}</li>
-              </Link>
+              <PostCardTags key={tag} tag={tag}/>
             )}
           </ul>
           <div className='mb-1 pl-2'>

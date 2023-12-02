@@ -8,7 +8,7 @@ import MDXComponents from "@/utils/mdxcomponents";
 import PostToc from "@/components/slug/PostToc";
 import NextPrev from "@/components/slug/PrevNext";
 import { Post  } from "contentlayer/generated";
-import Link from 'next/link';
+import PostCardTags from '../Home/PostCardTags';
 
 interface SinglePostProps {
   postmemo : boolean
@@ -96,15 +96,7 @@ const SinglePost:React.FC<SinglePostProps> = ({ params, post, postSort, postmemo
             </h2>
             <ul className="pb-24 flex flex-wrap gap-2">
               {post.tags?.map((tag,index) => 
-                <Link 
-                  key={index}                       
-                  href={{
-                    pathname: `/tag`,
-                    query: { tag: `${tag}` }
-                  }}
-                >
-                  <li className='rounded-md  bg-violet-500 text-white dark:bg-zinc-700 pl-2 pr-2 hover:bg-violet-300 dark:hover:bg-zinc-800'>{tag}</li>
-                </Link>
+                <PostCardTags key={tag} tag={tag}/>
               )}
             </ul>
             <article className="max-w-none w-[360px] min-[650px]:w-[630px] min-[630px]:w-[600px] min-[600px]:w-[550px] min-[550px]:w-[520px] min-[520px]:w-[500px] min-[500px]:w-[470px] min-[470px]:w-[440px] min-[440px]:w-[410px] min-[670px]:w-full m-auto prose dark:prose-invert">
