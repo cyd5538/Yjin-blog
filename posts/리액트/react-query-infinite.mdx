@@ -1,0 +1,146 @@
+---
+title: useInfiniteQuery를 사용해서 무한스크롤 구현하기.
+description: React-Query에 useInfiniteQuery를 사용해서 무한스크롤을 구현해보자.
+date: 2023-12-06
+tags:
+  - React
+  - React-Query
+  - 무한스크롤
+image: /img/react/react-query.jpg
+---
+
+<p align="center">
+  <img src="/img/react/react-query.jpg" alt="react-query" width="500"/>
+</p>
+
+> 무한스크롤이란?  
+무한 스크롤(Infinite Scroll)이란 웹 페이지를 스크롤할 때 추가적인 데이터나 콘텐츠가 자동으로 로드되어 페이지를 확장시키는 패턴을 나타낸다.  
+
+# useInfiniteQuery
+기존 데이터 집합 또는 "무한 스크롤"에 추가로 "더 많은 데이터를 로드"할 수 있는 렌더링 목록도 매우 일반적인 UI 패턴입니다. 
+TanStack Query는 이러한 유형의 목록을 쿼리하는 데 유용한 버전의 called를 지원합니다.
+
+먼저 데이터를 fetch해올 함수를 만들어주자. themoviedb에서 page가 있는 API를 찾아서 get하는 함수를 만들었다.
+
+```js
+import axios from "axios";
+
+export const getMovies = async ({ pageNumber = 1 }) => {
+  try {
+    const response = await axios.get(`https://api.themoviedb.org/3/movie/popular?language=en-US&page=${pageNumber}`, {
+      headers: {
+        'Authorization': 'api-key',
+        'Accept': 'application/json',
+      },
+    });
+
+    return response.data.results;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+```
+위에서 만든 함수를 queryFn에 넣어주자
+
+```js
+import React from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { getMovies } from './util/api';
+import './App.css'
+
+function App() {
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ['movie'],
+    queryFn: getMovies,
+    getNextPageParam: (lastPage, pages) => pages.length + 1,
+  });
+
+  return (
+    <>
+      <h1>React-query 무한 스크롤</h1>
+      <div className="infinite-scroll-container">
+        {data?.pages.map((group, idx) => (
+          <React.Fragment key={idx}>
+            {group.map((project, projectIdx) => (
+              <div key={projectIdx} className="movie-item">
+                <h3 className="movie-title">{project.title}</h3>
+                <img
+                  src={`https://image.tmdb.org/t/p/original/${project.backdrop_path}`}
+                  alt={project.title}
+                  width="300"
+                  height="300"
+                />
+              </div>
+            ))}
+          </React.Fragment>
+        ))}
+      </div>
+    </>
+  );
+}
+
+export default App;
+```
+useInfiniteQuery ✨
+
+* data: 무한 쿼리 데이터를 포함하는 객체
+* data.pages: 가져온 페이지를 포함하는 배열
+* data.pageParams: 페이지를 가져오는 데 사용되는 페이지 매개 변수를 포함하는 배열
+* fetchNextPage:  다음 페이지의 데이터를 가져오기 위한 함수
+* hasNextPage: 현재 로드된 페이지 이후에 데이터가 더 있는지 여부를 나타내는 boolean 값
+* isFetchingNextPage: 다음 페이지의 데이터를 가져오는 중인지 여부를 나타내는 boolean 값
+
+# react-infinite-scroller
+react-infinite-scroller 인피니트 스크롤 구현하는데 도움을 주는 라이브러리다
+```
+npm install react-infinite-scroller --save
+```
+아까 만들어둔 코드에다가 InfiniteScroll를 사용해서 감싸면 된다.
+```js
+  <InfiniteScroll
+    pageStart={0}
+    loadMore={fetchNextPage}
+    hasMore={hasNextPage}
+    loader={<Loading key={0}/>}
+  >
+    <div className="infinite-scroll-container">
+      {data?.pages.map((group, idx) => (
+        <React.Fragment key={idx}>
+          {group.map((project, projectIdx) => (
+            <div key={projectIdx} className="movie-item">
+              <h3 className="movie-title">{project.title}</h3>
+              <img
+                src={`https://image.tmdb.org/t/p/original/${project.backdrop_path}`}
+                alt={project.title}
+                width="300"
+                height="300"
+              />
+            </div>
+          ))}
+        </React.Fragment>
+      ))}
+    </div>
+  </InfiniteScroll>
+```
+
+* padStart: 로드할 첫 번째 페이지의 수
+* loadMore: 사용자가 스크롤을 끝까지 내리면 실행하는 함수 (다음 데이터를 비동기 요청하는 함수)
+* hasMore: 로드할 항목이 더 있는지를 나타내는 boolean 값
+* loader: 데이터를 가져오는 동안 표시할 로딩 UI
+
+# 완성
+
+<p align="center">
+  <img src="/img/react/infinite.gif" alt="infinite" width="700"/>
+</p>
+
+> 참고  
+https://tanstack.com/query/v4/docs/react/guides/infinite-queries  
+https://www.npmjs.com/package/react-infinite-scroller
