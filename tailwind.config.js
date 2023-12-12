@@ -10,6 +10,7 @@ module.exports = {
   theme: {
     fontFamily: {
       HakgyoansimWoojuR: ["HakgyoansimWoojuR"],
+      Pretendard: ["Pretendard"],
     },
     container: {
       center: true,
