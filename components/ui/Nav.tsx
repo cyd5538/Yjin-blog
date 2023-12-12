@@ -19,7 +19,6 @@ const Nav = () => {
     { title: 'Posts', link: '/posts' },
     { title: 'Memo', link: '/memo' },
     { title: 'Algorithm', link: '/algorithm' },
-    { title: 'tags', link: '/tag' },
   ];
 
   return (
