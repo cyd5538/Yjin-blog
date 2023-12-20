@@ -1,0 +1,174 @@
+---
+title: React에서 Firebase Storage에 이미지 저장하는 방법
+description: React TypeScript에서 Firebase에 이미지 저장을 해보자.
+date: 2023-12-20
+tags:
+  - React
+  - Firebase
+image: /img/react/firebase.jpg
+---
+
+# 파이어베이스 셋팅
+먼저 파이어베이스에 로그인을 해서 프로젝트를 만들어주자
+<p align="center">
+  <img src="/img/react/firebase-setting.jpg" alt="firebase-setting" width="800"/>
+</p>
+프로젝트를 만들고 위에 프로젝트 설정에 가서 제품이 SDK 저부분을 복사해오자  
+`firebase.ts` 파일을 만들고 복사해 온 코드를 붙여넣는다.  
+여기에 있는 키들은 환경변수를 사용해줘야 한다.
+```tsx
+import { initializeApp } from "firebase/app";
+
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+export default app;
+```
+붙여넣기 했으면 firebase를 설치해주자
+```
+npm install fireabase
+```
+이렇게 하면 파이어베이스 셋팅은 완료가 된다.
+
+# 이미지 저장하기
+```tsx
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { ChangeEvent, useState } from 'react'
+import app from './firebase';
+
+const App = () => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
+  const handleImageUpload = async () => {
+    // 파일이 있다면
+    if (selectedFile) {
+      const storage = getStorage(app);
+      const storageRef = ref(storage, 'project/' + selectedFile.name); // 스토리지 project 폴더에 저장
+
+      try {
+        await uploadBytes(storageRef, selectedFile); // 이미지 업로드
+
+        const downloadURL = await getDownloadURL(storageRef); // 이미지 url
+        console.log('이미지 업로드 성공');
+
+        // 이미지 url을 db에저장해서 사용할 수 있다.
+
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      console.error('이미지를 선택해주세요.');
+    }
+  };
+
+  return (
+    <div>
+      <input type="file" onChange={handleFileChange} />
+      <button onClick={handleImageUpload}>이미지 업로드</button>
+    </div>
+  );
+};
+
+export default App
+```
+<p align="center">
+  <img src="/img/react/firebase-storage.jpg" alt="firebase-storage" width="1000"/>
+</p>
+project폴더에 이미지가 저장된 모습을 볼 수 있다.
+# 이미지 미리보기
+올린 파일의 이미지를 미리보려면 FileReader라는 API를 사용하면 볼 수 있다. 
+파일을 보여주는 useState로 filePreview를 하나 만들고 handleFileChange 함수를 수정하자
+```tsx
+const [filePreview, setFilePreview] = useState<string | null>(null);
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event: ProgressEvent<FileReader>) => {
+        setFilePreview(event.target?.result as string); 
+      };
+      reader.readAsDataURL(file);
+      setSelectedFile(file);
+    } else {
+      setFilePreview(null);
+    }
+  };
+```
+# 완성 코드
+```tsx
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { ChangeEvent, useState } from 'react'
+import app from './firebase';
+
+const App = () => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [filePreview, setFilePreview] = useState<string | null>(null);
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event: ProgressEvent<FileReader>) => {
+        setFilePreview(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+      setSelectedFile(file);
+    } else {
+      setFilePreview(null);
+    }
+  };
+
+  const handleImageUpload = async () => {
+    if (selectedFile) {
+      const storage = getStorage(app);
+      const storageRef = ref(storage, 'project/' + selectedFile.name);
+
+      try {
+        await uploadBytes(storageRef, selectedFile);
+
+        const downloadURL = await getDownloadURL(storageRef);
+        console.log('이미지 업로드 성공');
+
+        // 이미지 url을 db에저장해서 사용할 수 있다.
+
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      console.error('이미지를 선택해주세요.');
+    }
+  };
+
+  return (
+    <div>
+      <input type="file" onChange={handleFileChange} />
+      <button onClick={handleImageUpload}>이미지 업로드</button>
+      {filePreview &&
+        <img width={300} height={300} src={filePreview} alt="File Preview" />
+      }
+    </div>
+  );
+};
+
+export default App
+
+```
+> 참고  
+https://developer.mozilla.org/ko/docs/Web/API/FileReader/readAsDataURL
