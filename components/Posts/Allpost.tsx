@@ -14,8 +14,8 @@ interface AllpostProps {
 
 const Allpost:React.FC<AllpostProps> = ({categoery}) => {
   const searchparams = useSearchParams()
-  const categoryParams = searchparams.get('category') || ""
-  const post = categoryParams ? '?category=&' : '?'
+  const categoryParams = searchparams.get('category&') || ""
+  const post = categoryParams ? '?category=' : '?'
   const pageParams = searchparams.get('page');
 
   const filteredPosts = allPosts
