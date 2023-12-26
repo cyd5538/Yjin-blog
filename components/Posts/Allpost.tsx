@@ -4,12 +4,20 @@ import { Post } from 'contentlayer/generated';
 import { allPosts } from 'contentlayer/generated';
 import { compareDesc } from 'date-fns';
 import usePagination from '@/hooks/usePagination';
+import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { useEffect } from 'react';
 
 interface AllpostProps {
   categoery : string
 }
 
 const Allpost:React.FC<AllpostProps> = ({categoery}) => {
+  const searchparams = useSearchParams()
+  const categoryParams = searchparams.get('category') || ""
+  const post = categoryParams ? '?category=' : ''
+  const pageParams = searchparams.get('page');
+
   const filteredPosts = allPosts
   .filter(post => 
     !post._id.startsWith('memo') && !post._id.startsWith('코딩테스트')
@@ -18,6 +26,10 @@ const Allpost:React.FC<AllpostProps> = ({categoery}) => {
   
   const sortedPosts = filteredPosts.sort((a, b) => compareDesc(new Date(a.date), new Date(b.date)));
   const { currentPage, currentData, totalPages, handlePageChange } = usePagination(sortedPosts,categoery);
+  
+  useEffect(() => {
+    handlePageChange(parseInt(pageParams as string, 10) || 1);
+  }, [pageParams, handlePageChange, currentPage]);
 
   return (
     <div>
@@ -28,7 +40,10 @@ const Allpost:React.FC<AllpostProps> = ({categoery}) => {
       </div>
       <div className='mt-4 flex justify-center'>
         {Array.from({ length: totalPages }, (_, index) => (
-          <button
+          <Link
+            href={
+              `/posts${post}${categoryParams}&page=${index+1}`
+            }
             key={index + 1}
             onClick={() => handlePageChange(index + 1)}
             className={`mx-2 p-1 pl-2 pr-2 rounded-full  ${
@@ -36,7 +51,7 @@ const Allpost:React.FC<AllpostProps> = ({categoery}) => {
             }`}
           >
             {index + 1}
-          </button>
+          </Link>
         ))}
       </div>
     </div>
