@@ -14,8 +14,9 @@ interface AllpostProps {
 
 const Allpost:React.FC<AllpostProps> = ({categoery}) => {
   const searchparams = useSearchParams()
-  const categoryParams = searchparams.get('category') || ""
-  const post = categoryParams ? '?category=&' : '?'
+  const categoryParams = searchparams.get('category')
+  const post = categoryParams ? '?category=' : '?'
+  const category = categoryParams ? `${categoryParams}&` : ""
   const pageParams = searchparams.get('page');
 
   const filteredPosts = allPosts
@@ -42,7 +43,7 @@ const Allpost:React.FC<AllpostProps> = ({categoery}) => {
         {Array.from({ length: totalPages }, (_, index) => (
           <Link
             href={
-              `/posts${post}${categoryParams}page=${index+1}`
+              `/posts${post}${category}page=${index+1}`
             }
             key={index + 1}
             onClick={() => handlePageChange(index + 1)}
