@@ -1,0 +1,142 @@
+---
+title: 내가 Zustand를 사용하는 이유?
+description: React에서 상태관리를 할 때 Zustand를 사용해서 간편하고 효율적으로 상태를 관리해보자.
+date: 2023-12-26
+tags:
+  - Zustand
+image: /img/react/zustand.jpg
+---
+
+<p align="center">
+  <img src="/img/react/zustand.jpg" alt="zustand" width="1000"/>
+</p>
+
+# Zustand란 ?
+React에서 사용가능한 상태 관리 라이브러리다. Zustand는 독일어로 `상태`라는 뜻을 가졌다.  
+Zustand는 간단하고 빠르며 확장 가능한 최소한의 상태 관리 솔루션으로, 단순화된 플럭스 원칙을 기반으로 한다. 편리한 훅을 기반으로 한 API를 갖추고 있으며, 보일러플레이트가 적고 의견이 강제되지 않은 특징을 가지고 있다.
+
+<p align="center">
+  <img src="/img/react/npm-trend.jpg" alt="npm-trend" width="1000"/>
+</p>
+npm trends를 보면 Zustand의 다운로드 수가 점점 늘고 있는 모습을 볼 수 있다.
+
+# Zustand 기본 사용법
+설치
+```
+npm install zustand
+```
+설치를 했으면 기본 사용법은 정말 간단하다. Provider로 App을 감싸준다거나 그런 작업은 필요없다.  
+counststore.ts 파일을 만들어준다
+```ts
+import { create } from 'zustand';
+
+type CounterStore = {
+  count: number;
+  increment: () => void;
+  decrement: () => void;
+  reset: () => void; 
+};
+
+export const useCounter = create<CounterStore>((set) => ({
+  count: 0,
+  increment: () => set((state) => ({ count: state.count + 1 })),
+  decrement: () => set((state) => ({ count: state.count - 1 })),
+  reset: () => set({ count: 0 })
+}));
+
+```
+만든 `useCounter()`를 hook으로 부러와서 사용하면 된다.
+```tsx
+import React from 'react';
+import { useCounter } from './store/countstore';
+
+const Counter: React.FC = () => {
+  const { count } = useCounter();
+  return (
+    <div>
+      <h1>Count: {count}</h1>
+      <ControlCounter />
+    </div>
+  );
+};
+const ControlCounter = () => {
+  const { increment, decrement, reset } = useCounter();
+
+  return (
+    <div>
+      <button onClick={increment}>Increment</button>
+      <button onClick={decrement}>Decrement</button>
+      <button onClick={reset}>Reset</button>
+    </div>
+  );
+};
+
+export default Counter;
+```
+# Zustand에서 비동기
+`zustand는 작업이 비동기인지 아닌지 상관하지 않는다.`  
+비동기 작업을 수행하는 방법에는 2가지가 있다.  
+1. set(state => result)
+```jsx
+const useFishStore = create((set) => ({
+  fishies: {},
+  fetch: async (pond) => {
+    const response = await fetch(pond)
+    set((state)=>{
+      console.log(state.fishies)
+    })
+  },
+}))
+```
+2. get
+```jsx
+const useFishStore = create((set, get) => ({
+  fishies: {},
+  fetch: async (pond) => {
+    const response = await fetch(pond)
+    set(()=>{
+      console.log(get().fishies)
+    })
+  },
+}))
+```
+# Zustand Middelewear
+Zustand에는 여러가지 유용한 Middelewear가 있다.
+1. immer는 미들웨어로도 사용이 가능하다.
+```jsx
+import { create } from 'zustand'
+import { immer } from 'zustand/middleware/immer'
+
+const useBeeStore = create(
+  immer((set) => ({
+    bees: 0,
+    addBees: (by) =>
+      set((state) => {
+        state.bees += by
+      }),
+  })),
+)
+```
+2. Persist 
+모든 종류의 스토리지를 사용하여 스토어의 데이터를 유지할 수 있다(로컬스토리지 세션스토리지, 쿠키 등)
+```jsx
+mport { create } from 'zustand'
+import { persist, createJSONStorage } from 'zustand/middleware'
+
+export const useBearStore = create(
+  persist(
+    (set, get) => ({
+      bears: 0,
+      addABear: () => set({ bears: get().bears + 1 }),
+    }),
+    {
+      name: 'food-storage', 
+      storage: createJSONStorage(() => sessionStorage), 
+    },
+  ),
+)
+```
+이외에도 subscribe, devtools 등의 미들웨어가 있는데 아래의 공식문서를 참고하자.
+> 참고  
+https://docs.pmnd.rs/zustand/getting-started/introduction  
+https://ui.toast.com/weekly-pick/ko_20210812
