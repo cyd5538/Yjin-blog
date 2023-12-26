@@ -21,8 +21,6 @@ const Tag = () => {
 
   const [searchs, setSearchs] = useState<string | null>(search)
 
-  const { currentPage, currentData, totalPages, handlePageChange } = usePagination(filteredPosts, searchs as string);
-
   useEffect(() => {
     const filteredPost = allPosts
       .filter(post => !post._id.startsWith('memo'))
@@ -77,20 +75,8 @@ const Tag = () => {
       </div>
       <TagTitle title={`${search as string} 태그에 대한 블로그`} length={filteredPosts.length as number} />
       <div className='mt-10 grid gap-4 justify-center md:grid-cols-2 lg:grid-cols-3 grid-cols-1'>
-        {currentData.map((post: Post) => (
+        {filteredPosts.map((post: Post) => (
           <PostCard key={post.title} {...post} />
-        ))}
-      </div>
-      <div className='flex justify-center pt-4 pb-4'>
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index + 1}
-            onClick={() => handlePageChange(index + 1)}
-            className={`mx-2 p-1 pl-2 pr-2 rounded-full  ${currentPage === index + 1 ? 'bg-blue-700  text-white dark:bg-zinc-900' : 'bg-white text-blue-700 dark:text-zinc-800 dark:bg-zinc-500'
-              }`}
-          >
-            {index + 1}
-          </button>
         ))}
       </div>
       <TagTitle title={`${search as string} 태그에 대한 메모`} length={filteredMemo.length as number} />
