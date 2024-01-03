@@ -1,0 +1,204 @@
+---
+title: React-Hook-Form + Zod 사용해서 유효성 체크하기
+description: React-Hook-Form + Zod를 사용해서 데이터 유효성 검사와 폼 관리를 해보자. 
+date: 2024-01-03
+tags:
+  - React-Hook-Form
+  - React
+  - zod
+  - typescript
+image: /img/react/reacthookformzod.jpg
+---
+
+<p align="center">
+  <img src="/img/react/reacthookformzod.jpg" alt="reacthookform-zod" width="700"/>
+</p>
+
+
+# 설치
+기본 react typescript로 된 프로젝트에 아래 라이브러리를 설치해주자.
+
+```
+npm i zod react-hook-form @hookform/resolvers
+```
+# Zod 스키마 작성
+register.ts라는 파일을 만들어서 아래와 같이 작성했다.
+```ts
+import { z } from 'zod'
+
+export const RegisterSchema = z.object({
+    nickname: z
+        .string().trim().toLowerCase()
+        .min(2, { message: "닉네임은 최소 2글자 이상 10글자 이하입니다." })
+        .max(10, { message: "닉네임은 최소 2글자 이상 10글자 이하입니다." }),
+    email: z.string()
+        .email({ message: "올바른 이메일 형식이 아닙니다." })
+        .trim().toLowerCase(),
+    password: z
+        .string()
+        .min(6, { message: "비밀번호는 6글자 이상 20글자 이하로 입력해주세요." })
+        .max(10, { message: "비밀번호는 6글자 이상 20글자 이하로 입력해주세요." })
+        .regex(/^(?=.*[!@#$%^&*(),.?":{}|<>]).*$/, { message: "특수문자를 최소 1개 이상 포함해주세요." }),
+    confirmPassword: z
+        .string()
+        .min(6, { message: "비밀번호는 6글자 이상 20글자 이하로 입력해주세요." })
+        .max(10, { message: "비밀번호는 6글자 이상 20글자 이하로 입력해주세요." })
+        .regex(/^(?=.*[!@#$%^&*(),.?":{}|<>]).*$/, { message: "특수문자를 최소 1개 이상 포함해주세요." }),
+})
+
+.refine((data) => data.password === data.confirmPassword, {
+  message: "비밀번호가 일치하지 않습니다.",
+  path: ["confirmPassword"]
+})
+
+export type RegisterType = z.infer<typeof RegisterSchema>;
+```
+`z.object({})`를 사용하여 스키마를 만들어주었다. 각각 필드에 대한 속성은 크게 설명이 필요 없을 정도로 한눈에 보면 어떤 속성인지 알 수 있다.
+```ts
+.refine((data) => data.password === data.confirmPassword, {
+  message: "비밀번호가 일치하지 않습니다.",
+  path: ["confirmPassword"]
+})
+```
+`refine()`은 추가적인 사용자 정의 유효성 검사를 수행하는데 사용된다. password와 confirmPassword를 비교해서 비밀번호가 일치하는지 불일치하는지 알려주고 에러메세지를 전달해준다.  
+```ts
+export type RegisterType = z.infer<typeof RegisterSchema>;
+```
+zod는 타입을 추론해준다 위의 코드는 아래와 같은 타입을 가지게 된다.
+```ts
+type RegisterType = {
+    nickname: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+}
+```
+# React-hook-form 연결 
+이제 register form이 있는 파일로 이동하자
+```tsx
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { RegisterSchema, RegisterType } from '@/utils/register';
+
+const {register, handleSubmit, formState: {errors}} = useForm<RegisterType>({
+  resolver: zodResolver(RegisterSchema)
+})
+```
+위에서 zod로 만든 스키마를 연결해주자.
+- register: 입력 또는 선택 요소를 등록하고 유효성 검사 규칙을 적용할 수 있다. 
+```tsx
+  <input {...register('firstName')} />
+```
+- `handleSubmit`: form을 submit할 때 실행하는 함수다. 유효성검사를 통과하면 다음 비동기 함수를 실행한다.
+```tsx
+<form onSubmit={handleSubmit(onSubmit)} />
+```
+- `formState: { errors }`: 각 필드에 대한 오류 메시지를 조건부로 표시할 수 있다.
+```tsx
+{errors.email && <span className='text-xs text-red-500'>{errors.email.message}</span>}
+```
+
+# 완성코드
+```tsx
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useNavigate } from 'react-router-dom';
+import { registerFun } from '../lib/userApi';
+import axios from 'axios';
+import customToast from '@/components/ui/customToast';
+
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { RegisterSchema, RegisterType } from '@/utils/register';
+
+interface RegisterProps {}
+
+const Register: React.FC<RegisterProps> = () => {
+  const navigate = useNavigate();
+
+  const {register, handleSubmit, formState: {errors}} = useForm<RegisterType>({
+    resolver: zodResolver(RegisterSchema)
+  })
+  
+  const handleRegister = async (data:RegisterType) => {
+
+    try {
+      const userData = { 
+        email : data.email, 
+        nickname: data.nickname,
+        password: data.password 
+      };
+
+      const response = await registerFun(userData);
+      customToast('success', '회원가입 완료');
+      navigate('/login');
+      return response.data
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        customToast('error', error.response?.data.error);
+      }
+      else customToast('error', '회원가입 중에 에러가 발생했습니다.');
+    }
+  };
+
+  return (
+    <div className="w-full h-screen flex justify-center items-center">
+      <form
+        onSubmit={handleSubmit(handleRegister)}
+        className="w-full sm:w-96 px-4 py-4 flex flex-col gap-4 drop-shadow-md bg-white rounded-xl"
+      >
+        <h1 className="font-bold text-center text-2xl">회원가입</h1>
+        <Input
+          type="email"
+          placeholder="Email을 입력해주세요."
+          {...register("email")}
+        />
+        {errors.email && <span className='text-xs text-red-500'>{errors.email.message}</span>}
+        <div className='flex gap-2'>
+          <Input
+            type="text"
+            placeholder="닉네임을 입력해주세요."
+            {...register("nickname")}
+          />
+        </div>
+        {errors.email && <span className='text-xs text-red-500'>{errors.email.message}</span>}
+        <Input
+          type="password"
+          placeholder="비밀번호를 입력해주세요."
+          {...register("password")}
+        />
+        {errors.password && <span className='text-xs text-red-500'>{errors.password.message}</span>}
+        <Input
+          type="password"
+          placeholder="비밀번호를 한번 더 입력해주세요"
+          {...register("confirmPassword")}
+        />
+        {errors.password && <span className='text-xs text-red-500'>{errors.password.message}</span>}
+        {errors.confirmPassword && <span className='font-semibold text-red-800'>{errors.confirmPassword.message}❌</span>}
+        <Button type="submit">Submit</Button>
+        <p className="text-sm text-center">
+          이미 회원이신가요?
+          <span
+            onClick={() => {
+              navigate('/login');
+            }}
+            className="underline pl-2 cursor-pointer"
+          >
+            로그인
+          </span>
+        </p>
+      </form>
+    </div>
+  );
+};
+
+export default Register;
+```
+
+<p align="center">
+  <img src="/img/react/reactform.jpg" alt="완성" width="700"/>
+</p>
+
+> 참고  
+https://zod.dev/  
+https://react-hook-form.com/
