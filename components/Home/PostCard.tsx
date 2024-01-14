@@ -28,8 +28,8 @@ function PostCard(post: Post) {
           {post.description}
         </p>
       </div>
-      <ul className="px-6 py-4">
-        {post.tags?.map((tag, index) =>
+      <ul className="px-6 py-4 h-24 flex gap-[3px] flex-wrap">
+        {post.tags?.map((tag) =>
           <PostCardTags key={tag} tag={tag}/>
         )}
       </ul>
