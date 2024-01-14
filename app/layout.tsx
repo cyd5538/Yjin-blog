@@ -6,7 +6,7 @@ import Container from '@/components/ui/Container'
 import Nav from '@/components/ui/Nav'
 import Footer from "@/components/ui/Footer"
 import Script from 'next/script'
-const googleAnalyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
+
 
 export const metadata: Metadata = {
   title: 'YJin BLOG',
@@ -45,6 +45,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const googleAnalyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
+  const googleTagManagerId = process.env.NEXT_PUBLIC_GOOGLE_TAGMANAGER_ID
+
   return (
     <html lang="ko">
       <Script async src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`} />
@@ -56,6 +59,17 @@ export default function RootLayout({
           gtag('config', '${googleAnalyticsId}');
         `}
       </Script>
+
+      <Script async src={`https://www.googletagmanager.com/gtag/js?id=${googleTagManagerId}`} />
+      <Script id="google-tag-manager">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${googleTagManagerId}');
+        `}
+      </Script>
+
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className='font-HakgyoansimWoojuR text-black dark:bg-[#040D12] dark:text-white'>
