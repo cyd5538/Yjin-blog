@@ -1,0 +1,75 @@
+---
+title: React에서 이모지 사용하기😀
+description: React 이모지마트(emoji-mart)를 사용해보자.
+date: 2024-02-15
+tags:
+  - React
+  - Firebase
+image: /img/react/emoji.jpg
+---
+
+# 설치
+```
+npm install --save emoji-mart @emoji-mart/data @emoji-mart/react
+```
+# 적용
+```tsx
+import data from '@emoji-mart/data'
+import Picker from '@emoji-mart/react'
+import { useState } from 'react';
+import { BsEmojiNeutral } from 'react-icons/bs';
+
+interface Emoji {
+  id: string;
+  keywords: string[];
+  name: string;
+  native: string;
+  shortcodes: string[];
+  unified: string;
+}
+
+const App = () => {
+  const [comment, setComment] = useState<string>("")
+  const [showEmoji, setShowEmoji] = useState<boolean>(false);
+
+  const handleEmojiSelect = (emoji: Emoji) => {
+    setComment((prevComment) => prevComment + emoji.native);
+    setShowEmoji(false)
+  };
+
+  return (
+    <div>
+      <input value={comment} type="text" onChange={(e) => setComment(e.target.value)} />
+      <BsEmojiNeutral
+        onClick={() => setShowEmoji(!showEmoji)}
+        size={25}
+      />
+      {showEmoji ?
+        (
+          <Picker
+            data={data}
+            onEmojiSelect={handleEmojiSelect}
+            // theme="dark" 기본 auto
+            // locale="ko" 한글빼고 다되네..
+            // skin="3" skin tone 기본 1
+          />
+        )
+        : null
+      }
+    </div>
+  )
+}
+
+export default App
+
+```
+
+Options들이 많았는데 locale 옵션에서 다른 언어들은 나오는데 ko는 언어가 바뀌질 않았다.🙁  
+아래 참고의 링크를 보고 필요한 옵션들을 적용해보면 될 것 같다.
+
+<p align="center">
+  <img src="/img/react/emoji.jpg" width="400" alt="이모지"/>
+</p>
+
+> 참고  
+https://github.com/missive/emoji-mart
