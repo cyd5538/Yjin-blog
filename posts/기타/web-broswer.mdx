@@ -1,0 +1,76 @@
+---
+title: 웹 브라우저가 작동하는 과정에 대해 알아보자.
+description: 브라우저의 구조 그리고 HTML, CSS로 작성한 웹 페이지를 어떤 과정으로 렌더링하는지 알아보자 ?
+date: 2024-02-22
+tags:
+  - 웹 브라우저
+image: /img/etc/render-tree.jpg
+---
+
+<u>`https://www.google.com/` 을 치고 들어가면 브라우저에서는 어떤 과정을 거쳐서 페이지를 화면에 보여주는 지 알아보자.</u>
+<br></br>
+
+# 브라우저 기본 구조 
+<p align="center">
+  <img src="/img/etc/brower-base.jpg" alt="브라우저 구조" width="600"/>
+</p>
+- **사용자 인터페이스**     
+주소 표시줄, 뒤로/앞으로 버튼, 즐겨찾기 메뉴 등이고 이를 사용해서 브라우저를 조작
+
+- **브라우저 엔진**  
+사용자 인터페이스와 렌더링 엔진 사이의 상호작용을 관리
+
+- **렌더링 엔진**  
+HTML과 CSS을 파싱하여 화면에 표시
+ 
+- **통신**  
+HTTP 요청과 같은 네트워크 호출을 할 때 사용
+
+- **UI 백엔드**  
+플랫폼 별 원시 UI 요소를 그림
+
+- **자바스크립트 해석기**  
+자바스크립트 코드를 해석하고 실행
+
+- **자료 저장소**  
+쿠키, 로컬 스토리지, IndexedDB 등 데이터를 저장하는 공간
+
+# 브라우저 렌더링
+<u>브라우저 렌더링은 요청받은 자원인  HTML, CSS 및 JavaScript 뿐 아니라 PDF, JPG 등을 해석하여 화면에 표시하는 작업이다.</u>   
+
+렌더링 엔진 종류에는 크게 두가지가 있다.  
+크롬, 사파리 : 웹킷(Webkit)   
+파이어폭스 : 게코(Gecko)
+
+## 렌더링 과정
+네트워크를 통해 전달받은 HTML 문서를 브라우저별로 다를 수 있지만 보통 아래의 단계의 렌더링을 거친다.
+
+<p align="center">
+  <img src="/img/etc/render-tree.jpg" alt="렌더트리" width="800"/>
+</p>
+
+1. **HTML과 CSS 파싱**  
+    - HTML 문서를 파싱하여 DOM(Document Object Model) 트리를 생성합니다.
+    - CSS 규칙을 파싱하여 CSSOM(CSS Object Model)을 생성한다.
+    - 이 두 개의 트리를 결합하여 렌더 트리를 생성.
+    
+> DOM이란?  
+Document object model 의 준말로 마크업 형태의 HTML 문서를 오브젝트 모델의 형태로 바꿔놓은 것
+
+2. **렌더 트리(Render Tree)**  
+위에서 만든 DOM 트리와 CSSOM을 조합하여 렌더 트리(Render Tree)를 생성한다.  
+렌더 트리는 기본적으로 화면에 나타나는 요소들을 결정하는 트리다. 렌더 트리에는 화면에 실제로 표시되는 요소들만 포함된다. 
+`<head>` `<script>` 태그나 `display: none` 등은 렌더 트리에 포함되지 않는다.
+
+3. **레이아웃(Layout)**    
+렌더 트리를 기반으로 하여 각 요소의 위치와 크기를 부여한다.
+
+4. **페인팅(Painting)**  
+렌더 트리가 생성되고 레이아웃이 구성된 후, UI 백엔드(렌더링 엔진)가 각 노드를 화면에 배치하고 표시하는 과정을 의미한다.  
+
+이 과정에서 렌더링 엔진은 가능한 빠르게 콘텐츠를 화면에 표시하여 최상의 사용자 경험을 제공하기 위해 노력한ㄷ다. 일부 콘텐츠는 먼저 화면에 표시되고, 그 후에 다른 콘텐츠는 네트워크를 통해 동적으로 불러와 순차적으로 출력된다.
+
+> 참고  
+https://yozm.wishket.com/magazine/detail/1338/
+https://inpa.tistory.com/entry/%EB%B0%B1%EC%97%94%EB%93%9C-%EB%A1%9C%EB%93%9C%EB%A7%B5-%F0%9F%8C%90-%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80%EC%99%80-%EB%8F%99%EC%9E%91-%EC%9B%90%EB%A6%AC#%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80_%EB%8F%99%EC%9E%91_%EC%9B%90%EB%A6%AC  
+https://gyoogle.dev/blog/web-knowledge/%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80%20%EB%8F%99%EC%9E%91%20%EB%B0%A9%EB%B2%95.html  
