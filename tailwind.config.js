@@ -1,3 +1,5 @@
+const plugin = require('tailwindcss/plugin');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
@@ -6,6 +8,7 @@ module.exports = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
+    "./posts/**/*.{mdx}"
 	],
   theme: {
     fontFamily: {
@@ -20,6 +23,9 @@ module.exports = {
       },
     },
     extend: {
+      textShadow: {
+        base: '0 4px 8px var(--tw-shadow-color)',
+      },
       typography: {
         DEFAULT: {
           css: {
@@ -59,7 +65,7 @@ module.exports = {
             a: {
              "text-decoration": "none",
              'font-size': '0.8rem'
-            }
+            },
           },
         },
       },
@@ -119,5 +125,17 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), require('@tailwindcss/typography')],
+  plugins: [
+  require("tailwindcss-animate"), 
+  require('@tailwindcss/typography'), 
+  plugin(function ({ matchUtilities, theme }) {
+    matchUtilities(
+      {
+        'text-shadow': (value) => ({
+          textShadow: value,
+        }),
+      },
+      { values: theme('textShadow') }
+    )
+  })],
 }
