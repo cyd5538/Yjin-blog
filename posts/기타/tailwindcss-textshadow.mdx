@@ -1,0 +1,62 @@
+---
+title: tailwindss에서 글자의 형광펜을 넣어보자.
+description: tailwind에서 text-shadow를 사용해서 글자의 형광펜 효과를 넣는 방법을 알아보자.
+date: 2024-02-24
+tags:
+  - tailwindcss
+  - text-shadow
+image: /img/etc/text-shadow.jpg
+---
+
+> tailwindcss 공식 홈페이지를 들어가면 text-shadow의 항목이 존재하지 않는다.😥  
+어떻게 <b className="text-shadow-base shadow-yellow-500 text-black dark:text-white">text-shadow를 추가</b>하는지 알아보자.
+
+# plugin 세팅
+`tailwind.config.js` 파일을 들어가서 plugin을 불러오고 아래와 같이 코드를 넣어주자
+```js
+import plugin from 'tailwindcss/plugin';
+
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      textShadow: {
+        xs: '0 1px 2px var(--tw-shadow-color)',
+        sm: '0 2px 4px var(--tw-shadow-color)',
+        base: '0 4px 8px var(--tw-shadow-color)',
+        md: '0 8px 16px var(--tw-shadow-color)',
+        lg: '0 12px 24px var(--tw-shadow-color)',
+      },
+    },
+  },
+  plugins: [
+    plugin(function ({ matchUtilities, theme }) {
+      matchUtilities(
+        {
+          'text-shadow': (value) => ({
+            textShadow: value,
+          }),
+        },
+        { values: theme('textShadow') }
+      )
+    }),
+  ],
+}
+```
+# 적용 
+```tsx
+  <ul className="flex flex-col gap-10 font-bold w-full h-screen justify-center items-center text-2xl">
+    <li className="text-shadow-xs shadow-yellow-900 text-white">가나다라마바사아자차카타파하</li>
+    <li className="text-shadow-sm shadow-blue-500">가나다라마바사아자차카타파하</li>
+    <li className="text-shadow-base shadow-yellow-500">가나다라마바사아자차카타파하</li>
+    <li className="text-shadow-md shadow-yellow-500">가나다라마바사아자차카타파하</li>
+    <li className="text-shadow-lg shadow-black">가나다라마바사아자차카타파하</li>
+  </ul>
+```
+<p align="center">
+  <img src="/img/etc/text-shadow.jpg" width="600" alt="text-shadow"/>
+</p>
