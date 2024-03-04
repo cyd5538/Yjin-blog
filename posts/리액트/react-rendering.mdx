@@ -1,0 +1,86 @@
+---
+title: React 렌더링 방식 알아보기.
+description: React에서는 DOM의 변경을 최소화 하기 위해서 어떤 렌더링 프로세스 과정을 거치는지 알아봅시다.
+date: 2024-03-04
+tags:
+  - React
+image: /img/react/react.png
+---
+
+<p align="center">
+  <img src="/img/react/react.png" alt="react" width="500" />
+</p>
+
+# 자바스크립트의 렌더링
+기존의 자바스크립트에서는 DOM 요소에 변경이 일어날 때마다 렌더링이 발생합니다. 
+이러한 렌더링 과정에서 리플로우(reflow)와 리페인트(repaint)가 빈번하게 발생하는데, 이 과정은 브라우저에게 굉장히 무거운 작업입니다. 
+DOM 변경을 최소화하면서 구현해야 하지만 프로젝트의 규모가 커질수록 이런 부분을 지키기는 어렵습니다.
+
+```js
+var ul = document.getElementsByTagName("ul")[0]; 
+var browserList = ["Internet Explorer", "Firefox", "Safari", "Chrome", "Opera"];
+
+browserList.forEach(function (e) {
+  var li = document.createElement("li");
+  li.textContent = e;
+  ul.appendChild(li);
+});
+```
+위의 코드는 forEach를 사용하여 브라우저 목록을 돌면서 각 브라우저마다 li 요소를 생성하고 이를 ul에 추가합니다. 
+그러나 이 방식은 forEach를 돌 때마다 li 요소를 생성하기 때문에 배열의 크기가 클수록 DOM 변경이 계속 발생하여 성능상 좋지 않습니다. 
+이를 개선하기 위해서는 한 번에 DOM을 업데이트하는 방식으로 변경해야 합니다. 
+
+```js
+var ul = document.getElementsByTagName("ul")[0]; 
+var docfrag = document.createDocumentFragment();
+var browserList = ["Internet Explorer", "Firefox", "Safari", "Chrome", "Opera"];
+
+browserList.forEach(function (e) {
+  var li = document.createElement("li");
+  li.textContent = e;
+  docfrag.appendChild(li);
+});
+
+ul.appendChild(docfrag);
+```
+위의 코드는 한꺼번에 DocumentFragment에 li 요소를 추가한 후, 한 번에 ul에 추가하여 DOM 변경을 최소화합니다. 
+이를 통해 성능이 향상되고 불필요한 렌더링이 줄어들게 됩니다.  
+위와 같이 코드를 잘 작성한다고 하더라도 프로젝트의 크기가 커지면 커질수록 DOM 변경을 최소화 하기에는 어렵습니다.
+
+# 리액트에서의 렌더링
+리액트에서는 렌더링이 되는 경우는 크게 아래 2가지가 있습니다.
+1. 초기 렌더링(Initial Rendering)
+   - 컴포넌트가 마운트될 때 그 자식 컴포넌트들이 순차적으로 렌더링이 됩니다.
+2. State, Props 변경
+   - 컴포넌트의 State나 Props가 변경이 되면 재렌더링됩니다.
+
+React에서는 2단계를 거쳐서 렌더링 프로세스를 사용합니다.  
+- 렌더페이즈
+- 커밋페이즈
+
+## 렌더페이즈(Render Phase)
+<p className="text-shadow-base text-shadow-md shadow-yellow-500">컴포넌트를 계산하고 업데이트 사항을 파악하는 단계입니다.</p>
+
+1. 컴포넌트 호출 및 React 엘리먼트 획득
+   - 렌더 페이즈가 시작되면, React는 상태(State)나 프로퍼티(Props)가 변경된 컴포넌트의 render() 함수를 호출합니다.
+   - render() 함수는 JSX나 React.createElement와 같은 방식으로 작성되어 React element를 반환합니다.
+
+2. 가상 DOM 트리 구축
+   - render() 함수로부터 반환된 React element를 모아서 가상 DOM 트리를 구축합니다.
+   - 이 가상 DOM은 실제 DOM을 모방한 DOM으로 실제 DOM에 반영하기 위해 사용됩니다. 
+
+3. 재조정(Reconciliation)
+   - 변경된 부분을 최소화하기 위해 React는 가상 DOM 트리를 이전 가상 DOM 트리와 비교하여 업데이트가 필요한 부분을 찾습니다.
+   - 비교 알고리즘 (Diffing Algorithm)을 사용하여 업데이트가 필요한 요소들을 찾고, 변경된 부분만 업데이트하는 작업을 실행합니다.
+
+## 커밋 페이즈(Commit Phase)
+<p className="text-shadow-base text-shadow-md shadow-yellow-500">Virtual DOM의 변경 사항을 실제 DOM에 반영하는 단계입니다.</p>
+
+1. 렌더 트리 생성
+   - Virtual DOM을 기반으로 한 렌더 트리가 생성됩니다.
+2. 레이아웃
+   - 생성된 렌더 트리를 기반으로 위치와 크기 등의 레이아웃을 계산합니다.
+3. 리플로우와 리페인트
+   - 변경된 레이아웃에 따라 화면이 다시 그리며, 이 과정에서 리플로우(reflow)와 리페인트(repaint)가 발생할 수 있습니다.
+
+<p className="text-shadow-base text-shadow-md shadow-yellow-500">리액트에서는 렌더페이즈와 커밋페이즈 과정을 거쳐 DOM 변경을 최소화 합니다. </p>
