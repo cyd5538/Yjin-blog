@@ -1,0 +1,117 @@
+---
+title: Docusaurus github page에 배포하기 with github actions
+description: Docusaurus를 github actions를 사용해서 github page에 자동으로 배포해봅시다.
+date: 2024-03-08
+tags:
+  - Docusaurus
+  - github page
+  - github actions
+image: ![image](https://github.com/cyd5538/Yjin-blog/assets/91642972/c7dc7649-82da-4d00-8de5-67cc6f6b3860)
+
+---
+
+![image](https://github.com/cyd5538/Yjin-blog/assets/91642972/b21baafe-f745-484f-b63f-c6650b019d33)
+
+# Docusaurus란
+Docusaurus는 페이스북에서 개발한 정적 사이트 생성기입니다. 
+단일 페이지 애플리케이션으로 빠른 클라이언트 측 탐색 기능을 갖추며 React의 모든 기능을 활용하여 사이트를 대화형으로 만듭니다. 
+주로 문서 기능을 제공하지만 사용자가 원하는 모든 종류의 사이트(개인 웹 사이트, 제품, 블로그, 마케팅 랜딩 페이지 등)를 만드는 데 사용할 수 있습니다.
+
+주요 기능
+
+- **MDX 제공**: Markdown과 JSX를 혼합한 MDX 형식으로 문서 작성이 가능합니다.
+- **React 기반**: React를 사용하여 손쉽게 사이트를 구축할 수 있습니다.
+- **문서 버전 관리**: 문서의 다양한 버전을 관리할 수 있어서 프로젝트의 진행 상황에 맞게 문서를 유지할 수 있습니다.
+- **번역 준비**: 사이트의 번역을 쉽게 지원하여 다국어 지원이 가능합니다.
+
+위와 같은 기능을 통해 Docusaurus는 사용자가 효율적으로 사이트를 구축하고 관리할 수 있도록 도와줍니다.
+
+## Docusaurus 설치 및 실행
+설치
+```
+npx create-docusaurus@latest my-website classic --typescript
+```
+실행
+```
+npm run start
+```
+페이지 수정은 추후에 하고 Github Page에 배포하는 방법을 알아봅시다.
+
+# 배포하기
+## 레포지토리 셋팅
+먼저 깃허브에 들어가서 `자기깃허브아이디github.io` 로 된 레포지토리를 하나 만듭니다.
+![image](https://github.com/cyd5538/Yjin-blog/assets/91642972/0437fb8f-2914-4db9-8425-47fd1c41380b)
+그리고 나서 settings에 actons에 general에 들어가서 Read and write permissions에 체크를 해줍니다.
+
+## docusaurus.config.ts 파일 셋팅
+```js
+const config: Config = {
+  title: '사이드 제목',
+  tagline: '사이트입니다.',
+  favicon: 'img/favicon.ico',
+
+  // Set the production url of your site here
+  url: 'https://본인깃허브아이디.github.io,
+  baseUrl: '/',
+
+  organizationName: '깃허브 사용자명',
+  projectName: '프로젝트이름', 
+  trailingSlash: false,
+  onBrokenLinks: 'warn',
+  onBrokenMarkdownLinks: 'warn',
+  ...
+  }
+```
+docusaurus.config.ts에서 위의 내용을 참고하여 수정해줍시다.
+## github actions 적용
+.github ➡ workflows ➡ deploy.yml  순으로 파일을 만들어줍니다.
+```
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    # Review gh actions docs if you want to further define triggers, paths, etc
+    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
+
+jobs:
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Build website
+        run: yarn build
+
+      # Popular action to deploy to GitHub Pages:
+      # Docs: https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-docusaurus
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Build output to publish to the `gh-pages` branch:
+          publish_dir: ./build
+          # The following lines assign commit authorship to the official
+          # GH-Actions bot for deploys to `gh-pages` branch:
+          # https://github.com/actions/checkout/issues/13#issuecomment-724415212
+          # The GH actions bot is used by default if you didn't specify the two fields.
+          # You can swap them out with your own user credentials.
+          user_name: github-actions[bot]
+          user_email: 41898282+github-actions[bot]@users.noreply.github.com
+```
+
+push까지 완료가 되었다면 setting에 들어가서 Pages에 들어가 줍니다.
+![image](https://github.com/cyd5538/Yjin-blog/assets/91642972/d11483f3-e6d8-49fe-a16a-971ae066f2d9)
+
+위의 사진처럼 Branch를 gh-pages로 바꿔주면 배포가 완료가 됩니다.
+
+> 참고  
+https://docusaurus.io/
