@@ -1,0 +1,153 @@
+---
+title: Vite에 Vitest 설치하고 간단한 테스트 하기
+description: Vitest가 무엇이고 Vite react typescirpt 환경에서 설치하는 과정을 알아봅시다.
+date: 2024-03-13
+tags:
+  - Vite
+  - Vitest
+image: /img/react/vitest.jpg
+---
+
+<p align="center">
+  <img src="/img/react/vitest.jpg" width="600" alt="vitest"/>
+</p>
+
+# Vitest란?
+공식문서에 따르면 아래와 같은 장점들이 있다고 적혀있습니다.
+
+- Vite의 구성과 플러그인 재사용
+- Jest 호환
+    - Jest에서 사용하던 테스트 코드를 쉽게 Vitest로 마이그레이션
+- 스마트 및 인스턴트 시계 모드
+    - 테스트 코드 변경 사항에 따라 테스트를 자동으로 다시 실행하거나 건너뛰는 기능
+    - 테스트 실행 속도를 높이기 위해 테스트 코드를 개별 모듈로 분리하여 실행하는 기능
+- ESM, 타입스크립트, JSX 지원
+
+<b className="text-shadow-base text-shadow-md shadow-yellow-500">
+요약하면 Vitest는 빠른 속도, 간편한 사용, 뛰어난 개발자 경험 등의 장점을 가진 단위 테스트 프레임워크입니다. 특히 Vite를 사용하는 프로젝트에서 테스트를 수행하는 경우 매우 유용한 도구입니다. 또한 Jest와 호환되고 다양한 기능을 제공하기 때문에, Jest 사용 경험이 있는 개발자라면 쉽게 적응할 수 있습니다.
+</b>
+
+# 설치
+```
+npm i -D vitest
+```
+`package.json` 에 test 추가
+```json
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "test": "vitest"
+  },
+```
+
+`vite.config`
+```ts
+/// <reference types="vitest" />
+/// <reference types="vite/client" />
+
+import react from '@vitejs/plugin-react-swc'
+import { defineConfig } from 'vite'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    globals: true, // 테스트 코드에서 전역 변수 사용
+    environment: 'jsdom',
+    pool: 'forks',
+  },
+})
+```
+```
+npm i jsdom
+```
+# 테스트
+위의 설치과정을 진행했으면 간단하게 테스트를 진행해보겠습니다.  
+`app.test.tsx` 파일을 만들고 간단하게 성공,실패 테스트 코드를 적었습니다.
+```tsx
+import { describe, expect, test } from 'vitest';
+
+describe("간단한 테스트", () => {
+  test("성공 테스트", () => {
+    expect(1+1).toBe(2)
+  })
+
+  test("실패 테스트", () => {
+    expect(1+1).toBe(3)
+  })
+})
+```
+npm run test를 실행해보니 터미널에 결과가 아래와 같이 나오는걸 볼 수 있습니다
+
+```
+FAIL  src/App.test.tsx > 간단한 테스트 작성하기 > 실패 테스트
+AssertionError: expected 2 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 2
+
+ ❯ src/App.test.tsx:9:17
+      7| 
+      8|   test("실패 테스트", () => {
+      9|     expect(1+1).toBe(3)      
+       |                 ^
+     10|   })
+     11| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  16:34:50
+   Duration  193ms
+```
+
+위에서 `globals: true`을 사용하였는데 `tsconfig.json` 파일에 compilerOptions옵션에 아래 코드를 추가해주면 describe, expect, test 등을 
+import를 안해오고 사용할 수 있습니다.
+
+```json
+"types": ["vitest/globals"],
+```
+
+```tsx
+describe("간단한 테스트 작성하기", () => {
+  test("성공 테스트", () => {
+    expect(1+1).toBe(2)
+  })
+
+  test("실패 테스트", () => {
+    expect(1+1).toBe(3)
+  })
+})
+```
+
+# Vitest UI
+터미널에서 테스트 결과를 확인하는 것보다 Vitest UI를 사용하는 것이 훨씬 더 효율적이고 직관적으로 볼 수 있습니다. 설치하고 적용하는 방법은 정말 간단합니다.
+
+```
+npm i -D @vitest/ui
+```
+`package.json`
+
+```json
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "test": "vitest --ui" // --ui를 붙여주세요.
+  },
+```
+위에서 사용한 테스트코드를 그대로 사용해 보겠습니다. `npm run test`를 하면
+아래와 같이 웹사이트가 뜨는데 성공, 실패 코드 등을 직관적이게 잘 보여줍니다.
+
+<p align="center">
+  <img src="/img/react/vitestui.jpg" width="1100" alt="vitest"/>
+</p>
+
+> 참고  
+https://vitest.dev/
