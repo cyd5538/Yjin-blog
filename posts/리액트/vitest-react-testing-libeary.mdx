@@ -1,0 +1,241 @@
+---
+title: Vitest에서 React Testing Library 설치하고 테스트.
+description: Vitest와 React Testing Library 사용해서 기본 컴포넌트와, zustund로 만든 count를 테스트 해보겠습니다.
+date: 2024-03-21
+tags:
+  - Vite
+  - Vitest
+  - React-testing-libeary
+image: /img/react/vitest.jpg
+---
+
+<p align="center">
+  <img src="/img/react/vitest.jpg" width="600" alt="vitest"/>
+</p>
+
+# 설치
+```
+npm install @testing-library/react @testing-library/jest-dom --save-dev
+```
+`vite.config.ts`
+
+```ts
+/// <reference types="vitest" />
+/// <reference types="vite/client" />
+
+import react from '@vitejs/plugin-react-swc'
+import { defineConfig } from 'vite'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    pool: 'forks',
+    setupFiles: "./src/test/setup.ts",
+    css: true,
+  }
+```
+
+`setup.ts`
+
+```ts
+import "@testing-library/jest-dom";
+```
+
+# 테스트 1
+Vite로 React를 설치했을 때 App.tsx에 있는 기본 코드를 테스트해보겠습니다.
+`App.tsx`
+
+```ts
+import { useState } from 'react'
+import reactLogo from './assets/react.svg'
+import viteLogo from '/vite.svg'
+import './App.css'
+
+function App() {
+  const [count, setCount] = useState(0)
+
+  return (
+    <>
+      <div>
+        <a href="https://vitejs.dev" target="_blank">
+          <img src={viteLogo} className="logo" alt="Vite logo" />
+        </a>
+        <a href="https://react.dev" target="_blank">
+          <img src={reactLogo} className="logo react" alt="React logo" />
+        </a>
+      </div>
+      <h1>Vite + React</h1>
+      <div className="card">
+        <button onClick={() => setCount((count) => count + 1)}>
+          count is {count}
+        </button>
+        <p>
+          Edit <code>src/App.tsx</code> and save to test HMR
+        </p>
+      </div>
+      <p className="read-the-docs">
+        Click on the Vite and React logos to learn more
+      </p>
+    </>
+  )
+}
+
+export default App
+```
+test 파일 
+```ts
+
+import { fireEvent, render, screen } from '@testing-library/react';
+
+import App from './App';
+
+describe('App컴포넌트 테스트', () => {
+  it('Vite + React라는 text가 나온다.', () => {
+    render(<App />);
+    const element = screen.getByText('Vite + React');
+    expect(element).toBeInTheDocument();
+  });
+
+  it('React logo 이미지가 나온다', () => {
+    render(<App />);
+    const logoImg = screen.getByAltText(/React logo/i);
+    expect(logoImg).toBeInTheDocument()
+  });
+
+  test('vite logo 클릭시 링크가 새로운 탭에서 나오는지', () => {
+    render(<App />);
+    const link = screen.getByRole('link', { name: /vite logo/i });
+    
+    fireEvent.click(link);
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('href', 'https://vitejs.dev');
+  });
+
+  test('read-the-docs라는 className을 가진 요소가 하나 이상 있는지"', () => {
+    render(<App />);
+    const elementsWithClass = document.getElementsByClassName('read-the-docs');
+    expect(elementsWithClass.length).toBeGreaterThan(0);
+  });
+
+  test('conut 1번 클릭시 값이 1이 되는지', () => {
+    const element = render(<App />);
+    const number = element.getByText('count is 0');
+    const plusButton = screen.getByText(/count is/i)
+
+    fireEvent.click(plusButton);
+    expect(number).toHaveTextContent('1'); 
+  });
+
+  test('conut 5번 클릭시 값이 5가 되는지', () => {
+    const element = render(<App />);
+    const number = element.getByText('count is 0');
+    const plusButton = screen.getByText(/count is/i)
+
+    fireEvent.click(plusButton);
+    fireEvent.click(plusButton);
+    fireEvent.click(plusButton);
+    fireEvent.click(plusButton);
+    fireEvent.click(plusButton);
+    expect(number).toHaveTextContent('5'); 
+  });
+});
+```
+
+<p align="center">
+  <img src="/img/react/test1.png" width="900" alt="test1"/>
+</p>
+
+# 테스트2
+전역관리 zustand를 사용한 count변수와 증가, 감소 함수를 테스트 해 보겠습니다.
+`App.tsx`
+```ts
+import { useCounterStore } from "./store";
+
+const App = () => {
+  const { count, increment, decrement } = useCounterStore();
+
+  return (
+    <div>
+      <h1>카운터</h1>
+      <p>현재 카운트: {count}</p>
+      <button onClick={increment}>증가</button>
+      <button onClick={decrement}>감소</button>
+    </div>
+  );
+};
+
+export default App;
+```
+`store.tsx`
+```ts
+import { create } from "zustand";
+
+interface CounterState {
+  count: number;
+  increment: () => void;
+  decrement: () => void;
+}
+
+export const useCounterStore = create<CounterState>()((set) => ({
+  count: 0,
+  increment: () => set((state) => ({ count: state.count + 1 })),
+  decrement: () => set((state) => ({ count: state.count - 1 })),
+}));
+```
+test파일
+```ts
+import { render, fireEvent } from "@testing-library/react";
+import App from "./App";
+import { useCounterStore } from "./store";
+
+const resetCount = () => {
+  useCounterStore.setState({ count: 0 }); 
+};
+	
+describe("App", () => {
+	// 각 테스트 종료시 count 초기화
+  beforeEach(() => {
+    resetCount();
+  });
+
+  it("App 컴포넌트에 글자가 제대로 나오는지", () => {
+    const { getByText } = render(<App />);
+
+    expect(getByText("카운터")).toBeInTheDocument();
+    expect(getByText("현재 카운트: 0")).toBeInTheDocument();
+  });
+
+  it("증가를 클릭했을 때 숫자 1이 나오는지", () => {
+    const { getByText, getByRole } = render(<App />);
+
+    fireEvent.click(getByRole("button", { name: "증가" }));
+
+    expect(getByText("현재 카운트: 1")).toBeInTheDocument();
+  });
+
+  it("증가를 3번 클릭했을 때 숫자 3이 나오는지", () => {
+    const { getByText, getByRole } = render(<App />);
+
+    fireEvent.click(getByRole("button", { name: "증가" }));
+    fireEvent.click(getByRole("button", { name: "증가" }));
+    fireEvent.click(getByRole("button", { name: "증가" }) );
+
+    expect(getByText("현재 카운트: 3")).toBeInTheDocument();
+  });
+
+  it("감소를 클릭했을 때 숫자 -1이 나오는지", () => {
+    const { getByText, getByRole } = render(<App />);
+
+    fireEvent.click(getByRole("button", { name: "감소" }));
+
+    expect(getByText("현재 카운트: -1")).toBeInTheDocument();
+  });
+});
+```
+
+<p align="center">
+  <img src="/img/react/test2.png" width="900" alt="test2"/>
+</p>
