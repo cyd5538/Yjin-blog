@@ -1,0 +1,68 @@
+---
+title: Git Branch 전략이란?
+description: Git-flow 전략과 GitHub-flow 전략에 장단점을 알아보자.
+date: 2024-04-08
+tags:
+  - Git-flow
+  - GitHub-flow
+image: /img/etc/git-flow.png
+---
+
+# Git Branch 전략 ?
+브랜치 전략은 여러 개발자가 하나의 저장소를 사용하는 환경에서 저장소를 효과적으로 활용하기 위한 워크플로우(work-flow)입니다. 
+여러 개발자가 동일한 코드 베이스에서 작업할 때 코드 충돌을 방지하고, 안정적인 배포를 위해 사용됩니다.
+
+# Git Branch 전략 종류
+대표적으로 3가지의 종류가 있습니다.
+
+1. Git Flow
+2. Github Flow
+3. Gitlab Flow
+
+이 중에서 인기있는 Git Flow와 GitHub FLow에 대해 알아보겠습니다.
+
+# Git Flow 전략
+Git Flow는 Vincent Driessen이 제시한 Git Branch 전략입니다. 
+Git Flow는 주로 규모가 큰 프로젝트나 복잡한 소프트웨어 개발을 위한 전략으로 사용됩니다. 
+
+<p align="center">
+  <img src="/img/etc/git-flow.png" alt="git-flow" width="1000" />
+</p> 
+
+주요 Branch는 다음과 같이 구성합니다.
+
+- **main(master)**: 배포된 최신 안정 버전을 포함하는 Branch입니다.
+- **develop**: feature 브랜치에서 구현된 기능이 모여 브랜치들의 기둥 역할을 하는 브랜치입니다.
+- **feature**: 새로운 기능 개발을 위한 개별 Branch입니다. 완료되면 develop 브랜치로 병합됩니다.
+- **release**: 배포 전 준비를 위한 Branch입니다. 테스트를 하거나 버그 확인을 하기 위한 브랜치입니다. 작업을 진행한 후 main이나 develop 브랜치로 병합합니다.
+- **hotfix**: 배포가 진행되었는데 문제가 발생하였을 때 생성하는 브랜치입니다.
+
+
+# GitHub Flow 전략
+GtHub Flow에는 브랜치가 2개만 존재합니다. 간단한 브랜치 구조와 운영 방식으로
+빠르고 유연한 개발 및 배포를 필요로 하는 상황에 적합합니다. 
+하지만 버전 관리가 명확하지 않기 때문에 롤백하거나 특정 버전을 추적하기가 어렵습니다.
+
+<p align="center">
+  <img src="/img/etc/github-flow.png" alt="github-flow" width="1000" />
+</p> 
+
+- **main(master)**:  배포된 최신 안정 버전을 포함하는 Branch입니다.
+- **feature**: 개발할 새로운 기능 또는 수정할 기능에 대한 각각의 개별 브랜치입니다.
+
+# 정리
+| 전략          | 장점                                 | 단점                   | 적합한 경우                                           |
+|---------------|--------------------------------------|------------------------|--------------------------------------------------------|
+| Git Flow      | - 코드 안정성 유지                 | - 관리 복잡성          | - 프로젝트 규모가 크고 코드 안정성이 중요한 경우       |
+|               | - 개발 효율 향상                   | - 러닝 커브             | - 개발자 수가 많고 협업이 중요한 경우                   |
+|               | - 협업 및 코드 리뷰 용이           | - 적용 범위            | - 배포 빈도가 높고 버전 관리가 중요한 경우             |
+|               | - 배포 프로세스 간소화             |                        |                                                        |
+|               | - 버전 관리 강화                   |                        |                                                        |
+| GitHub Flow   | - 간단하고 빠른 배포               | - 코드 안정성           | - 프로젝트 규모가 작고 빠른 배포가 중요한 경우         |
+|               | - 협업 용이                        | - 버전 관리            | - 개발자 수가 적고 협업 방식이 간단한 경우             |
+
+
+> 참고  
+https://medium.com/@yanminthwin/understanding-github-flow-and-git-flow-957bc6e12220  
+https://be-student.tistory.com/83
+https://inpa.tistory.com/entry/GIT-%E2%9A%A1%EF%B8%8F-github-flow-git-flow-%F0%9F%93%88-%EB%B8%8C%EB%9E%9C%EC%B9%98-%EC%A0%84%EB%9E%B5#git-flow_%EC%A0%84%EB%9E%B5  
