@@ -1,0 +1,278 @@
+---
+title: 바닐라 자바스크립트로 투두리스트 만들기
+description: 바닐라 자바스크립트로 투두리스트를 만들고 체크박스도 커스텀 디자인으로 만들어보자.
+date: 2024-06-17
+tags:
+  - JS
+image: /img/js/todolist.jpg
+---
+
+> 바닐라 자바스크립트를 사용해서 투두리스트를 만들어보자.
+
+# HTML 
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>todolist</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>Todo List</h1>
+    <div id="input-form">
+      <input type="text" id="todo-input">
+      <button id="add-btn">추가</button>
+    </div>
+    <ul id="todo-list">
+    </ul>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
+```
+
+# CSS
+```css
+body {
+  background-color: #6c29a3;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+main {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+h1 {
+  margin: 0 0 20px;
+  text-align: center;
+  font-size: 24px;
+  color: #333;
+}
+
+#input-form {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+#todo-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+  font-size: 16px;
+}
+
+#add-btn {
+  padding: 10px 20px;
+  background: #160741;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 0 5px 5px 0;
+  font-size: 16px;
+}
+
+#add-btn:hover {
+  background: #000000;
+}
+
+ul#todo-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul#todo-list li {
+  display: flex;
+  align-items: center;
+  background: #f9f9f9;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+ul#todo-list li .checkbox {
+  display: none;
+}
+
+ul#todo-list li .checkbox + label {
+  position: relative;
+  cursor: pointer;
+  padding-left: 30px;
+}
+
+ul#todo-list li .checkbox + label:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid #8432c7;
+  border-radius: 5px;
+  background: white;
+}
+
+ul#todo-list li .checkbox:checked + label:before {
+  border-color: #8432c7;
+  background: #8432c7;
+}
+
+ul#todo-list li .checkbox:checked + label:after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+}
+
+ul#todo-list li .text {
+  flex: 1;
+  font-size: 16px;
+  color: #333;
+}
+
+ul#todo-list li .del-btn {
+  background: #8432c7;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+ul#todo-list li .del-btn:hover {
+  background: #6c29a3;
+}
+
+ul#todo-list li.completed .text {
+  text-decoration: line-through;
+}
+```
+
+# JS
+```js
+const todoInput = document.getElementById("todo-input");
+const addBtn = document.getElementById("add-btn");
+const todoList = document.getElementById("todo-list");
+
+// addBtn 버튼을 클릭했을 때
+addBtn.addEventListener("click", () => {
+  const input = todoInput.value;
+  // input이 비어있지 않으면 text값고 checked를 기본 fase로 넘겨준다. 
+  if (input.trim() !== "") {
+    const todo = { text: input, checked: false };
+    addTodos(todo);
+    saveTodos();
+    todoInput.value = "";
+  }
+});
+
+// input창에서 enter키를 누르면 위에 addBtn.click이 실행된다.
+todoInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    addBtn.click();
+  }
+});
+
+
+const addTodos = (todo) => {
+  // li를 만들어주고
+  // 그안에 들어갈 checkbox와 label, text가 들어갈 span, 삭제버튼 delbtn을 넣어준다.
+  const li = document.createElement("li");
+  const checkbox = document.createElement("input");
+  const label = document.createElement("label");
+  const spanText = document.createElement("span");
+  const delBtn = document.createElement("button");
+
+  // id를 checkbox와 label에 for에 넣어줘야함.
+  const id = `${Date.now()}`;
+
+  checkbox.type = "checkbox";
+  checkbox.className = "checkbox";
+  checkbox.id = id;
+  checkbox.checked = todo.checked;
+  label.htmlFor = id;
+  spanText.className = "text";
+  delBtn.className = "del-btn";
+  delBtn.innerHTML = "삭제";
+  spanText.innerHTML = todo.text;
+
+  // 처음 투두리스트를 불러올때 체크가 되어있으면 completed 클래스를 추가해준다.
+  if (todo.checked) {
+    li.classList.add("completed");
+  }
+
+  // 체크박스를 누를때 이벤트
+  checkbox.addEventListener("change", () => {
+    if (checkbox.checked) {
+      li.classList.add("completed");
+    } else {
+      li.classList.remove("completed");
+    }
+    saveTodos();
+  });
+
+  // 삭제버튼을 누르면 삭제해준다.
+  delBtn.addEventListener("click", () => {
+    todoList.removeChild(li);
+    saveTodos();
+  });
+
+  li.appendChild(checkbox);
+  li.appendChild(label);
+  li.appendChild(spanText);
+  li.appendChild(delBtn);
+
+  todoList.appendChild(li);
+};
+
+// localstorage에 저장하는 함수
+const saveTodos = () => {
+  const todos = [];
+  // 모든 li를 가져와서 todos에 넣어준다.
+  todoList.querySelectorAll("li").forEach(li => {
+    const checkbox = li.querySelector(".checkbox");
+    const text = li.querySelector(".text").innerText;
+    todos.push({ text: text, checked: checkbox.checked });
+  });
+  // todos를 JSON을 변환해서 로컬스토리지에 넣어준다. 
+  localStorage.setItem("todos", JSON.stringify(todos));
+};
+
+// localstorage에서 불러오는 함수
+const loadTodos = () => {
+  // todos를 객체로 가져온다.
+  const todos = JSON.parse(localStorage.getItem("todos")) || [];
+  // forEach 반복문을 사용해서 addTodos에 넣어준다.
+  todos.forEach(todo => addTodos(todo));
+};
+
+loadTodos()
+
+```
+
+<p align="center">
+  <img src="/img/js/todolist.jpg" alt="todolist" width="800"/>
+</p>
