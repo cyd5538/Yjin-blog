@@ -1,0 +1,129 @@
+---
+title: 바닐라 자바스크립트로 드래그 앤 드롭 구현하기
+description: 바닐라 자바스크립트로 드래그 이벤트들 사용해보기
+date: 2024-06-27
+tags:
+  - JS
+image: /img/js/drag-drop.gif
+---
+
+> 바닐라 자바스크립트를 사용해서 드래그 앤 드롭을 구현해보자.
+
+# html
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <section>
+    <div class="droppable">
+      <p draggable="true">바나나</p>
+      <p draggable="true">포도</p>
+      <p draggable="true">딸기</p>
+      <p draggable="true">수박</p>
+      <p draggable="true">사과</p>
+      <p draggable="true">배</p>
+    </div>
+    <div class="droppable"></div>
+    <div class="droppable"></div>
+    <div class="droppable"></div>
+  </section> 
+  <script src="script.js"></script>
+</body>
+</html>
+```
+
+# css
+```css
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+section {
+  width: 100%;
+  height: 100vh;
+  background: #302c2c;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.droppable {
+  width: 200px;
+  height: 600px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+p {
+  width: 100%;
+  background-color: blueviolet;
+  padding: 10px;
+  border-radius: 5px;
+  color:white;
+  cursor: pointer;
+}
+```
+# JS
+```js
+const dragItem = document.querySelectorAll('.droppable p');
+const droppables = document.querySelectorAll('.droppable');
+let dragged = null;
+
+dragItem.forEach(item => {
+    // 드래그 시작시 이벤트
+    item.addEventListener('dragstart', () => {
+        dragged = item;
+        item.style.opacity = '0.3'; 
+    });
+    
+    // 드래그 끝났을때 이벤트
+    item.addEventListener('dragend', () => {
+        dragged = null;
+        if (item) item.style.opacity = '1';
+    });
+});
+
+droppables.forEach(droppable => {
+    // 기본 동작 방지
+    droppable.addEventListener('dragover', (e) => {
+        e.preventDefault(); 
+    });
+
+    // 드래그된 아이템이 들어왔을 때
+    droppable.addEventListener('dragenter', function(e) {
+        e.preventDefault(); 
+        this.style.backgroundColor = 'white';
+        this.style.opacity = '0.5';
+    });
+
+    // 드래그된 아이템이 나갔을 때
+    droppable.addEventListener('dragleave', function() {
+        this.style.backgroundColor = 'white';
+        this.style.opacity = '1';
+    });
+
+    // 드래그된 아템을 drop했을 때
+    droppable.addEventListener('drop', function() {
+        this.appendChild(dragged);
+        this.style.backgroundColor = 'white';
+        this.style.opacity = '1';
+    });
+});
+
+```
+<p align="center">
+  <img src="/img/js/drag-drop.gif" alt="drag-drop" width="700" />
+</p>
