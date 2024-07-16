@@ -1,0 +1,95 @@
+---
+title: Lighthouse를 사용한 웹 사이트 측정
+description: Lighthouse를 사용해서 내 블로그를 측정하고 개선시켜보자.
+date: 2024-07-17
+tags:
+  - Lighthouse
+image: /img/etc/Lighthouseresult.png
+---
+
+# Lighthouse란?
+개발한 웹 페이지의 품질 측정 도구입니다. 크롬 확장 프로그램을 사용하여 웹사이트의 성능 또는 품짐을 측정할 수 있습니다. 주로 4가지의 영역을 측정합니다.
+- Performance: 웹사이트의 로딩속도와 반응성을 측정합니다.
+- Accessibility: 웹사이트를 이용하는 사람들에게 얼마나 편한 접근성을 주는지 측정합니다. (스크린 리더, 색상 대비 등)
+- Best Practices: 웹 개발의 표준 양식을 따르고 있는지 평가합니다.(HTTPS) 
+- SEO: 웹사이트가 검색 엔진에서 얼마나 잘 노출되고 인식이 되는지 측정합니다.
+
+<p align="center">
+  <img src="/img/etc/Lighthouseprev.png" alt="Lighthouseprev" width="700"/>
+</p>
+나의 경우 각각의 점수가 위에 사진처럼 나왔다. Performance, Accessibility를 개선해보자.
+
+# Performance
+*Properly size images*
+보통 퍼포먼스에서는 이미지의 대한 문제가 가장 많이 발생하는 거로 안다. 이미지의 대한 문제의 코드는 아래와 같이 되어있다.
+```js
+<Image
+  src={post?.image as string}
+  alt={post.title}
+  width={100}
+  height={100}
+  className="w-full object-cover rounded-2xl h-48"
+/>
+```
+여기서의 문제를 살펴보면 Next.js에서 Image의 width와 height이 100인데 css로 width와 hieght값을 따로 줘서 문제인가? 라는 생각을 했다. 
+아래와 같이 수정을 해주었다.
+```js
+  <Image
+    src={post?.image as string}
+    alt={post.title}
+    width={800}
+    height={200}
+    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+    className="w-full object-cover rounded-2xl h-[200px]"
+    loading="lazy"
+    placeholder='blur'
+    blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg=="
+  />
+```
+1. width와 height을 값을 미리 지정해주었다.
+2. sizes를 사용하여 뷰포트에 맞게 이미지 크기를 설정하였다.
+3. loading=”lazy”를 사용하여 로딩을 지연시켰다.
+4. placeholder='blur'를 설정하여 이미지 로딩전에 blurDataURL이 나오게 설정하였다.
+5. 그리고 이미지가 큰 파일을 압축을 하였다.
+
+# Accessibility 
+*Background and foreground colors do not have a sufficient contrast ratio.*
+배경색과 글자색이 잘 맞지 않아 글씨가 잘 읽히지 않는다는 말이어서 배경색이나 글자색을 수정 해주었다.
+
+*Lists do not contain only `li` elements and script supporting elements*
+이 문구는 목록과 list의 구조가 적절하지 않다는 뜻이다. 내 코드를 살펴보니 ul 태그 안에 아래와 같이 되어있었다
+```js
+
+<Link
+  href={{
+    pathname: `/tag`,
+    query: { tag: `${tag}` }
+  }}
+>
+  <li className="inline-block bg-gray-100 hover:bg-gray-300 rounded-full px-3 py-1 text-sm font-semibold text-gray-600 mr-2">{tag}</li>
+</Link>
+```
+li 안에 Link를 적어야 했는데 이런 실수를 이제야 봤다. 아래와 같이 수정을 해 주었다.
+```js
+<li className="inline-block mr-2">
+  <Link
+    href={{
+      pathname: `/tag`,
+      query: { tag: `${tag}` }
+    }}
+    className="block bg-gray-100 hover:bg-gray-300 rounded-full px-3 py-1 text-sm font-semibold text-gray-600"
+  >
+    {tag}
+  </Link>
+</li>
+```
+# 결과
+<p align="center">
+  <img src="/img/etc/Lighthouseresult.png" alt="Lighthouseresult" width="700"/>
+</p>
+
+
+
+> 참고  
+> https://nextjs.org/docs/pages/api-reference/components/image#placeholder  
+> https://velog.io/@sangbooom/next.js-이미지-스켈레톤-처리하기
