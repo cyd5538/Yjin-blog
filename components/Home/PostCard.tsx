@@ -20,6 +20,7 @@ function PostCard(post: Post) {
         quality={80}
         loading="lazy"
         placeholder='blur'
+        blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg=="
       />
       </div>
       <div className="px-6 py-4">
