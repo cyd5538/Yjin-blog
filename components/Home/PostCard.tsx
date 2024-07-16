@@ -18,7 +18,7 @@ function PostCard(post: Post) {
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         className="w-full object-cover rounded-2xl h-[200px]"
         quality={80}
-        priority
+        loading="lazy"
         placeholder='blur'
         blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg=="
       />
