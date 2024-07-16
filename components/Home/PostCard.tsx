@@ -18,6 +18,8 @@ function PostCard(post: Post) {
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         className="w-full object-cover rounded-2xl h-[200px]"
         quality={80}
+        loading="lazy"
+        placeholder='blur'
       />
       </div>
       <div className="px-6 py-4">
