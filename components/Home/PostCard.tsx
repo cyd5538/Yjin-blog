@@ -10,13 +10,15 @@ function PostCard(post: Post) {
   return (
     <div className="max-w-sm w-80 rounded overflow-hidden shadow-lg dark:bg-zinc-900 mx-auto my-2">
       <div className='w-full h-48'>
-        <Image
-          src={post?.image as string}
-          alt={post.title}
-          width={100}
-          height={100}
-          className="w-full object-cover rounded-2xl h-48"
-        />
+      <Image
+        src={post?.image as string}
+        alt={post.title}
+        width={800}
+        height={200}
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        className="w-full object-cover rounded-2xl h-[200px]"
+        quality={80}
+      />
       </div>
       <div className="px-6 py-4">
         <Link href={url}>
