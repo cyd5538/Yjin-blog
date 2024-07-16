@@ -22,7 +22,7 @@ const Nav = () => {
   ];
 
   return (
-    <div className='z-20 top-0  dark:bg-zinc-900 text-white bg-violet-400 w-full h-20'>
+    <div className='z-20 top-0  dark:bg-zinc-900 text-white bg-violet-900 w-full h-20'>
       <div className='m-auto flex justify-between items-center max-w-[1200px] h-20 pl-4 pr-4 sm:pl-2 sm:pr-2 '>
         <h1>
           <Link href="/">
