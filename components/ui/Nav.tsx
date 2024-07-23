@@ -53,12 +53,12 @@ const Nav = () => {
             </SheetTrigger>
             <SheetContent className='dark:bg-zinc-900'>
               <SheetHeader>
-                <SheetTitle className='text-2xl pt-8 font-bold text-white '>YJIN의 블로그입니다.</SheetTitle>
-                <SheetDescription className='pt-10 pb-2 cursor-pointer text-xl text-white hover:underline dark:text-white dark:hover:underline underline-offset-8 dark:hover:text-gray-100 hover:text-gray-300'>
+                <SheetTitle className='text-2xl pt-8 font-bold text-black dark:text-white'>YJIN의 블로그입니다.</SheetTitle>
+                <SheetDescription className='pt-10 pb-2 cursor-pointer text-xl text-black hover:underline dark:text-white dark:hover:underline underline-offset-8 dark:hover:text-gray-100 hover:text-gray-300'>
                   Home
                 </SheetDescription>
                 {Links.map((link) => {
-                  return <SheetDescription key={link.title} className='cursor-pointer text-xl text-white hover:underline dark:text-white dark:hover:underline underline-offset-8 dark:hover:text-gray-100 hover:text-gray-300 pb-2'>
+                  return <SheetDescription key={link.title} className='cursor-pointer text-xl text-black hover:underline dark:text-white dark:hover:underline underline-offset-8 dark:hover:text-gray-100 hover:text-gray-300 pb-2'>
                     <Link href={link.link}>{link.title}</Link>
                   </SheetDescription>
                 })}
